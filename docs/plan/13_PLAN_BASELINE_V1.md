@@ -1,6 +1,6 @@
 ---
 title: Parakh — Plan Baseline v1.0 (locked)
-version: 1.17 (D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
+version: 1.18 (Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
 date: 2026-09-24
 owner: Avinash Tallam
 status: LOCKED. This is the plan of record; changes follow §6
@@ -190,6 +190,28 @@ Set-Location C:\dev\parakh
 
 ---
 
+### 8.0 Phase 0 status *(29 Sep 2026)*
+
+Built on branch `phase-0` in `atallam/Parakh`, **pull request #1**. All four CI jobs pass (L0 static, L1–L5 tests, L4 database on the Supabase local stack, L0 security); 128 tests; SCAIX checklist 34 / 34.
+
+| Exit-gate item (09 Phase 0, 14 §9) | Status |
+|---|---|
+| `run.py --help`, config validates (7 pilot ISINs, ISO 6166 check digits) | ✅ |
+| Dummy run emits one `AUD.RUN.START` + one `AUD.RUN.END` (hash-chained) and a manifest | ✅ |
+| Redaction test (PAN, DP/client IDs, CDSL BO IDs, holdings quantities and ₹ fields) | ✅ |
+| L0: ruff, pyright, token lint, layering lint (`app/`, `src/parakh/mcp/`), tool registry sweep, doc lint, catalogues fresh, gitleaks, pip-audit | ✅ |
+| Harness: AC markers + traceability (16 due ACs covered), sockets blocked, LLM mock, `FakeRunner`, synthetic CAS | ✅ |
+| Supabase migration + seed + 16 pgTAP checks (append-only audit, `parakh_mcp` has no UPDATE/DELETE, RLS everywhere, staging can't write public) | ✅ |
+| ADR-001…012 in `docs/adr/` | ✅ |
+| Pre-commit and CI green on `main`, branch protection | ⏳ You: merge PR #1 and set branch protection (below) |
+
+**Differences from the plan text, all recorded here:** the MCP Python SDK is on version 2 (`MCPServer`, not `FastMCP`); the synthetic CAS is JSON for now (a rendered PDF follows spike ⑦ once casparser's real output is known); `docs/plan/` in the repo is now the canonical copy of these docs (04 §3.3), with the OneDrive FRAMEWORK folder and the Claude project as mirrors.
+
+**You, to close Phase 0:**
+1. Review and merge PR #1, then `git pull` in `Stock Analysis\parakh`, `uv sync`, `uv run pre-commit install`, `uv run pytest`.
+2. Branch protection on `main`: require a PR, code-owner review, and the four checks *L0 static*, *L1–L5 tests*, *L4 database (Supabase local stack)*, *L0 security (P10)* (P10).
+3. BL-01 (AWS account) when convenient; it isn't needed before Phase 3.
+
 ### 8.1 Prep backlog
 
 Setup tasks that are pending but don't block the current phase. Feature ideas still go to F20+ (D25).
@@ -204,6 +226,7 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 
 | Version | Date | Change |
 |---|---|---|
+| 1.18 | 2026-09-29 | **Phase 0 built** (§8.0): PR #1 with CI green, 34/34 checklist. `docs/plan/` in the repo becomes the canonical copy. Version: 13 1.18 |
 | 1.17 | 2026-09-28 | **D10 amended:** the repo lives at `Stock Analysis\parakh` in OneDrive, venv outside OneDrive. **Phase 0 scaffold done:** Production tier, 80 files, 34/34 checklist; ruff, pyright and 46 tests green; `parakh --help` and `parakh doctor` work; the `.env` is found one folder up. Versions: 09 1.11, 13 1.17 |
 | 1.16 | 2026-09-28 | Phase 0 started. Week-1 item 6 (AWS account) moved to the new §8.1 prep backlog as **BL-01**; it doesn't block Phase 0–2 because SSM/OIDC is a Phase 3 item. Version: 13 1.16 |
 | 1.15 | 2026-09-28 | **Scope and correctness.** D23: Parakh stays a systematic engine; own forecasts, price targets and ratings are out; consensus and results context becomes backlog item F26; own forecasts for ≤ 5 holdings join F20. D24: pilot sector profiles (plan 01 §3) and limited-history rules (plan 01 §3.1, plan 02 §3.9) move into Phases 1–2 before M1; golden-set profiles updated (INDIGO airline, M&M SOTP); 9 new ACs (AC-F04.7–12, AC-F05.7–9). D25: scope freeze until the M1 review. Versions: 00 1.5, 01 0.6, 02 0.5, 07 1.9, 08 1.8, 09 1.10, 13 1.15, 14 1.6, README |
