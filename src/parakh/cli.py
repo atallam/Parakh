@@ -1,8 +1,9 @@
-"""Command line: `parakh --help`."""
+"""Command line: `parakh --help` (also `python run.py --help`, plan 13 D1)."""
 
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import sys
 from pathlib import Path
 
@@ -26,6 +27,62 @@ def _doctor() -> int:
     return 0
 
 
+def _config_validate() -> int:
+    from parakh.configs import ConfigError, load_all
+
+    try:
+        bundle = load_all()
+    except ConfigError as exc:
+        print(exc, file=sys.stderr)
+        return 1
+    u = bundle.universe
+    print(f"config OK · {len(bundle.sources)} files · universe mode={u.mode}")
+    for s in u.pilot:
+        flag = " (golden)" if s.golden else ""
+        print(f"  {s.symbol:11} {s.isin}  {s.cap:5}  {s.profile}{flag}")
+    return 0
+
+
+def _run(mode: str, asof: str | None) -> int:
+    from parakh.orchestration.jobs import run_dummy
+
+    if mode != "dummy":
+        print(f"mode '{mode}' arrives in a later phase (plan 09); only 'dummy' exists in Phase 0")
+        return 2
+    ctx, outcome = run_dummy(dt.date.fromisoformat(asof) if asof else None)
+    print(f"run {ctx.run_id} · {outcome.status} · {len(ctx.steps)} steps")
+    if outcome.audit_pending:
+        print(
+            f"  {outcome.audit_pending} audit events wait in the local outbox (Supabase sync: Phase 1)"
+        )
+    return 0
+
+
+def _audit_verify() -> int:
+    from parakh.audit.emit import get_sink
+
+    check = get_sink().verify_chain()
+    if check.ok:
+        print(f"audit chain OK · {check.events} events · head {check.head[:19]}…")
+        return 0
+    print(
+        f"audit chain BROKEN at event {check.first_bad_event} ({check.events} events)",
+        file=sys.stderr,
+    )
+    return 1
+
+
+def _catalogue(check: bool) -> int:
+    from parakh.registry.catalogue import generate
+
+    stale = generate(check=check)
+    if check and stale:
+        print(f"stale catalogues: {', '.join(stale)} · run `parakh catalogue`", file=sys.stderr)
+        return 1
+    print("catalogues up to date" if not stale else f"wrote {', '.join(stale)}")
+    return 0
+
+
 def _summarize(path: str) -> int:
     from parakh.orchestration.graph import run_pipeline
 
@@ -40,23 +97,58 @@ def _summarize(path: str) -> int:
     return 0
 
 
-def main(argv: list[str] | None = None) -> int:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="parakh",
-        description="Personal NSE stock-analysis framework with value and momentum lenses and Telegram alerts",
+        description="Parakh: personal NSE stock analysis with value and momentum lenses",
     )
     parser.add_argument("--version", action="version", version=f"parakh {__version__}")
     sub = parser.add_subparsers(dest="command")
-    sub.add_parser("doctor", help="check configuration (no external calls)")
-    p_sum = sub.add_parser("summarize", help="example agent: summarise a text file")
-    p_sum.add_argument("path")
-    args = parser.parse_args(argv)
+    sub.add_parser("doctor", help="check configuration and secrets (no external calls)")
 
+    p_cfg = sub.add_parser("config", help="config tools")
+    p_cfg.add_argument("action", choices=["validate"])
+
+    p_run = sub.add_parser("run", help="run a job (Phase 0: --mode dummy)")
+    p_run.add_argument("--mode", default="dummy", choices=["dummy", "monthly", "watch", "events"])
+    p_run.add_argument("--asof", help="as-of date, YYYY-MM-DD (default: today)")
+
+    p_audit = sub.add_parser("audit", help="audit trail tools")
+    p_audit.add_argument("action", choices=["verify"])
+
+    p_cat = sub.add_parser("catalogue", help="regenerate docs/*.md catalogues from the registries")
+    p_cat.add_argument("--check", action="store_true", help="fail if any catalogue is stale")
+
+    p_mcp = sub.add_parser("mcp", help="parakh-mcp server (local stdio only)")
+    p_mcp.add_argument("action", choices=["serve"])
+
+    p_sum = sub.add_parser("summarize", help="scaffold sample agent: summarise a text file")
+    p_sum.add_argument("path")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = build_parser()
+    args = parser.parse_args(argv)
     configure_logging()
-    if args.command == "doctor":
-        return _doctor()
-    if args.command == "summarize":
-        return _summarize(args.path)
+    match args.command:
+        case "doctor":
+            return _doctor()
+        case "config":
+            return _config_validate()
+        case "run":
+            return _run(args.mode, args.asof)
+        case "audit":
+            return _audit_verify()
+        case "catalogue":
+            return _catalogue(args.check)
+        case "mcp":
+            from parakh.mcp.server import serve
+
+            serve()
+            return 0
+        case "summarize":
+            return _summarize(args.path)
     parser.print_help(sys.stdout)
     return 0
 

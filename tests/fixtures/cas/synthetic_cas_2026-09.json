@@ -1,0 +1,95 @@
+{
+  "_synthetic": "Fake data for tests (plan 14 \u00a74.3). Not a real statement.",
+  "file_type": "NSDL",
+  "statement_period": {
+    "from": "2026-09-01",
+    "to": "2026-09-30"
+  },
+  "investor_info": {
+    "name": "PARAKH TEST INVESTOR",
+    "pan": "ZZZPT9999Z",
+    "email": "parakh.test@example.com",
+    "mobile": "9000000001",
+    "address": "Flat 0, Test Towers, Nowhere Road, Hyderabad 500000"
+  },
+  "accounts": [
+    {
+      "type": "NSDL",
+      "dp_id": "IN300000",
+      "client_id": "10000001",
+      "name": "NSDL account",
+      "equities": [
+        {
+          "isin": "INE646L01027",
+          "name": "INTERGLOBE AVIATION LIMITED",
+          "num_shares": 40
+        },
+        {
+          "isin": "INE101A01026",
+          "name": "MAHINDRA & MAHINDRA LIMITED",
+          "num_shares": 30
+        },
+        {
+          "isin": "INE467B01029",
+          "name": "TATA CONSULTANCY SERVICES LIMITED",
+          "num_shares": 10
+        },
+        {
+          "isin": "INE002A01018",
+          "name": "RELIANCE INDUSTRIES LIMITED",
+          "num_shares": 50
+        }
+      ]
+    },
+    {
+      "type": "NSDL",
+      "dp_id": "IN300001",
+      "client_id": "10000002",
+      "name": "NSDL account",
+      "equities": [
+        {
+          "isin": "INE040A01034",
+          "name": "HDFC BANK LIMITED",
+          "num_shares": 120
+        },
+        {
+          "isin": "INE009A01021",
+          "name": "INFOSYS LIMITED",
+          "num_shares": 35
+        },
+        {
+          "isin": "INE021A01026",
+          "name": "ASIAN PAINTS LIMITED",
+          "num_shares": 12
+        }
+      ]
+    },
+    {
+      "type": "CDSL",
+      "bo_id": "1208160000000001",
+      "name": "CDSL account",
+      "equities": [
+        {
+          "isin": "INE0HOQ01053",
+          "name": "BILLIONBRAINS GARAGE VENTURES LIMITED",
+          "num_shares": 300
+        },
+        {
+          "isin": "INE0LEZ01016",
+          "name": "ATHER ENERGY LIMITED",
+          "num_shares": 250
+        },
+        {
+          "isin": "INE12UN01015",
+          "name": "SHADOWFAX TECHNOLOGIES LIMITED",
+          "num_shares": 150
+        },
+        {
+          "isin": "INE154A01025",
+          "name": "ITC LIMITED",
+          "num_shares": 400
+        }
+      ]
+    }
+  ]
+}

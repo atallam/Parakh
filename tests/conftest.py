@@ -27,6 +27,21 @@ def isolated_settings(monkeypatch: pytest.MonkeyPatch):
 
 
 @pytest.fixture(autouse=True)
+def isolated_state(monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory):
+    """Every test gets its own state dir (audit outbox, run manifests); config stays the repo's."""
+    from parakh.audit.emit import reset_sink
+    from parakh.render.tokens import tokens
+
+    state = tmp_path_factory.mktemp("state")
+    monkeypatch.setenv("PARAKH_STATE_DIR", str(state))
+    config.get_settings.cache_clear()
+    reset_sink()
+    tokens.cache_clear()
+    yield state
+    reset_sink()
+
+
+@pytest.fixture(autouse=True)
 def reset_logging():
     """configure_logging() binds to the current stderr; undo it so later tests log cleanly."""
     yield

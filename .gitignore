@@ -26,3 +26,11 @@ data/*
 .idea/
 .DS_Store
 Thumbs.db
+
+# CI and tooling output
+junit.xml
+audit-reqs.txt
+
+# Supabase CLI local state
+supabase/.branches/
+supabase/.temp/
