@@ -2,6 +2,10 @@
 begin;
 select plan(12);
 
+-- Supabase's postgres role isn't a superuser: let it assume the test roles inside this
+-- transaction only (rolled back at the end).
+grant parakh_mcp, parakh_staging to postgres;
+
 insert into public.runs (run_id, mode, env, asof, trigger_type, triggered_by, started_at, status,
   code_version, config_hash, framework_version)
 values ('01K0000000000000000000TEST', 'dummy', 'test', '2026-09-30', 'manual', 'ci:github', now(),
