@@ -1,0 +1,9 @@
+# The model wraps its JSON in prose and a code fence; the agent must still parse it.
+id: summarize_fenced
+input: |
+  Short note about a product launch next month.
+llm_reply: "Here you go:\n```json\n{\"title\": \"Launch next month\", \"bullets\": [\"Product launches next month\"], \"confidence\": 0.7}\n```"
+expected_fields:
+  title: Launch next month
+  bullets: [Product launches next month]
+  confidence: 0.7

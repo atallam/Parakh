@@ -1,0 +1,8 @@
+# Live prompt versions (C2.4). A prompt change is a deployment:
+#   1. add prompts/<name>/v<N+1>.yaml   2. run the golden tests   3. point `active` at it
+# Roll back by pointing `active` at an earlier version.
+prompts:
+  summarize:
+    active: v1
+    history:
+      - {version: v1, date: 2026-09-28, note: first version}

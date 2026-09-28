@@ -1,0 +1,59 @@
+[project]
+name = "parakh"
+version = "0.1.0"
+description = "Personal NSE stock-analysis framework with value and momentum lenses and Telegram alerts"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.40",
+    "boto3>=1.34",
+    "jinja2>=3.1",
+    "langfuse>=2.50",
+    "pydantic-settings>=2.4",
+    "pydantic>=2.8",
+    "python-dotenv>=1.0",
+    "pyyaml>=6.0",
+    "streamlit>=1.37",
+    "structlog>=24.1",
+    "supabase>=2.0",
+    "tenacity>=9.0",
+]
+
+[project.scripts]
+parakh = "parakh.cli:main"
+
+[dependency-groups]
+dev = [
+    "pre-commit>=3.8",
+    "pyright>=1.1.380",
+    "pytest>=8.3",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/parakh"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]  # the formatter wraps code; long strings and URLs are fine
+
+[tool.pyright]
+include = ["src", "tests", "app"]
+typeCheckingMode = "basic"
+pythonVersion = "3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-markers"
+markers = [
+    "load: concurrent-execution tests (C5.5)",
+]

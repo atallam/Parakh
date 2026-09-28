@@ -1,0 +1,10 @@
+{
+  "generator": "aiscaffold",
+  "generator_version": "1.0.0",
+  "config_version": 1,
+  "project": "parakh",
+  "package": "parakh",
+  "tier": "production",
+  "profile": "parakh",
+  "created": "2026-09-28"
+}

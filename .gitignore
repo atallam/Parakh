@@ -1,0 +1,28 @@
+# secrets: never commit (C6.1)
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+dist/
+build/
+*.egg-info/
+
+# local state and data
+state/*
+!state/.gitkeep
+data/*
+!data/.gitkeep
+*.log
+
+# editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

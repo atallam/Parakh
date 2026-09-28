@@ -1,0 +1,9 @@
+# Golden case (C5.2): fixed input + fixed model reply -> exact structured output.
+id: summarize_plain
+input: |
+  The quarterly report shows revenue up 12 percent and margins stable.
+llm_reply: '{"title": "Revenue up 12%", "bullets": ["Revenue grew 12%", "Margins stable"], "confidence": 0.9}'
+expected_fields:
+  title: Revenue up 12%
+  bullets: [Revenue grew 12%, Margins stable]
+  confidence: 0.9

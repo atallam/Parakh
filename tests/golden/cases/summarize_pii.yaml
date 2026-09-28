@@ -1,0 +1,10 @@
+# PII in the input must be redacted before the prompt leaves the process (C6.3).
+id: summarize_pii
+input: |
+  Contact ravi.k@example.com or 9876543210 about PAN ABCDE1234F.
+llm_reply: '{"title": "Contact request", "bullets": ["Someone asked to be contacted"], "confidence": 0.6}'
+expected_fields:
+  title: Contact request
+  bullets: [Someone asked to be contacted]
+  confidence: 0.6
+prompt_must_not_contain: [ravi.k@example.com, "9876543210", ABCDE1234F]
