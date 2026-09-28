@@ -1,10 +1,7 @@
 -- pgTAP checks for the Phase 0 schema (plan 14 L4). Run with `supabase test db`.
+-- Role checks use has_table_privilege, so the test never needs to switch roles.
 begin;
-select plan(12);
-
--- Supabase's postgres role isn't a superuser: let it assume the test roles inside this
--- transaction only (rolled back at the end).
-grant parakh_mcp, parakh_staging to postgres;
+select plan(16);
 
 insert into public.runs (run_id, mode, env, asof, trigger_type, triggered_by, started_at, status,
   code_version, config_hash, framework_version)
@@ -26,26 +23,26 @@ select is((select count(*)::int from public.securities), 7, 'seven pilot securit
 select is((select symbol from public.securities where isin = 'INE101A01026'), 'M&M', 'M&M keyed by ISIN');
 
 -- AC-F24.5: parakh_mcp reads and proposes, never updates or deletes
-set local role parakh_mcp;
-select lives_ok($$select * from public.runs$$, 'parakh_mcp can read runs');
-select lives_ok($$insert into public.proposals (proposal_id, kind, payload, reason)
-  values ('p1', 'journal', '{}', 'test')$$, 'parakh_mcp can insert a pending proposal');
-select throws_ok($$update public.proposals set status = 'approved'$$, '42501', null,
-  'parakh_mcp cannot approve (UPDATE)');
-select throws_ok($$insert into public.runs (run_id, mode, env, asof, trigger_type, triggered_by,
-  started_at, status, code_version, config_hash, framework_version) values
-  ('01K0000000000000000000TST2', 'x', 'test', current_date, 'm', 'x', now(), 'SUCCESS', 'x', 'x', 'x')$$,
-  '42501', null, 'parakh_mcp cannot write runs');
-reset role;
+select ok(has_table_privilege('parakh_mcp', 'public.runs', 'SELECT'), 'parakh_mcp can read runs');
+select ok(has_table_privilege('parakh_mcp', 'public.proposals', 'INSERT'), 'parakh_mcp can insert proposals');
+select ok(not has_table_privilege('parakh_mcp', 'public.proposals', 'UPDATE'), 'parakh_mcp cannot approve (UPDATE)');
+select ok(not has_table_privilege('parakh_mcp', 'public.runs', 'INSERT'), 'parakh_mcp cannot write runs');
+select is(
+  (select count(*)::int from information_schema.role_table_grants
+    where grantee = 'parakh_mcp' and privilege_type in ('UPDATE', 'DELETE', 'TRUNCATE')),
+  0, 'parakh_mcp holds no UPDATE, DELETE or TRUNCATE grant anywhere');
 
--- anon sees nothing; the staging role can't write public (D17)
-set local role anon;
-select throws_ok($$select * from public.securities$$, '42501', null, 'anon cannot read securities');
-reset role;
-set local role parakh_staging;
-select throws_ok($$insert into public.securities (isin, symbol, name) values ('INE000000000', 'X', 'X')$$,
-  '42501', null, 'staging role cannot write public');
-reset role;
+-- RLS is on everywhere; anon and authenticated see nothing
+select is(
+  (select count(*)::int from pg_class c join pg_namespace n on n.oid = c.relnamespace
+    where n.nspname = 'public' and c.relkind = 'r' and not c.relrowsecurity),
+  0, 'row-level security enabled on every public table');
+select ok(not has_table_privilege('anon', 'public.securities', 'SELECT'), 'anon cannot read securities');
+select ok(not has_table_privilege('authenticated', 'public.audit_events', 'SELECT'), 'authenticated cannot read audit');
+
+-- staging role (D17): its own schema, can't write public
+select ok(has_schema_privilege('parakh_staging', 'staging', 'CREATE'), 'staging role owns its schema');
+select ok(not has_table_privilege('parakh_staging', 'public.securities', 'INSERT'), 'staging role cannot write public');
 
 select * from finish();
 rollback;
