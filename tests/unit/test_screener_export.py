@@ -82,7 +82,7 @@ def _young_company(data: bytes, blank: int = 3) -> bytes:
     wb = openpyxl.load_workbook(io.BytesIO(data))
     ws = wb["Data Sheet"]
     in_meta = False
-    for row in ws.iter_rows(min_row=5):
+    for r, row in enumerate(ws.iter_rows(min_row=5), start=5):
         label = str(row[0].value or "").strip()
         if label == "META":
             in_meta = True
@@ -90,7 +90,7 @@ def _young_company(data: bytes, blank: int = 3) -> bytes:
             in_meta = False
         if not in_meta:
             for col in range(2, 2 + blank):
-                ws.cell(row=row[0].row, column=col, value=None)
+                ws.cell(row=r, column=col, value=None)
     buf = io.BytesIO()
     wb.save(buf)
     return buf.getvalue()
@@ -110,10 +110,10 @@ def test_pre_listing_share_counts_are_flagged() -> None:
     """T-ADP-16: Screener leaves pre-IPO years at the pre-bonus count."""
     wb = openpyxl.load_workbook(io.BytesIO(DATA))
     ws = wb["Data Sheet"]
-    for row in ws.iter_rows(min_row=5):
+    for r, row in enumerate(ws.iter_rows(min_row=5), start=5):
         if row[0].value == "Adjusted Equity Shares in Cr":
             for col in range(2, 5):
-                ws.cell(row=row[0].row, column=col, value=0.01)
+                ws.cell(row=r, column=col, value=0.01)
     buf = io.BytesIO()
     wb.save(buf)
     issues = parse_export(buf.getvalue()).issues
