@@ -90,8 +90,32 @@ async def one_turn(rec: Recorder) -> None:
     )
 
 
+def spike_config() -> None:
+    """A temporary config where the spike agent may call the one tool.
+
+    The real agents.yaml keeps every allow-list empty until Phase 3, and the server enforces
+    it (AG-05): the first run on 29 Sep proved that by denying the call.
+    """
+    import shutil
+    import tempfile
+    from pathlib import Path
+
+    import yaml
+
+    from parakh.config import REPO_ROOT, get_settings
+
+    tmp = Path(tempfile.mkdtemp(prefix="parakh-s8-config-"))
+    shutil.copytree(REPO_ROOT / "config", tmp, dirs_exist_ok=True)
+    agents = yaml.safe_load((tmp / "agents.yaml").read_text(encoding="utf-8"))
+    agents["agents"]["AGENT.monthly_reviewer"]["allowed_tools"] = [TOOL]
+    (tmp / "agents.yaml").write_text(yaml.safe_dump(agents, sort_keys=False), encoding="utf-8")
+    os.environ["PARAKH_CONFIG_DIR"] = str(tmp)
+    get_settings.cache_clear()
+
+
 def main() -> None:
     rec = Recorder("s8")
+    spike_config()
     try:
         import importlib.metadata as md
 
