@@ -6,7 +6,9 @@
 
 - **Install:** `claude-agent-sdk` 0.2.161 installs on ubuntu-latest (Python 3.12.3) with its bundled CLI (optional extra: `uv sync --extra agents`).
 - **Wiring:** the SDK spawns `parakh-mcp` over stdio with the agent's identity; status `connected` within about a second; the agent sees exactly one tool, `audit_get_run`, annotated read-only; no other MCP servers on the runner.
-- **One model turn: pending an API key.** `ANTHROPIC_API_KEY` is neither in `.env` nor a repo secret. The workflow runs the turn automatically once the secret exists.
+- **One model turn: done (29 Sep 2026, runs 36528707291 and 36528823503).**
+  - First run: the model called `mcp__parakh__audit_get_run`, and the **server refused it**, because `AGENT.monthly_reviewer` has an empty allow-list in `config/agents.yaml` until Phase 3. The SDK side had allowed the tool; the server's own check (AG-05) still stopped it. The agent reported the failure honestly instead of guessing.
+  - Second run, with a spike-only config allowing that one tool: 3 turns, 26 input + 286 output tokens (plus cached context), tools used `audit_get_run` then the SDK's `StructuredOutput`; the answer validated against the output model and matched the run exactly (status SUCCESS_AUDIT_PENDING, 3 named steps, 2 pending audit events).
 
 ## SDK facts that shape the runner
 
@@ -35,6 +37,6 @@ Add to `%APPDATA%\Claude\claude_desktop_config.json` (then restart Claude Deskto
 }
 ```
 
-## To close
+## Status
 
-Add `ANTHROPIC_API_KEY` as a GitHub repo secret (and to `.env` for local agent runs), then re-run the `spikes` workflow.
+Closed. Backlog BL-03 done (`ANTHROPIC_API_KEY` in `.env` and as a repo secret).

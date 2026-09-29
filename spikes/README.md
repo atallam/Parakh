@@ -14,3 +14,5 @@ results to `spikes/out/<spike>/` (git-ignored; CI uploads it as an artifact) and
 | ⑥ Telegram | `s6_telegram.py` | Your PC |
 | ⑦ CAS parse | `s7_cas.py` | Your PC only (the real CAS never leaves it) |
 | ⑧ Claude Agent SDK | `s8_agent_sdk.py` | Runner |
+
+**Status (29 Sep 2026):** all eight spikes closed.
