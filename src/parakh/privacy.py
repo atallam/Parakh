@@ -1,7 +1,10 @@
 """PII controls before text reaches a cloud model (C6.3).
 
-Patterns cover e-mail, Indian mobile numbers, PAN, Aadhaar and card numbers. Extend
-PII_PATTERNS for your domain and add a test for each new pattern.
+Patterns cover e-mail, Indian mobile numbers, PAN, Aadhaar, card numbers and the demat
+identifiers a CAS carries (NSDL DP ID + client ID, CDSL 16-digit BO ID; plan 13 P6). Order
+matters: the demat patterns run before the generic card pattern so they keep their label.
+ISINs (INE…) are not PII and are never matched. Extend PII_PATTERNS for your domain and add a
+test for each new pattern.
 """
 
 from __future__ import annotations
@@ -9,6 +12,8 @@ from __future__ import annotations
 import re
 
 PII_PATTERNS: dict[str, re.Pattern[str]] = {
+    "demat_nsdl": re.compile(r"\bIN\d{6}(?:[\s-]?\d{8})?\b"),  # DP ID, optionally + client ID
+    "demat_cdsl": re.compile(r"\b\d{16}\b"),  # CDSL beneficiary-owner ID
     "email": re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+"),
     "pan": re.compile(r"\b[A-Z]{5}\d{4}[A-Z]\b"),
     "aadhaar": re.compile(r"\b\d{4}\s?\d{4}\s?\d{4}\b"),

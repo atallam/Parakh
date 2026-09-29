@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "parakh": {
+      "command": "uv",
+      "args": ["run", "--quiet", "parakh", "mcp", "serve"],
+      "env": { "PARAKH_MCP_CLIENT": "claude:code" }
+    }
+  }
+}

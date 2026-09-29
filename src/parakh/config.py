@@ -61,11 +61,27 @@ class Settings(BaseSettings):
     # Production secrets (C6.4)
     aws_region: str = "ap-south-1"
 
+    # Paths (plan 04 §3.3). Defaults sit inside the repo; both are git-ignored or tracked as noted.
+    # config/*.yaml (tracked); default <repo>/config
+    parakh_config_dir: Path | None = None
+    # audit outbox, run manifests, caches (git-ignored); default <repo>/state
+    parakh_state_dir: Path | None = None
+
     # Project-specific
     cas_password: SecretStr | None = None
     telegram_bot_token: SecretStr | None = None
     telegram_chat_id: SecretStr | None = None
     supabase_db_password: SecretStr | None = None
+
+
+def config_dir() -> Path:
+    """Where config/*.yaml lives (PARAKH_CONFIG_DIR overrides)."""
+    return get_settings().parakh_config_dir or REPO_ROOT / "config"
+
+
+def state_dir() -> Path:
+    """Where local state lives: audit outbox, run manifests (PARAKH_STATE_DIR overrides)."""
+    return get_settings().parakh_state_dir or REPO_ROOT / "state"
 
 
 @lru_cache(maxsize=1)

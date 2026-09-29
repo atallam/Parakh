@@ -1,0 +1,18 @@
+# Acceptance criteria that must have at least one test now (plan 14 §5).
+# An AC joins this list in the phase its feature is due (plan 09). Phase 0:
+AC-F18.2   # lens contract tests run for every registered lens
+AC-F18.4   # catalogues regenerated in CI and fail if stale
+AC-F21.1   # exactly one START and one terminal event per run
+AC-F21.4   # tampering detected by the chain check (local outbox part)
+AC-F21.11  # log redaction: secrets, account IDs, holdings quantities
+AC-F21.14  # doc lint
+AC-F21.15  # traceability generator
+AC-F22.1   # no hex colour outside ui_tokens.yaml
+AC-F22.3   # same status → same token on every surface (token lookup part)
+AC-F22.5   # shared ₹ and number formatting, lakh/crore boundaries
+AC-F24.1   # every tool has an ID, tier, annotations, Pydantic models; TOOLS.md generated
+AC-F24.3   # no approve/reject/edit/delete/publish/config tools
+AC-F24.5   # one AUD.MCP.TOOL_CALL per call (database-role part is Phase 4)
+AC-F24.6   # no listening socket; starts over stdio
+AC-F25.1   # agent runtime contract over config/agents.yaml
+AC-F25.6   # agents run in CI only through FakeRunner with sockets blocked

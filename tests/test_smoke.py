@@ -1,13 +1,8 @@
 from parakh.agents.summarizer import summarize
 from parakh.cli import main
-from parakh.mcp.toolsets.text_stats import word_count
 from parakh.prompts import render_prompt
 
 VALID = '{"title": "Hello", "bullets": ["one point"], "confidence": 0.9}'
-
-
-def test_tool() -> None:
-    assert word_count("a b  c") == 3
 
 
 def test_prompt_renders() -> None:

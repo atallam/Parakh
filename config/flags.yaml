@@ -1,0 +1,26 @@
+# Feature flags (plan 09 §1). Every risky capability can be switched off without a code change.
+alerts:
+  # why: shadow mode until the UAT-2 go-live gate (plan 09 Phase 3).
+  dry_run: true
+watchlist:
+  # why: the watchlist engine lands in Phase 4 (F14).
+  enabled: false
+qualitative:
+  # why: the qualitative agent lands in Phase 4 (F06); quantitative only until then.
+  enabled: false
+llm:
+  # why: no LLM calls before Phase 3; set from the first measured monthly cost (PRD §5).
+  budget_tokens: 0
+ui:
+  # why: Streamlit pages land in Phase 4 (ADR-006).
+  enabled: false
+mcp:
+  # Toolsets exposed by parakh-mcp (plan 15 §4.2). Only R-tier tools before M1.
+  toolsets:
+    audit: true
+    reports: false
+    analytics: false
+    data: false
+    portfolio: false
+    notify: false
+    jobs: false

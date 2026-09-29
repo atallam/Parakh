@@ -1,5 +1,6 @@
 name: ci
 
+# Required checks on main (plan 14 §10: PR checks, L0–L4). Set them in branch protection.
 on:
   pull_request:
   push:
@@ -8,8 +9,13 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  test:
+  static:
+    name: L0 static
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,10 +26,63 @@ jobs:
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run pyright
-      - run: uv run pytest
+      - name: token and layering lint (AC-F22.1, plan 15 §4.1)
+        run: uv run python tools/lint_rules.py
+      - name: doc lint (AC-F21.14)
+        run: uv run python tools/doclint.py
+      - name: generated catalogues fresh (AC-F18.4, AC-F24.1)
+        run: uv run parakh catalogue --check
+      - name: seed matches config/universe.yaml
+        run: uv run python tools/make_seed.py --check
+      - name: config validates
+        run: uv run parakh config validate
+
+  test:
+    name: L1–L5 tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - run: uv sync --locked
+      - run: uv run pytest --junitxml=junit.xml
+      - name: traceability (AC-F21.15)
+        run: uv run python tools/traceability.py --junit junit.xml --check
+      - name: exit-gate smoke (dummy run emits START/END and a manifest)
+        env:
+          PARAKH_STATE_DIR: ${{ runner.temp }}/parakh-state
+        run: |
+          uv run python run.py --help
+          uv run parakh run --mode dummy
+          uv run parakh audit verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: traceability
+          path: docs/TRACEABILITY.md
+
+  db:
+    name: L4 database (Supabase local stack)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: start Postgres with migrations and seed
+        run: supabase db start
+      - name: re-apply from scratch (migrations + seed are repeatable)
+        run: supabase db reset
+      - name: pgTAP checks (append-only audit, RLS, roles)
+        run: supabase test db
 
   security:
+    name: L0 security (P10)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read  # gitleaks-action lists the PR's commits
     steps:
       - uses: actions/checkout@v4
         with:

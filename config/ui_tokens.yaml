@@ -1,0 +1,73 @@
+# The single source of colours, icons and words for every surface (plan 12 §3; AC-F22.1).
+# No hex colour may appear anywhere else in the repo (token lint).
+colors:
+  positive: "#16A34A"
+  positive_strong: "#15803D"
+  neutral: "#64748B"
+  caution: "#D97706"
+  caution_strong: "#B45309"
+  negative: "#DC2626"
+  negative_strong: "#991B1B"
+  navy: "#1E3A5F"
+  accent: "#2563EB"
+  bg_base: "#F8FAFC"
+  bg_card: "#FFFFFF"
+  bg_muted: "#F1F5F9"
+  text: "#0F172A"
+  text_muted: "#64748B"
+  border: "#CBD5E1"
+# Dark-mode equivalents (plan 12 §3.1). Status colours are lifted a step for contrast on dark.
+colors_dark:
+  positive: "#22C55E"
+  positive_strong: "#16A34A"
+  neutral: "#94A3B8"
+  caution: "#F59E0B"
+  caution_strong: "#D97706"
+  negative: "#EF4444"
+  negative_strong: "#DC2626"
+  navy: "#93C5FD"
+  accent: "#60A5FA"
+  bg_base: "#0B1220"
+  bg_card: "#111827"
+  bg_muted: "#1F2937"
+  text: "#E5E7EB"
+  text_muted: "#94A3B8"
+  border: "#334155"
+fonts:
+  ui: DM Sans
+  numbers: DM Mono
+# Status vocabulary (plan 12 §3.2): every status is colour + icon + word (AC-F22.2).
+statuses:
+  verdict:
+    STRONG_BUY: {token: positive_strong, icon: "🟢 ▲▲", word: STRONG BUY}
+    BUY: {token: positive, icon: "🟢 ▲", word: BUY}
+    ACCUMULATE: {token: positive, icon: "🟢 △", word: ACCUMULATE, outline: true}
+    HOLD: {token: neutral, icon: "⚪ ●", word: HOLD}
+    WATCH: {token: caution, icon: "🟡 ◐", word: WATCH}
+    MOMENTUM_ONLY: {token: caution, icon: "🟡 ⚡", word: MOMENTUM ONLY}
+    REDUCE: {token: caution_strong, icon: "🟠 ▼", word: REDUCE}
+    SELL: {token: negative, icon: "🔴 ▼▼", word: SELL}
+    AVOID: {token: negative_strong, icon: "🔴 ⛔", word: AVOID}
+  position:
+    ADD: {token: positive, icon: "🟢", word: ADD}
+    HOLD: {token: neutral, icon: "⚪", word: HOLD}
+    TRIM: {token: caution, icon: "🟡", word: TRIM}
+    EXIT: {token: negative, icon: "🔴", word: EXIT}
+  thesis:
+    INTACT: {token: positive, icon: "🟢", word: INTACT}
+    WATCH: {token: caution, icon: "🟡", word: WATCH}
+    BROKEN: {token: negative, icon: "🔴", word: BROKEN}
+    NOT_SET: {token: neutral, icon: "⚪", word: NOT SET}
+  concall:
+    CONFIRMS: {token: positive, icon: "🟢", word: CONFIRMS}
+    NEUTRAL: {token: neutral, icon: "⚪", word: NEUTRAL}
+    CHALLENGES: {token: caution, icon: "🟡", word: CHALLENGES}
+    BREAKS: {token: negative, icon: "🔴", word: BREAKS}
+  check:
+    CLEAN: {token: positive, icon: "✅", word: CLEAN}
+    FLAGGED: {token: caution, icon: "⚠️", word: FLAGGED}
+    UNKNOWN: {token: neutral, icon: "❔", word: UNKNOWN}
+  severity:
+    HIGH: {token: negative, icon: "🔴", word: High}
+    MEDIUM: {token: caution, icon: "🟡", word: Medium}
+    LOW: {token: neutral, icon: "⚪", word: Low}

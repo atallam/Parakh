@@ -1,0 +1,57 @@
+# Stock universe (plan 05 §1). Everything is keyed on ISIN, never the ticker (plan 04 §4 #1).
+# why mode=pilot: plan 09 §1 rollout step 1 (7 stocks) until M2; then cap, then all.
+mode: pilot
+# why: plan 13 D9, small caps are the Nifty Smallcap 250 only.
+small_cap_index: NIFTY SMALLCAP 250
+
+# Pilot (plan 13 D3). Cap buckets from the AMFI July 2026 list; ATHERENERG and SHADOWFAX are
+# placed by market cap and confirmed from the AMFI file in Phase 1. Profiles per D24 (plan 01 §3).
+# Golden test stocks per D18: the only pilots with 10+ years of listed history.
+# ISINs checked against NSE quote pages on 29 Sep 2026; `parakh config validate` checks the
+# ISO 6166 check digit. listed_on for the young listings is filled in Phase 1 (D24).
+pilot:
+  - symbol: INDIGO
+    isin: INE646L01027
+    name: InterGlobe Aviation Ltd
+    cap: large
+    cap_source: AMFI Jul 2026
+    profile: airline_lease_heavy
+    golden: true
+  - symbol: M&M
+    isin: INE101A01026
+    name: Mahindra & Mahindra Ltd
+    cap: large
+    cap_source: AMFI Jul 2026
+    profile: conglomerate_sotp
+    golden: true
+  - symbol: HDFCBANK
+    isin: INE040A01034
+    name: HDFC Bank Ltd
+    cap: large
+    cap_source: AMFI Jul 2026
+    profile: bank
+    golden: true
+  - symbol: GROWW
+    isin: INE0HOQ01053
+    name: Billionbrains Garage Ventures Ltd
+    cap: large
+    cap_source: AMFI Jul 2026
+    profile: capital_market_intermediary
+  - symbol: MAZDOCK
+    isin: INE249Z01020
+    name: Mazagon Dock Shipbuilders Ltd
+    cap: mid
+    cap_source: AMFI Jul 2026
+    profile: order_book
+  - symbol: ATHERENERG
+    isin: INE0LEZ01016
+    name: Ather Energy Ltd
+    cap: mid
+    cap_source: market cap (provisional; confirm from AMFI in Phase 1)
+    profile: new_age
+  - symbol: SHADOWFAX
+    isin: INE12UN01015
+    name: Shadowfax Technologies Ltd
+    cap: small
+    cap_source: market cap (provisional; confirm from AMFI in Phase 1)
+    profile: new_age

@@ -23,12 +23,18 @@ STANDARD_KEYS = ("agent_name", "tool_called", "tokens_in", "tokens_out", "latenc
 
 REDACTED = "[REDACTED]"
 _CREDENTIAL_KEY = re.compile(r"(api_?key|secret|token|password|passwd|authorization|cookie)", re.I)
+# Holdings quantities and rupee amounts never reach logs (AC-F21.11, plan 13 P6).
+_HOLDINGS_KEY = re.compile(
+    r"^(qty|quantity|quantities|shares|units|cost|cost_basis|avg_cost|buy_price|invested"
+    r"|value_inr|amount_inr|pnl_inr|market_value|market_value_inr|pan|dp_id|client_id|bo_id)$",
+    re.I,
+)
 
 
 def redact_credentials(_logger: Any, _method: str, event_dict: dict[str, Any]) -> dict[str, Any]:
     """C6.2: any field whose name looks like a credential is replaced, whatever its value."""
     for key in list(event_dict):
-        if key != "event" and _CREDENTIAL_KEY.search(key):
+        if key != "event" and (_CREDENTIAL_KEY.search(key) or _HOLDINGS_KEY.match(key)):
             event_dict[key] = REDACTED
     return event_dict
 
@@ -57,7 +63,12 @@ def scrub_secrets(_logger: Any, _method: str, event_dict: dict[str, Any]) -> dic
         if isinstance(value, str):
             return scrub_text(value)
         if isinstance(value, dict):
-            return {k: clean(v) for k, v in value.items()}
+            return {
+                k: REDACTED
+                if isinstance(k, str) and (_CREDENTIAL_KEY.search(k) or _HOLDINGS_KEY.match(k))
+                else clean(v)
+                for k, v in value.items()
+            }
         if isinstance(value, list | tuple):
             return [clean(v) for v in value]
         return value

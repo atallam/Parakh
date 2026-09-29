@@ -1,0 +1,32 @@
+# Agent roster (plan 15 §5, §6.2). Agents only propose (AG-03); allowed tools are parakh-mcp
+# tools only (AG-01), checked by the config schema and a contract test.
+# why dry_run=true: agent output goes to logs/agents_shadow.md until UAT-2 (plan 09 Phase 3).
+dry_run: true
+defaults:
+  # why: pinned for reproducibility; a model change passes the L7 eval gate (plan 10 §7).
+  model_id: claude-sonnet-5
+  # why: the SCAIX hard loop cap (llm_max_iterations); per-agent overrides below.
+  max_turns: 8
+  # why: provisional per-invocation cap; tuned from the Phase 3 shadow runs.
+  token_budget: 40000
+agents:
+  AGENT.monthly_reviewer:
+    description: Reads what changed after the monthly run and writes the narrative review
+    first_phase: 3
+    allowed_tools: []
+  AGENT.event_triage:
+    description: Triages new corporate events into severity and a queued notification
+    first_phase: 3
+    allowed_tools: []
+  AGENT.qualitative:
+    description: Reads concall transcripts against the thesis; flags only (D13)
+    first_phase: 4
+    allowed_tools: []
+  AGENT.devils_advocate:
+    description: Writes the strongest case against the current verdict
+    first_phase: 4
+    allowed_tools: []
+  AGENT.watchlist_curator:
+    description: Proposes watchlist adds and removals for your approval (plan 06)
+    first_phase: 4
+    allowed_tools: []

@@ -1,0 +1,9 @@
+# Which lenses run, per cap (plan 04 §1.2). Lens logic lands in Phase 2; the registry and the
+# contract tests exist from Phase 0.
+lenses:
+  value:
+    enabled: true
+    caps: [large, mid, small]
+  momentum:
+    enabled: true
+    caps: [large, mid, small]

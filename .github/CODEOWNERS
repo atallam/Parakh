@@ -2,3 +2,7 @@
 *                       @atallam
 /tests/golden/          @atallam
 /src/parakh/prompts/  @atallam
+/tests/fixtures/        @atallam
+/tests/oracles/         @atallam
+/config/                @atallam
+/supabase/migrations/   @atallam
