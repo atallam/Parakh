@@ -27,20 +27,20 @@ def _log_output(monkeypatch: pytest.MonkeyPatch, **fields: object) -> str:
 def test_cas_identifiers_never_reach_logs(monkeypatch: pytest.MonkeyPatch) -> None:
     """T-AUD-10: PAN, e-mail, mobile, DP/client and BO IDs from the synthetic CAS."""
     cas = json.loads(CAS.read_text(encoding="utf-8"))
-    inv = cas["investor_info"]
-    nsdl, _, cdsl = cas["accounts"]
+    inv, pii = cas["investor_info"], cas["_synthetic_pii"]
+    nsdl = cas["accounts"][0]
     text = (
-        f"statement for {inv['pan']} {inv['email']} {inv['mobile']} "
-        f"DP {nsdl['dp_id']} client {nsdl['dp_id']}{nsdl['client_id']} BO {cdsl['bo_id']}"
+        f"statement for {pii['pan']} {inv['email']} {inv['mobile']} "
+        f"DP {nsdl['dp_id']} client {nsdl['dp_id']}{nsdl['client_id']} BO {pii['bo_id']}"
     )
     out = _log_output(monkeypatch, note=text, nested={"line": text})
     for secret in (
-        inv["pan"],
+        pii["pan"],
         inv["email"],
         inv["mobile"],
         nsdl["dp_id"],
         nsdl["client_id"],
-        cdsl["bo_id"],
+        pii["bo_id"],
     ):
         assert secret not in out
 

@@ -18,3 +18,9 @@
 ## Consequences
 - ➕ One store for every surface; RLS protects holdings; free tier fits the scale.
 - ➖ Free projects pause after a week idle (trading-day jobs and the Sunday heartbeat prevent it); no built-in backups on Free, so weekly encrypted `pg_dump` + monthly restore test (P9).
+
+## Spike outcome (29 Sep 2026, Phase 0.5 ⑤)
+
+Proven on the Supabase local stack in CI: the audit outbox syncs (run ends SUCCESS), resends are idempotent, UPDATE is rejected by the trigger, runs and steps upsert, and price Parquet round-trips through a private Storage bucket into DuckDB. Code: `src/parakh/storage/`. See `docs/spikes/S5-supabase-storage.md`.
+
+**Amendment:** the security master gains an `isin_history` table (old ISIN → new ISIN), because a split changes the ISIN (MAZDOCK, spike ④).

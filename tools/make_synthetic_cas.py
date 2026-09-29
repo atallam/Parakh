@@ -5,9 +5,13 @@ Two monthly statements (Aug and Sep 2026) for a fake investor with 3 demat accou
 shaped like the real thing (PAN, DP ID, client ID, CDSL BO ID, mobile, e-mail), so redaction
 tests (AC-F03.7, AC-F21.11) exercise the real patterns.
 
-The JSON follows the holdings shape we expect from casparser. Phase 0.5 spike ⑦ parses your
-real CAS, confirms casparser's field names, and adds a rendered PDF version of these fixtures
-if the parser needs one; regenerate with `uv run python tools/make_synthetic_cas.py`.
+The JSON matches casparser 1.4.1's output shape for an NSDL CAS, as confirmed on your real
+statement in spike ⑦ (29 Sep 2026): string quantities and prices, `statement_period.from_`,
+dates like `01-Aug-2026`, account `type` strings, and `investor_info` without a PAN field (the
+PAN is printed in the PDF text, so it lives under `_synthetic_pii` for the redaction tests).
+A rendered PDF is not generated: casparser needs the depository's exact layout, and the
+Phase 1 importer is tested at the parsed-dict boundary. Regenerate with
+`uv run python tools/make_synthetic_cas.py`.
 """
 
 from __future__ import annotations
@@ -20,16 +24,17 @@ OUT = ROOT / "tests" / "fixtures" / "cas"
 
 INVESTOR = {
     "name": "PARAKH TEST INVESTOR",
-    "pan": "ZZZPT9999Z",
     "email": "parakh.test@example.com",
-    "mobile": "9000000001",
     "address": "Flat 0, Test Towers, Nowhere Road, Hyderabad 500000",
+    "mobile": "9000000001",
 }
+PAN = "ZZZPT9999Z"  # printed in the CAS PDF text; casparser does not return it as a field
 ACCOUNTS = [
-    {"alias": "acct-a", "type": "NSDL", "dp_id": "IN300000", "client_id": "10000001"},
-    {"alias": "acct-b", "type": "NSDL", "dp_id": "IN300001", "client_id": "10000002"},
-    {"alias": "acct-c", "type": "CDSL", "bo_id": "1208160000000001"},
+    {"alias": "acct-a", "type": "NSDL Demat Account", "dp_id": "IN300000", "client_id": "10000001"},
+    {"alias": "acct-b", "type": "NSDL Demat Account", "dp_id": "IN300001", "client_id": "10000002"},
+    {"alias": "acct-c", "type": "CDSL Demat Account", "dp_id": "12081600", "client_id": "00000001"},
 ]
+BO_ID = "1208160000000001"  # CDSL beneficiary-owner ID = DP ID + client ID
 # (isin, name, account alias, Aug qty, Sep qty). Pilot ISINs first, then five others.
 HOLDINGS = [
     ("INE646L01027", "INTERGLOBE AVIATION LIMITED", "acct-a", 40, 40),
@@ -45,7 +50,11 @@ HOLDINGS = [
     ("INE154A01025", "ITC LIMITED", "acct-c", 400, 400),
     ("INE021A01026", "ASIAN PAINTS LIMITED", "acct-b", 12, 12),
 ]
-PERIODS = {"2026-08": ("2026-08-01", "2026-08-31", 3), "2026-09": ("2026-09-01", "2026-09-30", 4)}
+PERIODS = {
+    "2026-08": ("01-Aug-2026", "31-Aug-2026", 3),
+    "2026-09": ("01-Sep-2026", "30-Sep-2026", 4),
+}
+PRICE = 1000.0  # why: a flat illustrative price; values are qty × price
 
 
 def statement(month: str) -> dict[str, object]:
@@ -56,20 +65,40 @@ def statement(month: str) -> dict[str, object]:
         for isin, name, alias, qty_aug, qty_sep in HOLDINGS:
             qty = qty_aug if qty_index == 3 else qty_sep
             if alias == acct["alias"] and qty > 0:
-                equities.append({"isin": isin, "name": name, "num_shares": qty})
+                equities.append(
+                    {
+                        "name": name,
+                        "isin": isin,
+                        "num_shares": f"{qty:.3f}",
+                        "price": f"{PRICE:.2f}",
+                        "value": f"{qty * PRICE:.2f}",
+                        "symbol": None,
+                        "exchange": None,
+                    }
+                )
         accounts.append(
             {
-                **{k: v for k, v in acct.items() if k != "alias"},
-                "name": f"{acct['type']} account",
+                "name": acct["type"],
+                "type": acct["type"],
+                "dp_id": acct["dp_id"],
+                "client_id": acct["client_id"],
+                "folios": 0,
+                "balance": f"{sum(float(e['value']) for e in equities):.2f}",
+                "owners": [],
                 "equities": equities,
+                "mutual_funds": [],
+                "bonds": [],
             }
         )
     return {
         "_synthetic": "Fake data for tests (plan 14 §4.3). Not a real statement.",
-        "file_type": "NSDL",
-        "statement_period": {"from": start, "to": end},
-        "investor_info": INVESTOR,
+        "_synthetic_pii": {"pan": PAN, "bo_id": BO_ID},
         "accounts": accounts,
+        "statement_period": {"from_": start, "to": end},
+        "investor_info": INVESTOR,
+        "file_type": "NSDL",
+        "nps": None,
+        "parse_warnings": [],
     }
 
 

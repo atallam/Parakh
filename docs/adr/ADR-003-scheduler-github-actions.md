@@ -18,3 +18,7 @@
 ## Consequences
 - ➕ Hands-off, logged, retried, versioned outputs.
 - ➖ Actions minutes are tracked in the Sunday heartbeat to stay within the free allowance; secrets come from AWS SSM via OIDC (ADR-009).
+
+## Spike outcome (29 Sep 2026, Phase 0.5 ①)
+
+A GitHub-hosted runner reached NSE's archives (UDiFF bhavcopy, equity list), NSE's announcements and corporate-actions APIs, niftyindices, the BSE bhavcopy, AMFI and Yahoo. Only NSE's quote API and BSE's announcements API refused (403), and neither is needed. **No self-hosted runner is needed**; the fallback stays documented. See `docs/spikes/S1-exchange-access.md`.

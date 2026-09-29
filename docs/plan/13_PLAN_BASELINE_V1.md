@@ -1,6 +1,6 @@
 ---
 title: Parakh — Plan Baseline v1.0 (locked)
-version: 1.18 (Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
+version: 1.19 (Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
 date: 2026-09-24
 owner: Avinash Tallam
 status: LOCKED. This is the plan of record; changes follow §6
@@ -212,13 +212,33 @@ Built on branch `phase-0` in `atallam/Parakh`, **pull request #1**. All four CI 
 2. Branch protection on `main`: require a PR, code-owner review, and the four checks *L0 static*, *L1–L5 tests*, *L4 database (Supabase local stack)*, *L0 security (P10)* (P10).
 3. BL-01 (AWS account) when convenient; it isn't needed before Phase 3.
 
+### 8.0b Phase 0.5 status *(29 Sep 2026)*
+
+All eight spikes ran, on branch `phase-0.5` (pull request #2, stacked on #1). Outcomes are in `docs/spikes/` (one note each). Exit gate: every spike has a written outcome, recorded fixtures exist for every source tested, and **no blocker remains for Phase 1**.
+
+| Spike | Outcome |
+|---|---|
+| ① NSE/BSE from a GitHub runner | ✅ Archives and announcement/corporate-action APIs work; **no self-hosted runner needed** (ADR-003 stands) |
+| ② Concall transcripts (D7) | ✅ 7/7 pilots via Screener → BSE PDF; MAZDOCK's latest calls have no filed transcript, so it's flagged stale |
+| ③ Screener export + XBRL | ✅ Export parser kept; XBRL revenue ties to Screener exactly. ⚠️ NSE's XBRL feed stops at Dec 2024 (SEBI integrated filing) → Phase 1 task |
+| ④ Corporate actions | ✅ Adjustment and gap checks work. ⚠️ **A split changes the ISIN** (MAZDOCK) → `isin_history` table (plan 05 v0.13, ADR-004 amended) |
+| ⑤ Supabase + Parquet + DuckDB | ✅ All 5 probes on the Supabase stack; the audit outbox now syncs |
+| ⑥ Telegram adapter | ✅ Built and tested offline; ⏳ live send needs `TELEGRAM_CHAT_ID` back in `.env` (BL-02) |
+| ⑦ CAS parse | ✅ casparser 1.4.1 on your real CAS, locally; synthetic CAS now matches its shape |
+| ⑧ Claude Agent SDK | ✅ Installs and connects to `parakh-mcp` on the runner; `ClaudeSDKRunner` built; ⏳ one model turn needs `ANTHROPIC_API_KEY` (BL-03) |
+
+**Carried into Phase 1 (within existing tasks, no new scope):** ISIN history in the security master; an adapter for SEBI integrated-filing results; a Screener ↔ XBRL line-item map before reconciling profits; `casparser` as a dependency; market cap from adjusted shares.
+
 ### 8.1 Prep backlog
 
 Setup tasks that are pending but don't block the current phase. Feature ideas still go to F20+ (D25).
 
 | ID | Item | Needed by | Status |
 |---|---|---|---|
-| BL-01 | AWS account for SSM Parameter Store via GitHub OIDC (P1, ADR-009); fallback: GitHub environment secrets with required reviewers | Phase 3, before M2 (2 Dec 2026) | Open; reminder 29 Sep; target end of Phase 0 (4 Oct) |
+| BL-01 | AWS account for SSM Parameter Store via GitHub OIDC (P1, ADR-009); fallback: GitHub environment secrets with required reviewers | Phase 3, before M2 (2 Dec 2026) | Open; reminder sent 29 Sep; target end of Phase 0 (4 Oct) |
+| BL-02 | `TELEGRAM_CHAT_ID` is missing from `.env` (removed in an edit on 29 Sep); re-add it or message the bot so Claude can read it | Spike ⑥ live send; Phase 3 | Open |
+| BL-03 | `ANTHROPIC_API_KEY` as a GitHub repo secret (and in `.env`) for agent runs | Spike ⑧ model turn; Phase 3 agents | Open |
+| BL-04 | `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` for the `parakh` project in `.env` | Phase 1 (first writes to Supabase) | Open |
 
 ---
 
@@ -226,6 +246,7 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 
 | Version | Date | Change |
 |---|---|---|
+| 1.19 | 2026-09-29 | **Phase 0.5 spikes done** (§8.0b, `docs/spikes/`): no self-hosted runner needed; `isin_history` added (plan 05 v0.13); NSE XBRL feed ends Dec 2024; backlog BL-02…BL-04 for keys. Versions: 05 0.13, 13 1.19 |
 | 1.18 | 2026-09-29 | **Phase 0 built** (§8.0): PR #1 with CI green, 34/34 checklist. `docs/plan/` in the repo becomes the canonical copy. Version: 13 1.18 |
 | 1.17 | 2026-09-28 | **D10 amended:** the repo lives at `Stock Analysis\parakh` in OneDrive, venv outside OneDrive. **Phase 0 scaffold done:** Production tier, 80 files, 34/34 checklist; ruff, pyright and 46 tests green; `parakh --help` and `parakh doctor` work; the `.env` is found one folder up. Versions: 09 1.11, 13 1.17 |
 | 1.16 | 2026-09-28 | Phase 0 started. Week-1 item 6 (AWS account) moved to the new §8.1 prep backlog as **BL-01**; it doesn't block Phase 0–2 because SSM/OIDC is a Phase 3 item. Version: 13 1.16 |

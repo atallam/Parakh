@@ -17,3 +17,7 @@
 - ➕ Native MCP, hooks, cost reporting; least code.
 - ➖ Claude-only; a young API to pin in `uv.lock`.
 - Revisit when a non-Claude model is needed, the SDK can't run on the scheduled runner, or an SDK change breaks L5/L7 twice in a quarter.
+
+## Spike outcome (29 Sep 2026, Phase 0.5 ⑧)
+
+`claude-agent-sdk` 0.2.161 installs on a GitHub-hosted runner with its bundled CLI and connects to `parakh-mcp` over stdio; the agent sees only its allow-listed tool. `ClaudeSDKRunner` applies plan 15 §6.2 (`tools=[]`, `strict_mcp_config`, `setting_sources=[]`, default permission mode, JSON-schema output). The SDK has no hard token stop, so an overspent run ends "pending". The first real model turn waits for `ANTHROPIC_API_KEY`. See `docs/spikes/S8-agent-sdk.md`.

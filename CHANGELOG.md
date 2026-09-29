@@ -2,7 +2,23 @@
 
 All notable changes. Framework and lens versions follow SemVer; tool schemas are versioned per toolset (plan 15 §4.4).
 
-## [Unreleased] – Phase 0 (skeleton), 2026-09-29
+## [Unreleased] – Phase 0.5 (infrastructure spikes), 2026-09-29
+
+### Added
+- Spike scripts (`spikes/`), the `spikes` workflow and outcome notes (`docs/spikes/S1…S8`).
+- `adapters/concalls.py`: Screener Concalls → BSE-filed transcript provider, ported from Drishti (extractor, validator with reasons, Q&A-preserving truncation, staleness flag).
+- `adapters/screener_export.py`: Data Sheet v2.1 parser with data-quality checks.
+- `adapters/corporate_actions.py`: split/bonus back-adjustment and unexplained-gap detection.
+- `storage/supabase_repo.py` (runs, steps, append-safe audit inserts, `SupabaseAuditSyncer`) and `storage/prices.py` (Parquet per ISIN/year in Storage or a local folder, DuckDB queries).
+- `notify/telegram.py`: `Notifier` interface and Telegram adapter.
+- `agents/runtime/claude_sdk.py`: `ClaudeSDKRunner` and `build_options` (optional extra `agents`).
+- Recorded source fixtures from a GitHub runner (NSE, BSE, niftyindices, AMFI, Screener, BSE transcript PDF, NSE XBRL) with parsing and T1↔T2 tie-out tests.
+
+### Changed
+- Synthetic CAS fixtures now match casparser 1.4.1's real output shape.
+- Dependencies: httpx, beautifulsoup4, pymupdf, openpyxl, pandas, pyarrow, duckdb; `spikes` group (yfinance); `agents` extra (claude-agent-sdk).
+
+## Phase 0 (skeleton), 2026-09-29
 
 ### Added
 - **Config:** `config/universe.yaml` with the 7 pilot stocks keyed by ISIN (D3, D18 golden stocks, D24 profiles), `lenses.yaml`, `flags.yaml` (plan 09 feature flags), `agents.yaml` (roster, all disabled, dry run), `ui_tokens.yaml` (plan 12 palette and status vocabulary); Pydantic schemas with ISIN check-digit validation; `parakh config validate`.
