@@ -74,3 +74,47 @@ def test_unsupported_version_is_refused() -> None:
     wb.save(buf)
     with pytest.raises(ExportFormatError, match="version"):
         parse_export(buf.getvalue())
+
+
+def _young_company(data: bytes, blank: int = 3) -> bytes:
+    """The M&M export with the first `blank` data columns emptied, like a company listed
+    seven years ago (Ather, Shadowfax)."""
+    wb = openpyxl.load_workbook(io.BytesIO(data))
+    ws = wb["Data Sheet"]
+    in_meta = False
+    for row in ws.iter_rows(min_row=5):
+        label = str(row[0].value or "").strip()
+        if label == "META":
+            in_meta = True
+        elif label in {"PROFIT & LOSS", "Quarters", "BALANCE SHEET", "CASH FLOW:", "DERIVED:"}:
+            in_meta = False
+        if not in_meta:
+            for cell in row[1 : 1 + blank]:
+                cell.value = None
+    buf = io.BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
+def test_price_and_derived_rows_stay_aligned_when_early_years_are_blank() -> None:
+    """T-ADP-15: regression from the Phase 1 pilot exports (Ather, Shadowfax), where PRICE and
+    DERIVED values shifted three years left because leading blank columns were dropped."""
+    full = parse_export(DATA)
+    young = parse_export(_young_company(DATA))
+    fy26 = dt.date(2026, 3, 31)
+    for section, item in (("derived", "Adjusted Equity Shares in Cr"), ("annual_price", "PRICE:")):
+        assert young.series(section, item)[fy26] == full.series(section, item)[fy26]
+
+
+def test_pre_listing_share_counts_are_flagged() -> None:
+    """T-ADP-16: Screener leaves pre-IPO years at the pre-bonus count."""
+    wb = openpyxl.load_workbook(io.BytesIO(DATA))
+    ws = wb["Data Sheet"]
+    for row in ws.iter_rows(min_row=5):
+        if row[0].value == "Adjusted Equity Shares in Cr":
+            for cell in row[1:4]:
+                cell.value = 0.01
+    buf = io.BytesIO()
+    wb.save(buf)
+    issues = parse_export(buf.getvalue()).issues
+    assert any("pre-listing" in i and "2019-03-31" in i for i in issues)
