@@ -74,6 +74,22 @@ Profile = Literal[
 ]
 
 
+class PreviousIsin(Strict):
+    """An ISIN the security had before a split or face-value change (spike ④; plan 05 isin_history)."""
+
+    isin: str
+    changed_on: dt.date
+    reason: Literal["split", "face_value", "merger", "other"]
+    source: str
+
+    @field_validator("isin")
+    @classmethod
+    def _isin(cls, v: str) -> str:
+        if not isin_check_digit_ok(v):
+            raise ValueError(f"{v} is not a valid ISIN (format or check digit)")
+        return v
+
+
 class Security(Strict):
     symbol: str
     isin: str
@@ -83,6 +99,7 @@ class Security(Strict):
     profile: Profile
     golden: bool = False
     listed_on: dt.date | None = None
+    previous_isins: list[PreviousIsin] = []
 
     @field_validator("isin")
     @classmethod
@@ -112,6 +129,31 @@ class UniverseConfig(Strict):
 
     def by_isin(self, isin: str) -> Security | None:
         return next((s for s in self.pilot if s.isin == isin), None)
+
+
+# -- sources.yaml ----------------------------------------------------------------------------
+class SourceSpec(Strict):
+    id: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
+    tier: Literal["T1", "T2", "T3"]
+    data_types: list[str] = Field(min_length=1)
+    access: str
+    terms: str
+    cadence: str
+
+
+class SourcesConfig(Strict):
+    sources: list[SourceSpec]
+
+    @model_validator(mode="after")
+    def _unique(self) -> SourcesConfig:
+        ids = [s.id for s in self.sources]
+        dupes = {i for i in ids if ids.count(i) > 1}
+        if dupes:
+            raise ValueError(f"duplicate source ids: {sorted(dupes)}")
+        return self
+
+    def ids(self) -> set[str]:
+        return {s.id for s in self.sources}
 
 
 # -- lenses.yaml -----------------------------------------------------------------------------

@@ -16,3 +16,8 @@ AC-F24.5   # one AUD.MCP.TOOL_CALL per call (database-role part is Phase 4)
 AC-F24.6   # no listening socket; starts over stdio
 AC-F25.1   # agent runtime contract over config/agents.yaml
 AC-F25.6   # agents run in CI only through FakeRunner with sockets blocked
+# Phase 1:
+AC-F03.1   # CAS quantity per ISIN and the broker's average cost after the seed
+AC-F03.2   # partial sale reduces the oldest lots first
+AC-F03.6   # a missing buy becomes one cost-pending prompt, never a guessed cost
+AC-F03.7   # no PAN, name, address or DP/client ID survives a CAS import (synthetic CAS)

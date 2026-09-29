@@ -1,0 +1,59 @@
+# Source registry (plan 10 §13; tiers from plan 00 "Data sources"). Seeded into the `sources`
+# table by tools/make_seed.py and listed in docs/SOURCES.md by `parakh catalogue`.
+# why tiers: T1 = exchange, regulator or the company's own filing; T2 = reputable aggregator;
+# T3 = convenience or LLM-derived. When sources disagree the higher tier wins (plan 00).
+sources:
+  - id: nse_archives
+    tier: T1
+    data_types: [prices_unadjusted, corporate_actions, financial_results_xbrl, announcements, holidays]
+    access: HTTPS (nsearchives.nseindia.com, www.nseindia.com/api), reachable from GitHub runners (spike ②)
+    terms: NSE website terms; personal, non-commercial research; throttled, cached, never redistributed
+    cadence: daily
+  - id: bse
+    tier: T1
+    data_types: [prices_unadjusted, filings, announcements, concall_transcripts]
+    access: HTTPS (bseindia.com bhavcopy and filings)
+    terms: BSE website terms; personal, non-commercial research; throttled, cached
+    cadence: daily
+  - id: niftyindices
+    tier: T1
+    data_types: [index_constituents]
+    access: HTTPS constituent CSVs (niftyindices.com)
+    terms: NSE Indices website terms; personal research
+    cadence: monthly
+  - id: amfi
+    tier: T1
+    data_types: [cap_classification]
+    access: HTTPS semi-annual list (amfiindia.com)
+    terms: public regulatory disclosure
+    cadence: semi-annual (January, July)
+  - id: cas_depository
+    tier: T1
+    data_types: [holdings_quantity]
+    access: NSDL/CDSL CAS PDF, parsed locally with casparser; never uploaded (P6)
+    terms: your own statement
+    cadence: monthly
+  - id: screener_export
+    tier: T2
+    data_types: [fundamentals]
+    access: manual Excel export ("Data Sheet" v2.1) from your Screener account, placed in FILES FOR ANALYSIS
+    terms: personal use under your Screener account; exports are not committed or redistributed
+    cadence: quarterly, after results
+  - id: screener_concalls
+    tier: T2
+    data_types: [concall_index]
+    access: HTTPS company page Concalls list, linking BSE-filed PDFs (D7)
+    terms: Screener website terms; personal research; throttled
+    cadence: quarterly
+  - id: yfinance
+    tier: T2
+    data_types: [prices_adjusted]
+    access: yfinance (Yahoo Finance, unofficial API), TICKER.NS
+    terms: Yahoo terms; personal research; cross-checked against the exchange close
+    cadence: daily
+  - id: groww_pnl
+    tier: T2
+    data_types: [holdings_cost]
+    access: manual Groww "Stocks P&L Report" export, parsed locally
+    terms: your own statement
+    cadence: one-time seed, then on demand

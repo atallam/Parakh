@@ -1,4 +1,4 @@
-"""Generate docs/METRICS.md, SIGNALS.md, RULES.md, TOOLS.md and AUDIT_EVENTS.md from the code.
+"""Generate docs/METRICS.md, SIGNALS.md, RULES.md, TOOLS.md, AUDIT_EVENTS.md and SOURCES.md.
 
 `parakh catalogue` writes them; `parakh catalogue --check` fails if any is stale, which CI runs,
 so documentation can't drift from the registries (plan 04 §3.2; AC-F18.4, AC-F24.1).
@@ -96,6 +96,27 @@ def tools_md() -> str:
     return "\n".join(lines) + "\n"
 
 
+def sources_md() -> str:
+    from parakh.configs import load_file
+    from parakh.configs.models import SourcesConfig
+
+    registry = load_file("sources.yaml", SourcesConfig)
+    lines = [
+        HEADER + "# Data sources\n",
+        "From `config/sources.yaml` (plan 10 §13). T1 = exchange, regulator or the company's own "
+        "filing; T2 = reputable aggregator; T3 = convenience or LLM-derived. When sources "
+        "disagree, the higher tier wins.\n",
+        "| ID | Tier | Data | Access | Terms | Cadence |",
+        "|---|---|---|---|---|---|",
+    ]
+    for x in sorted(registry.sources, key=lambda s: (s.tier, s.id)):
+        lines.append(
+            f"| `{x.id}` | {x.tier} | {', '.join(x.data_types)} | {_cell(x.access)} | "
+            f"{_cell(x.terms)} | {_cell(x.cadence)} |"
+        )
+    return "\n".join(lines) + "\n"
+
+
 def audit_events_md() -> str:
     lines = [HEADER + "# Audit event types\n", "| ID | Domain |", "|---|---|"]
     lines += [f"| `{e.value}` | {e.domain} |" for e in AUD]
@@ -108,6 +129,7 @@ CATALOGUES = {
     "RULES.md": rules_md,
     "TOOLS.md": tools_md,
     "AUDIT_EVENTS.md": audit_events_md,
+    "SOURCES.md": sources_md,
 }
 
 

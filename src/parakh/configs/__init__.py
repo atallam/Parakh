@@ -13,6 +13,7 @@ from parakh.configs.models import (
     AgentsConfig,
     FlagsConfig,
     LensesConfig,
+    SourcesConfig,
     UiTokens,
     UniverseConfig,
 )
@@ -23,6 +24,7 @@ FILES: dict[str, type[BaseModel]] = {
     "flags.yaml": FlagsConfig,
     "agents.yaml": AgentsConfig,
     "ui_tokens.yaml": UiTokens,
+    "sources.yaml": SourcesConfig,
 }
 
 
@@ -59,6 +61,7 @@ class ConfigBundle:
     flags: FlagsConfig
     agents: AgentsConfig
     ui_tokens: UiTokens
+    data_sources: SourcesConfig
     sources: list[str] = field(default_factory=list)
 
 
@@ -76,6 +79,14 @@ def load_all(root: Path | None = None) -> ConfigBundle:
     assert isinstance(universe, UniverseConfig)
     if not universe.golden:
         problems.append("universe.yaml: no golden stocks marked (plan 13 D18)")
+    registry = loaded["sources.yaml"]
+    assert isinstance(registry, SourcesConfig)
+    for sec in universe.pilot:
+        for prev in sec.previous_isins:
+            if prev.source not in registry.ids():
+                problems.append(
+                    f"universe.yaml: {sec.symbol} previous ISIN {prev.isin} cites unknown source {prev.source}"
+                )
     if problems:
         raise ConfigError(problems)
     return ConfigBundle(
@@ -84,5 +95,6 @@ def load_all(root: Path | None = None) -> ConfigBundle:
         flags=loaded["flags.yaml"],  # type: ignore[arg-type]
         agents=loaded["agents.yaml"],  # type: ignore[arg-type]
         ui_tokens=loaded["ui_tokens.yaml"],  # type: ignore[arg-type]
+        data_sources=registry,
         sources=list(FILES),
     )

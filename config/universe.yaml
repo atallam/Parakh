@@ -43,6 +43,13 @@ pilot:
     cap: mid
     cap_source: AMFI Jul 2026
     profile: order_book
+    # why: the 1:2 split (face value 10 -> 5) issued a new ISIN; NSE corporate-action and
+    # older price files still use the old one (spike ④, 29 Sep 2026)
+    previous_isins:
+      - isin: INE249Z01012
+        changed_on: 2024-12-27
+        reason: split
+        source: nse_archives
   - symbol: ATHERENERG
     isin: INE0LEZ01016
     name: Ather Energy Ltd
