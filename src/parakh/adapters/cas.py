@@ -164,7 +164,9 @@ def read_cas_pdf(path: Path, password: str, key: bytes) -> CasStatement:  # prag
     """Parse a CAS PDF on your PC. Needs casparser; the PDF never leaves the machine."""
     import casparser
 
-    raw = casparser.read_cas_pdf(str(path), password, output="dict")
+    raw: Any = casparser.read_cas_pdf(str(path), password, output="dict")
+    if hasattr(raw, "model_dump"):  # casparser 1.4 returns a pydantic model even for "dict"
+        raw = raw.model_dump()
     if not isinstance(raw, dict):
-        raise CasFormatError("casparser did not return a dict")
+        raise CasFormatError("casparser did not return a CAS dict")
     return from_casparser(raw, key)
