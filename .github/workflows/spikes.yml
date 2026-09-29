@@ -1,0 +1,77 @@
+name: spikes
+
+# Phase 0.5 infrastructure spikes on a GitHub-hosted runner (plan 09). Results are uploaded as
+# the "spike-results" artifact; conclusions live in docs/spikes/.
+on:
+  workflow_dispatch:
+  push:
+    branches: [phase-0.5]
+    paths: ["spikes/**", ".github/workflows/spikes.yml", "src/parakh/adapters/**", "src/parakh/storage/**", "src/parakh/agents/**"]
+
+permissions:
+  contents: read
+
+jobs:
+  exchange-and-data:
+    name: ①②③④ exchange, concalls, XBRL, corporate actions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked --group spikes
+      - name: ① exchange access
+        run: cd spikes && uv run python s1_exchange_access.py
+        continue-on-error: true
+      - name: ② concall transcripts
+        run: cd spikes && uv run python s2_concalls.py
+        continue-on-error: true
+      - name: ③ XBRL
+        run: cd spikes && uv run python s3_xbrl.py
+        continue-on-error: true
+      - name: ④ corporate actions
+        run: cd spikes && uv run python s4_corporate_actions.py
+        continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: spike-results-data
+          path: spikes/out/
+
+  supabase:
+    name: ⑤ Supabase repository + Storage + DuckDB
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start -x studio,imgproxy,edge-runtime,logflare,vector,supavisor,mailpit,realtime
+      - run: uv sync --locked
+      - name: run spike against the local stack
+        run: |
+          eval "$(supabase status -o env | sed 's/^/export /')"
+          export SUPABASE_URL="$API_URL" SUPABASE_SERVICE_KEY="$SERVICE_ROLE_KEY"
+          cd spikes && uv run python s5_supabase_storage.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spike-results-supabase
+          path: spikes/out/
+
+  agent-sdk:
+    name: ⑧ Claude Agent SDK on the runner
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync --locked --extra agents
+      - name: SDK install, MCP wiring, one turn if a key exists
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PARAKH_STATE_DIR: ${{ runner.temp }}/parakh-state
+        run: cd spikes && uv run python s8_agent_sdk.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: spike-results-agent-sdk
+          path: spikes/out/

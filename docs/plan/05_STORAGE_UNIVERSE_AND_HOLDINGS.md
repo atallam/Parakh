@@ -1,6 +1,6 @@
 ---
 title: Storage, Full-Cap Coverage & Holdings
-version: 0.12 (MCP access to holdings: masked by default, CAS never reachable, `parakh_mcp` DB role — plan 15 AG-07; v0.11: D19: CAS and .env stay in OneDrive; v0.10: CAS and .env locations outside OneDrive; v0.9: §3.3 table relabelled, superseded row removed; v0.8: §2.4 THESIS.md schema now lives here; v0.7 baseline: holdings from CAS + cost seed, Supabase from Phase 1, CAS privacy rules — plan 13 D8/D11/P6; v0.6: audit & governance tables → plan 10 §13; v0.4: §1 superseded by plan 06)
+version: 0.13 (`isin_history` table: splits change the ISIN — spike ④, plan 13 v1.19; v0.12: MCP access to holdings: masked by default, CAS never reachable, `parakh_mcp` DB role — plan 15 AG-07; v0.11: D19: CAS and .env stay in OneDrive; v0.10: CAS and .env locations outside OneDrive; v0.9: §3.3 table relabelled, superseded row removed; v0.8: §2.4 THESIS.md schema now lives here; v0.7 baseline: holdings from CAS + cost seed, Supabase from Phase 1, CAS privacy rules — plan 13 D8/D11/P6; v0.6: audit & governance tables → plan 10 §13; v0.4: §1 superseded by plan 06)
 date: 2026-09-24
 parent: 00_MASTER_PLAN.md
 covers: storage options review & recommendation · data model · analysing ALL stocks in a cap · marking owned stocks & quantities
@@ -185,6 +185,7 @@ All code talks to a **`Repository` interface** (`storage/base.py`) with `DuckDBR
 |---|---|---|
 | `securities` | **isin (PK)**, symbol, name, sector, industry, listing_date, status | Never deleted (survivorship) |
 | `symbol_history` | isin, symbol, valid_from, valid_to | Renames |
+| `isin_history` *(v0.13, spike ④)* | old_isin, new_isin, changed_on, reason | A split or face-value change issues a new ISIN (MAZDOCK: INE249Z01012 → INE249Z01020 on 27 Dec 2024); adapters resolve through it |
 | `corporate_actions` | isin, ex_date, type, ratio | Splits, bonuses, demergers |
 | `cap_classification` | isin, effective_date, amfi_rank, bucket | Semi-annual AMFI history → migrations |
 | `index_membership` | index_id, isin, valid_from, valid_to | Point-in-time constituents |

@@ -59,10 +59,16 @@ def _files(root: Path, suffixes: set[str]) -> list[Path]:
     return sorted(out)
 
 
+# Recorded third-party pages (Screener HTML, exchange files) carry their own colours.
+TOKEN_SKIP_PREFIXES = ("tests/fixtures/sources/",)
+
+
 def token_lint(root: Path = ROOT) -> list[str]:
     problems = []
     for path in _files(root, TOKEN_SCAN_SUFFIXES):
         if path.resolve() == TOKEN_FILE.resolve():
+            continue
+        if path.relative_to(root).as_posix().startswith(TOKEN_SKIP_PREFIXES):
             continue
         for lineno, line in enumerate(
             path.read_text(encoding="utf-8", errors="ignore").splitlines(), 1

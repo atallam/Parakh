@@ -178,7 +178,7 @@
 | AC-F24.8 | F24 |  | — | — |
 | AC-F24.9 | F24 |  | — | — |
 | AC-F24.10 | F24 |  | — | — |
-| AC-F25.1 | F25 | ✅ | `tests/agents/test_runtime_contract.py::test_every_configured_agent_passes_the_runtime_contract` | — |
+| AC-F25.1 | F25 | ✅ | `tests/agents/test_claude_sdk_options.py::test_options_allow_only_parakh_tools_and_no_built_ins`<br>`tests/agents/test_claude_sdk_options.py::test_mcp_server_is_stdio_with_the_agent_identity`<br>`tests/agents/test_runtime_contract.py::test_every_configured_agent_passes_the_runtime_contract` | — |
 | AC-F25.2 | F25 |  | — | — |
 | AC-F25.3 | F25 |  | — | — |
 | AC-F25.4 | F25 |  | — | — |

@@ -22,7 +22,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-      - run: uv sync --locked
+      - run: uv sync --locked --all-extras  # agents extra: SDK contract tests run in CI
       - run: uv run ruff check .
       - run: uv run ruff format --check .
       - run: uv run pyright
@@ -45,7 +45,7 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           enable-cache: true
-      - run: uv sync --locked
+      - run: uv sync --locked --all-extras  # agents extra: SDK contract tests run in CI
       - run: uv run pytest --junitxml=junit.xml
       - name: traceability (AC-F21.15)
         run: uv run python tools/traceability.py --junit junit.xml --check

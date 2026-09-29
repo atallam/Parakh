@@ -34,3 +34,6 @@ audit-reqs.txt
 # Supabase CLI local state
 supabase/.branches/
 supabase/.temp/
+
+# spike outputs (uploaded by CI as artifacts)
+spikes/out/
