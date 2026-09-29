@@ -89,8 +89,8 @@ def _young_company(data: bytes, blank: int = 3) -> bytes:
         elif label in {"PROFIT & LOSS", "Quarters", "BALANCE SHEET", "CASH FLOW:", "DERIVED:"}:
             in_meta = False
         if not in_meta:
-            for cell in row[1 : 1 + blank]:
-                cell.value = None
+            for col in range(2, 2 + blank):
+                ws.cell(row=row[0].row, column=col, value=None)
     buf = io.BytesIO()
     wb.save(buf)
     return buf.getvalue()
@@ -112,8 +112,8 @@ def test_pre_listing_share_counts_are_flagged() -> None:
     ws = wb["Data Sheet"]
     for row in ws.iter_rows(min_row=5):
         if row[0].value == "Adjusted Equity Shares in Cr":
-            for cell in row[1:4]:
-                cell.value = 0.01
+            for col in range(2, 5):
+                ws.cell(row=row[0].row, column=col, value=0.01)
     buf = io.BytesIO()
     wb.save(buf)
     issues = parse_export(buf.getvalue()).issues
