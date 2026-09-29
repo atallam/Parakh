@@ -156,6 +156,19 @@ class SourcesConfig(Strict):
         return {s.id for s in self.sources}
 
 
+# -- data_quality.yaml -----------------------------------------------------------------------
+class PriceDq(Strict):
+    history_years: int = Field(ge=1, le=30)
+    close_mismatch_pct: float = Field(gt=0, le=10)
+    cross_check_sessions: int = Field(ge=1, le=60)
+    max_unexplained_move_ratio: float = Field(gt=0, lt=1)
+    max_stale_trading_days: int = Field(ge=1, le=30)
+
+
+class DataQualityConfig(Strict):
+    prices: PriceDq
+
+
 # -- lenses.yaml -----------------------------------------------------------------------------
 class LensToggle(Strict):
     enabled: bool

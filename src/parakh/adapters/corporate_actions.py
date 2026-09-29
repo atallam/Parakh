@@ -13,8 +13,10 @@ Known pilot events used in the tests (checked 29 Sep 2026):
 from __future__ import annotations
 
 import datetime as dt
+import re
+from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
-from typing import Literal
+from typing import Any, Literal
 
 ActionType = Literal["split", "bonus", "rights", "demerger", "dividend"]
 MAX_UNEXPLAINED_MOVE_RATIO = 0.40  # why: plan 04 §4 #8: a >40% one-day jump needs a reason
@@ -28,6 +30,7 @@ class CorporateAction:
     # split: old_fv / new_fv (10 → 5 gives 2.0). bonus: new shares per held share (1:1 gives 1.0).
     ratio: float
     source: str = "manual"
+    amount_inr: float | None = None  # dividends: ₹ per share (the ratio is unused)
 
     @property
     def price_factor(self) -> float:
@@ -86,3 +89,57 @@ def find_gaps(
 
 def unexplained(gaps: list[Gap]) -> list[Gap]:
     return [g for g in gaps if g.explained_by is None]
+
+
+# -- NSE corporate-actions feed (www.nseindia.com/api/corporates-corporateActions) ------------
+# Subjects seen on the pilots (spike ④, 29 Sep 2026):
+#   "Face Value Split (Sub-Division) - From Rs 10/- Per Share To Rs 5/- Per Share"
+#   "Bonus 1:1"
+#   "Interim Dividend - Rs 7.50 Per Share", "Annual General Meeting/Dividend - Rs  1.63 Per Share"
+# Pitfall: the feed keeps the pre-split ISIN on every row (MAZDOCK INE249Z01012), so ISINs are
+# resolved through isin_history before anything is stored.
+_SPLIT = re.compile(
+    r"Split.*?From\s+(?:Rs\.?|Re\.?)\s*([\d.]+).*?To\s+(?:Rs\.?|Re\.?)\s*([\d.]+)", re.I
+)
+_BONUS = re.compile(r"Bonus\s+(\d+)\s*:\s*(\d+)", re.I)
+_DIVIDEND = re.compile(r"Dividend\s*-\s*(?:Rs\.?|Re\.?)\s*([\d.]+)", re.I)
+
+
+def _nse_date(text: str) -> dt.date:
+    return dt.datetime.strptime(text.strip(), "%d-%b-%Y").date()
+
+
+def parse_nse_subject(subject: str) -> list[tuple[ActionType, float, float | None]]:
+    """(type, ratio, amount) for each action a subject line announces. Unknown subjects → []."""
+    out: list[tuple[ActionType, float, float | None]] = []
+    if m := _SPLIT.search(subject):
+        old_fv, new_fv = float(m.group(1)), float(m.group(2))
+        if new_fv > 0 and old_fv > new_fv:
+            out.append(("split", old_fv / new_fv, None))
+    if m := _BONUS.search(subject):
+        new, held = int(m.group(1)), int(m.group(2))
+        if held > 0:
+            out.append(("bonus", new / held, None))
+    amounts = [float(x) for x in _DIVIDEND.findall(subject)]
+    if amounts:
+        out.append(("dividend", 0.0, sum(amounts)))
+    return out
+
+
+def parse_nse_corporate_actions(
+    rows: Iterable[Mapping[str, Any]], resolve_isin: Callable[[str], str] = lambda i: i
+) -> list[CorporateAction]:
+    """NSE feed rows → actions keyed on the current ISIN. Rows without an ex-date are skipped."""
+    actions: dict[tuple[str, dt.date, str], CorporateAction] = {}
+    for row in rows:
+        ex = str(row.get("exDate") or "").strip()
+        if not ex or ex == "-":
+            continue
+        isin = resolve_isin(str(row["isin"]).strip())
+        for kind, ratio, amount in parse_nse_subject(str(row.get("subject") or "")):
+            key = (isin, _nse_date(ex), kind)
+            prev = actions.get(key)
+            if prev and kind == "dividend" and prev.amount_inr is not None and amount is not None:
+                amount += prev.amount_inr  # two dividend rows on one ex-date (final + special)
+            actions[key] = CorporateAction(isin, key[1], kind, ratio, "nse_archives", amount)
+    return sorted(actions.values(), key=lambda a: (a.isin, a.ex_date, a.type))

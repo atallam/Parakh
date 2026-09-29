@@ -3,13 +3,13 @@
 
 -- The pilot universe (plan 13 D3), keyed by ISIN.
 insert into public.securities (isin, symbol, name, listing_date) values
-  ('INE646L01027', 'INDIGO', 'InterGlobe Aviation Ltd', null),
-  ('INE101A01026', 'M&M', 'Mahindra & Mahindra Ltd', null),
-  ('INE040A01034', 'HDFCBANK', 'HDFC Bank Ltd', null),
-  ('INE0HOQ01053', 'GROWW', 'Billionbrains Garage Ventures Ltd', null),
-  ('INE249Z01020', 'MAZDOCK', 'Mazagon Dock Shipbuilders Ltd', null),
-  ('INE0LEZ01016', 'ATHERENERG', 'Ather Energy Ltd', null),
-  ('INE12UN01015', 'SHADOWFAX', 'Shadowfax Technologies Ltd', null)
+  ('INE646L01027', 'INDIGO', 'InterGlobe Aviation Ltd', date '2015-11-10'),
+  ('INE101A01026', 'M&M', 'Mahindra & Mahindra Ltd', date '1996-01-03'),
+  ('INE040A01034', 'HDFCBANK', 'HDFC Bank Ltd', date '1995-11-08'),
+  ('INE0HOQ01053', 'GROWW', 'Billionbrains Garage Ventures Ltd', date '2025-11-12'),
+  ('INE249Z01020', 'MAZDOCK', 'Mazagon Dock Shipbuilders Ltd', date '2020-10-12'),
+  ('INE0LEZ01016', 'ATHERENERG', 'Ather Energy Ltd', date '2025-05-06'),
+  ('INE12UN01015', 'SHADOWFAX', 'Shadowfax Technologies Ltd', date '2026-01-28')
 on conflict (isin) do update set symbol = excluded.symbol, name = excluded.name,
   listing_date = coalesce(excluded.listing_date, public.securities.listing_date);
 

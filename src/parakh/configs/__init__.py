@@ -11,6 +11,7 @@ from pydantic import BaseModel, ValidationError
 from parakh.config import config_dir
 from parakh.configs.models import (
     AgentsConfig,
+    DataQualityConfig,
     FlagsConfig,
     LensesConfig,
     SourcesConfig,
@@ -25,6 +26,7 @@ FILES: dict[str, type[BaseModel]] = {
     "agents.yaml": AgentsConfig,
     "ui_tokens.yaml": UiTokens,
     "sources.yaml": SourcesConfig,
+    "data_quality.yaml": DataQualityConfig,
 }
 
 
@@ -62,6 +64,7 @@ class ConfigBundle:
     agents: AgentsConfig
     ui_tokens: UiTokens
     data_sources: SourcesConfig
+    data_quality: DataQualityConfig
     sources: list[str] = field(default_factory=list)
 
 
@@ -96,5 +99,6 @@ def load_all(root: Path | None = None) -> ConfigBundle:
         agents=loaded["agents.yaml"],  # type: ignore[arg-type]
         ui_tokens=loaded["ui_tokens.yaml"],  # type: ignore[arg-type]
         data_sources=registry,
+        data_quality=loaded["data_quality.yaml"],  # type: ignore[arg-type]
         sources=list(FILES),
     )

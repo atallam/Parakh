@@ -66,6 +66,8 @@ class Settings(BaseSettings):
     parakh_config_dir: Path | None = None
     # audit outbox, run manifests, caches (git-ignored); default <repo>/state
     parakh_state_dir: Path | None = None
+    # plan 13 D19: your private files (CAS PDFs, exports) stay in OneDrive, outside the repo
+    parakh_inbox_dir: Path | None = None
 
     # Project-specific
     cas_password: SecretStr | None = None

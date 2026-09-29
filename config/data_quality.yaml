@@ -1,0 +1,13 @@
+# Data-quality thresholds (plan 04 §4, plan 10 §13; AC-F02.x). Code reads these; it never
+# hard-codes a threshold.
+prices:
+  # why: plan 09 Phase 1 exit gate: 10 years per pilot (since listing for young listings, D24)
+  history_years: 10
+  # why: plan 00 "Data sources": cross-check Yahoo's close with the exchange; flag >1% mismatch
+  close_mismatch_pct: 1.0
+  # why: recent sessions compared with the exchange on every load; 5 covers a trading week
+  cross_check_sessions: 5
+  # why: plan 04 §4 #8: a one-day move over 40% needs a corporate action to explain it
+  max_unexplained_move_ratio: 0.40
+  # why: more than 3 trading days without a bar means the feed stalled or the stock is suspended
+  max_stale_trading_days: 3
