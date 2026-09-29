@@ -2,7 +2,7 @@
 
 # Traceability: acceptance criteria → tests
 
-16 of 179 acceptance criteria have tests; 16 are due now (tools/traceability_due.txt).
+20 of 179 acceptance criteria have tests; 16 are due now (tools/traceability_due.txt).
 
 | AC | Feature | Due | Tests | Last result |
 |---|---|---|---|---|
@@ -15,13 +15,13 @@
 | AC-F02.3 | F02 |  | — | — |
 | AC-F02.4 | F02 |  | — | — |
 | AC-F02.5 | F02 |  | — | — |
-| AC-F03.1 | F03 |  | — | — |
-| AC-F03.2 | F03 |  | — | — |
+| AC-F03.1 | F03 |  | `tests/unit/test_holdings_lots.py::test_seeded_lots_reconcile_with_the_cas_and_the_broker_average` | — |
+| AC-F03.2 | F03 |  | `tests/unit/test_holdings_lots.py::test_a_partial_sale_reduces_the_oldest_lots_first` | — |
 | AC-F03.3 | F03 |  | — | — |
 | AC-F03.4 | F03 |  | — | — |
 | AC-F03.5 | F03 |  | — | — |
-| AC-F03.6 | F03 |  | — | — |
-| AC-F03.7 | F03 |  | — | — |
+| AC-F03.6 | F03 |  | `tests/unit/test_holdings_lots.py::test_a_missing_buy_becomes_one_cost_pending_prompt` | — |
+| AC-F03.7 | F03 |  | `tests/unit/test_broker_pnl.py::test_name_and_client_code_never_leave_the_parser`<br>`tests/unit/test_cas_adapter.py::test_no_identifier_survives_the_import` | — |
 | AC-F04.1 | F04 |  | — | — |
 | AC-F04.2 | F04 |  | — | — |
 | AC-F04.3 | F04 |  | — | — |

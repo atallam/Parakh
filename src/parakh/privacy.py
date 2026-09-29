@@ -30,3 +30,29 @@ def redact_pii(text: str) -> str:
 
 def contains_pii(text: str) -> bool:
     return any(pattern.search(text) for pattern in PII_PATTERNS.values())
+
+
+ACCOUNT_KEY_ENV = "PARAKH_ACCOUNT_KEY"
+
+
+def account_key() -> bytes:
+    """The local key behind `account_ref` hashes (plan 13 P6).
+
+    Read from PARAKH_ACCOUNT_KEY (hex) if set; otherwise created once as 32 random bytes in
+    state/secrets/account_key, which git ignores. Losing it only changes the references on the
+    next import (lots are re-keyed from the same CAS); it never exposes an account ID.
+    """
+    import os
+    import secrets
+
+    from parakh.config import state_dir
+
+    value = os.environ.get(ACCOUNT_KEY_ENV)
+    if value:
+        return bytes.fromhex(value)
+    path = state_dir() / "secrets" / "account_key"
+    if not path.exists():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_bytes(secrets.token_bytes(32))
+        path.chmod(0o600)
+    return path.read_bytes()
