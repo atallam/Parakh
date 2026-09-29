@@ -1,6 +1,6 @@
 ---
 title: Parakh — Plan Baseline v1.0 (locked)
-version: 1.19 (Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
+version: 1.20 (all Phase 0.5 spikes closed; BL-02/03/04 done; v1.19: Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
 date: 2026-09-24
 owner: Avinash Tallam
 status: LOCKED. This is the plan of record; changes follow §6
@@ -223,9 +223,9 @@ All eight spikes ran, on branch `phase-0.5` (pull request #2, stacked on #1). Ou
 | ③ Screener export + XBRL | ✅ Export parser kept; XBRL revenue ties to Screener exactly. ⚠️ NSE's XBRL feed stops at Dec 2024 (SEBI integrated filing) → Phase 1 task |
 | ④ Corporate actions | ✅ Adjustment and gap checks work. ⚠️ **A split changes the ISIN** (MAZDOCK) → `isin_history` table (plan 05 v0.13, ADR-004 amended) |
 | ⑤ Supabase + Parquet + DuckDB | ✅ All 5 probes on the Supabase stack; the audit outbox now syncs |
-| ⑥ Telegram adapter | ✅ Built and tested offline; ⏳ live send needs `TELEGRAM_CHAT_ID` back in `.env` (BL-02) |
+| ⑥ Telegram adapter | ✅ Built and tested; live send from your PC delivered on 29 Sep |
 | ⑦ CAS parse | ✅ casparser 1.4.1 on your real CAS, locally; synthetic CAS now matches its shape |
-| ⑧ Claude Agent SDK | ✅ Installs and connects to `parakh-mcp` on the runner; `ClaudeSDKRunner` built; ⏳ one model turn needs `ANTHROPIC_API_KEY` (BL-03) |
+| ⑧ Claude Agent SDK | ✅ Installs, connects to `parakh-mcp` and completes a real agent turn on the runner; the server's allow-list refused a call the config didn't permit (AG-05 proven) |
 
 **Carried into Phase 1 (within existing tasks, no new scope):** ISIN history in the security master; an adapter for SEBI integrated-filing results; a Screener ↔ XBRL line-item map before reconciling profits; `casparser` as a dependency; market cap from adjusted shares.
 
@@ -236,9 +236,9 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 | ID | Item | Needed by | Status |
 |---|---|---|---|
 | BL-01 | AWS account for SSM Parameter Store via GitHub OIDC (P1, ADR-009); fallback: GitHub environment secrets with required reviewers | Phase 3, before M2 (2 Dec 2026) | Open; reminder sent 29 Sep; target end of Phase 0 (4 Oct) |
-| BL-02 | `TELEGRAM_CHAT_ID` is missing from `.env` (removed in an edit on 29 Sep); re-add it or message the bot so Claude can read it | Spike ⑥ live send; Phase 3 | Open |
-| BL-03 | `ANTHROPIC_API_KEY` as a GitHub repo secret (and in `.env`) for agent runs | Spike ⑧ model turn; Phase 3 agents | Open |
-| BL-04 | `SUPABASE_URL` and `SUPABASE_SERVICE_KEY` for the `parakh` project in `.env` | Phase 1 (first writes to Supabase) | Open |
+| ~~BL-02~~ | ~~`TELEGRAM_CHAT_ID` missing from `.env`~~ | Spike ⑥; Phase 3 | ✅ Done 29 Sep (read from the bot, written to `.env`) |
+| ~~BL-03~~ | ~~`ANTHROPIC_API_KEY` in `.env` and as a repo secret~~ | Spike ⑧; Phase 3 agents | ✅ Done 29 Sep |
+| ~~BL-04~~ | ~~`SUPABASE_URL` and `SUPABASE_SERVICE_KEY` in `.env`~~ | Phase 1 | ✅ Done 29 Sep (secret key; `.env` comment lines fixed) |
 
 ---
 
@@ -246,6 +246,7 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 
 | Version | Date | Change |
 |---|---|---|
+| 1.20 | 2026-09-29 | All Phase 0.5 spikes closed: Telegram live send delivered; a real agent turn on the runner; BL-02, BL-03, BL-04 done. Version: 13 1.20 |
 | 1.19 | 2026-09-29 | **Phase 0.5 spikes done** (§8.0b, `docs/spikes/`): no self-hosted runner needed; `isin_history` added (plan 05 v0.13); NSE XBRL feed ends Dec 2024; backlog BL-02…BL-04 for keys. Versions: 05 0.13, 13 1.19 |
 | 1.18 | 2026-09-29 | **Phase 0 built** (§8.0): PR #1 with CI green, 34/34 checklist. `docs/plan/` in the repo becomes the canonical copy. Version: 13 1.18 |
 | 1.17 | 2026-09-28 | **D10 amended:** the repo lives at `Stock Analysis\parakh` in OneDrive, venv outside OneDrive. **Phase 0 scaffold done:** Production tier, 80 files, 34/34 checklist; ruff, pyright and 46 tests green; `parakh --help` and `parakh doctor` work; the `.env` is found one folder up. Versions: 09 1.11, 13 1.17 |

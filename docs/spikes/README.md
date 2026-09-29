@@ -9,6 +9,6 @@
 | ⑤ Supabase + Parquet + DuckDB | ✅ All 5 probes on the Supabase stack | [S5](S5-supabase-storage.md) |
 | ⑥ Telegram | ✅ Adapter tested; live send from your PC delivered (29 Sep) | [S6](S6-telegram.md) |
 | ⑦ CAS parse | ✅ casparser 1.4.1 on your real CAS, locally | [S7](S7-cas.md) |
-| ⑧ Claude Agent SDK | ✅ Install + MCP wiring on the runner; ⏳ one turn needs an API key | [S8](S8-agent-sdk.md) |
+| ⑧ Claude Agent SDK | ✅ Install, MCP wiring and a real agent turn on the runner; the server's allow-list refused an unlisted call | [S8](S8-agent-sdk.md) |
 
-No unresolved blocker for Phase 1. One item waits on a run with the API key (⑧), and two findings (③ integrated filing, ④ ISIN history) become Phase 1 tasks.
+All eight spikes are closed. Two findings (③ integrated filing, ④ ISIN history) become Phase 1 tasks.
