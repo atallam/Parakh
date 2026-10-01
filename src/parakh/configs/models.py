@@ -178,6 +178,23 @@ class DataQualityConfig(Strict):
     fundamentals: FundamentalsDq
 
 
+# -- backup.yaml -----------------------------------------------------------------------------
+class BackupConfig(Strict):
+    recipients: list[str]
+    pooler_host: str
+    bucket: str = Field(pattern=r"^[a-z0-9-]+$")
+    keep_weekly: int = Field(ge=1, le=104)
+    keep_monthly: int = Field(ge=1, le=120)
+
+    @field_validator("recipients")
+    @classmethod
+    def _age(cls, v: list[str]) -> list[str]:
+        bad = [r for r in v if not re.fullmatch(r"age1[0-9a-z]{58}", r)]
+        if bad:
+            raise ValueError(f"not age public keys: {bad} (private keys never belong here)")
+        return v
+
+
 # -- lenses.yaml -----------------------------------------------------------------------------
 class LensToggle(Strict):
     enabled: bool

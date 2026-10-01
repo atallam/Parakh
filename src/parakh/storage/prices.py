@@ -33,6 +33,8 @@ PRICE_COLUMNS = [
 class Blobs(Protocol):
     def put(self, path: str, data: bytes) -> None: ...
     def get(self, path: str) -> bytes | None: ...
+    def list(self, prefix: str = "") -> list[str]: ...
+    def delete(self, path: str) -> None: ...
 
 
 class LocalBlobs:
@@ -47,6 +49,15 @@ class LocalBlobs:
     def get(self, path: str) -> bytes | None:
         target = self.root / path
         return target.read_bytes() if target.exists() else None
+
+    def list(self, prefix: str = "") -> list[str]:
+        base = self.root / prefix
+        if not base.exists():
+            return []
+        return sorted(p.name for p in base.iterdir() if p.is_file())
+
+    def delete(self, path: str) -> None:
+        (self.root / path).unlink(missing_ok=True)
 
 
 class SupabaseBlobs:
@@ -71,6 +82,13 @@ class SupabaseBlobs:
             return self.storage.from_(self.bucket).download(path)
         except Exception:  # storage3 raises on 404
             return None
+
+    def list(self, prefix: str = "") -> list[str]:
+        items = self.storage.from_(self.bucket).list(prefix or None, {"limit": 1000})
+        return sorted(i["name"] for i in items if i.get("id"))  # folders have no id
+
+    def delete(self, path: str) -> None:
+        self.storage.from_(self.bucket).remove([path])
 
 
 @dataclass(frozen=True)
