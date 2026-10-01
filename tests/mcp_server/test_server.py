@@ -15,6 +15,7 @@ from mcp.client.stdio import StdioServerParameters, stdio_client
 from parakh.config import REPO_ROOT
 from parakh.mcp.server import build_server
 from parakh.orchestration.jobs import run_dummy
+from tests.conftest import called_from_socketpair
 
 
 def test_tools_are_listed_with_flat_schemas_and_annotations() -> None:
@@ -36,11 +37,19 @@ def test_tools_are_listed_with_flat_schemas_and_annotations() -> None:
 def test_server_never_listens_on_a_socket(monkeypatch: pytest.MonkeyPatch) -> None:
     """T-MCP-21: build the server and answer a call with bind/listen forbidden."""
 
-    def forbidden(*_a: object, **_k: object) -> None:
-        raise AssertionError("parakh-mcp must not open a network listener (ADR-012)")
+    def forbid(name: str):
+        real = getattr(socket.socket, name)
 
-    monkeypatch.setattr(socket.socket, "bind", forbidden)
-    monkeypatch.setattr(socket.socket, "listen", forbidden)
+        def guarded(self: socket.socket, *a: object, **k: object) -> object:
+            # asyncio's self-pipe on Windows is a loopback socketpair, not a listener.
+            if called_from_socketpair():
+                return real(self, *a, **k)
+            raise AssertionError("parakh-mcp must not open a network listener (ADR-012)")
+
+        return guarded
+
+    monkeypatch.setattr(socket.socket, "bind", forbid("bind"))
+    monkeypatch.setattr(socket.socket, "listen", forbid("listen"))
     run_dummy()
 
     async def go() -> None:
