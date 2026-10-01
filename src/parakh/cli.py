@@ -104,6 +104,144 @@ def _inbox() -> Path:
     return get_settings().parakh_inbox_dir or REPO_ROOT.parent / "FILES FOR ANALYSIS"
 
 
+def _supabase_repo():  # type: ignore[no-untyped-def]
+    """Connect the audit sink and run mirroring to Supabase; None (with a message) if unset."""
+    from parakh.storage.supabase_repo import connect_supabase
+
+    settings = get_settings()
+    if not (settings.supabase_url and settings.supabase_service_key):
+        print("SUPABASE_URL / SUPABASE_SERVICE_KEY missing from .env", file=sys.stderr)
+        return None
+    return connect_supabase(settings.supabase_url, settings.supabase_service_key.get_secret_value())
+
+
+def _fundamentals_load(files: list[str] | None, use_xbrl: bool, store: str) -> int:
+    """Load Screener exports (default: every export in FILES FOR ANALYSIS) with the XBRL check."""
+    from parakh.adapters.exchange_http import NseApi, NseFilings
+    from parakh.config import state_dir
+    from parakh.configs import load_all
+    from parakh.orchestration.fundamentals import load_fundamentals
+
+    paths = (
+        [Path(f) for f in files]
+        if files
+        else sorted(
+            p for p in _inbox().glob("*.xlsx") if not p.name.startswith(("Stocks_PnL", "~$"))
+        )
+    )
+    if not paths:
+        print(f"no Screener exports found in {_inbox()}", file=sys.stderr)
+        return 2
+    repo = _supabase_repo() if store == "supabase" else None
+    if store == "supabase" and repo is None:
+        return 2
+    filings = NseFilings(NseApi(), state_dir() / "raw") if use_xbrl else None
+    ctx, outcome, loads = load_fundamentals(
+        load_all(), [p.read_bytes() for p in paths], filings, repo
+    )
+    if repo is not None:
+        repo.record_dq(ctx.run_id, [r for x in loads for r in x.dq])
+    print(
+        f"run {ctx.run_id} · {outcome.status} · {len(paths)} files, {outcome.summary.get('unmatched', 0)} unmatched"
+    )
+    print(f"{'SYMBOL':11} {'FACTS':>5} {'DATED':>5} {'NEW':>5} {'RESTATED':>8}  DQ")
+    for x in loads:
+        bad = [f"{r.check_id.split('.')[-1]}:{r.status}" for r in x.dq if r.status != "pass"]
+        print(
+            f"{x.symbol:11} {x.facts:>5} {x.with_reported_on:>5} {x.inserted:>5} {x.restated:>8}  "
+            f"{x.status}{' (' + ', '.join(bad) + ')' if bad else ''}"
+        )
+    return 0 if all(x.status != "fail" for x in loads) else 1
+
+
+BACKUP_KEY_FILE = "parakh-backup-key.txt"  # beside the repo, in Stock Analysis (never committed)
+
+
+def _backup(action: str) -> int:
+    """keygen: make an age key pair. run: weekly encrypted backup. verify: check the latest."""
+    import re
+
+    from parakh.config import REPO_ROOT
+
+    key_file = REPO_ROOT.parent / BACKUP_KEY_FILE
+    if action == "keygen":
+        from pyrage import x25519
+
+        if key_file.exists():
+            print(f"{key_file} already exists; not overwriting it", file=sys.stderr)
+            return 2
+        identity = x25519.Identity.generate()
+        key_file.write_text(
+            f"# Parakh backup key. Keep a copy in your password manager.\n{identity}\n",
+            encoding="utf-8",
+        )
+        print(f"private key written to {key_file} (copy it to your password manager)")
+        print(f"public key for config/backup.yaml recipients: {identity.to_public()}")
+        return 0
+
+    import psycopg
+
+    from parakh.configs import load_all
+    from parakh.storage.prices import SupabaseBlobs
+
+    bundle = load_all()
+    settings = get_settings()
+    repo = _supabase_repo()
+    if repo is None or settings.supabase_db_password is None or not settings.supabase_url:
+        print(
+            "SUPABASE_URL, SUPABASE_SERVICE_KEY and SUPABASE_DB_PASSWORD are needed",
+            file=sys.stderr,
+        )
+        return 2
+    blobs = SupabaseBlobs(repo.client, bundle.backup.bucket)
+    if action == "run":
+        from parakh.orchestration.backup import run_backup
+        from parakh.storage.backup import PostgresTables
+
+        ref = re.search(r"https://([a-z0-9]+)\.supabase\.co", settings.supabase_url)
+        if ref is None:
+            print("SUPABASE_URL is not a supabase.co project URL", file=sys.stderr)
+            return 2
+        blobs.ensure_bucket()
+        with psycopg.connect(
+            host=bundle.backup.pooler_host,
+            port=5432,
+            dbname="postgres",
+            user=f"postgres.{ref.group(1)}",
+            password=settings.supabase_db_password.get_secret_value(),
+            connect_timeout=20,
+        ) as conn:
+            ctx, outcome, info = run_backup(bundle, PostgresTables(conn), blobs)
+        assert info is not None
+        print(
+            f"run {ctx.run_id} · {outcome.status} · {info.name} · {info.tables} tables, {info.rows} rows, {info.bytes:,} bytes"
+        )
+        return 0
+    # verify
+    from parakh.storage.backup import decrypt, read_archive
+
+    names = sorted(n for n in blobs.list() if n.endswith(".tar.gz.age"))
+    if not names:
+        print("no backups yet", file=sys.stderr)
+        return 1
+    if not key_file.exists():
+        print(f"private key not found at {key_file}", file=sys.stderr)
+        return 2
+    identity = next(
+        line.strip()
+        for line in key_file.read_text(encoding="utf-8").splitlines()
+        if line.startswith("AGE-SECRET-KEY-")
+    )
+    data = blobs.get(names[-1])
+    assert data is not None
+    manifest, _ = read_archive(decrypt(data, identity))
+    rows = sum(t["rows"] for t in manifest["tables"].values())
+    print(
+        f"{names[-1]} decrypts and matches its manifest: {len(manifest['tables'])} tables, {rows} rows, migrations {manifest['migrations']}"
+    )
+    return 0
+
+
 def _prices_load(symbols: list[str] | None, store_kind: str, use_exchange: bool) -> int:
     """Fetch, check and store daily prices for the pilot (Phase 1). Needs the network."""
     from parakh.adapters.corporate_actions import parse_nse_corporate_actions
@@ -118,17 +256,11 @@ def _prices_load(symbols: list[str] | None, store_kind: str, use_exchange: bool)
     if not pilot:
         print(f"no pilot stock matches {symbols}", file=sys.stderr)
         return 2
+    repo = _supabase_repo() if store_kind == "supabase" else None
     if store_kind == "supabase":
-        from supabase import create_client
-
-        settings = get_settings()
-        if not (settings.supabase_url and settings.supabase_service_key):
-            print("SUPABASE_URL / SUPABASE_SERVICE_KEY missing", file=sys.stderr)
+        if repo is None:
             return 2
-        client = create_client(
-            settings.supabase_url, settings.supabase_service_key.get_secret_value()
-        )
-        blobs = SupabaseBlobs(client)
+        blobs = SupabaseBlobs(repo.client)
         blobs.ensure_bucket()
     else:
         blobs = LocalBlobs(state_dir() / "prices")
@@ -253,6 +385,17 @@ def build_parser() -> argparse.ArgumentParser:
         "--no-exchange", action="store_true", help="skip the bhavcopy cross-check"
     )
 
+    p_fund = sub.add_parser("fundamentals", help="Screener exports + XBRL cross-check (Phase 1)")
+    p_fund.add_argument("action", choices=["load"])
+    p_fund.add_argument(
+        "--file", action="append", help="export file(s); default: all in FILES FOR ANALYSIS"
+    )
+    p_fund.add_argument("--no-xbrl", action="store_true", help="skip the exchange XBRL tie-out")
+    p_fund.add_argument("--store", choices=["none", "supabase"], default="none")
+
+    p_bak = sub.add_parser("backup", help="encrypted database backups (plan 10 §11)")
+    p_bak.add_argument("action", choices=["keygen", "run", "verify"])
+
     p_hold = sub.add_parser("holdings", help="holdings tools (local only)")
     p_hold.add_argument("action", choices=["check"])
     p_hold.add_argument("--cas", help="CAS PDF (default: newest in FILES FOR ANALYSIS)")
@@ -285,6 +428,10 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         case "prices":
             return _prices_load(args.symbol, args.store, not args.no_exchange)
+        case "fundamentals":
+            return _fundamentals_load(args.file, not args.no_xbrl, args.store)
+        case "backup":
+            return _backup(args.action)
         case "holdings":
             return _holdings_check(args.cas, args.broker)
         case "summarize":

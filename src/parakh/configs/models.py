@@ -165,8 +165,34 @@ class PriceDq(Strict):
     max_stale_trading_days: int = Field(ge=1, le=30)
 
 
+class FundamentalsDq(Strict):
+    min_annual_years: int = Field(ge=1, le=30)
+    xbrl_tolerance_cr: float = Field(gt=0)
+    xbrl_tolerance_pct: float = Field(gt=0, le=10)
+    xbrl_quarters: int = Field(ge=1, le=20)
+    max_latest_quarter_age_days: int = Field(ge=30, le=400)
+
+
 class DataQualityConfig(Strict):
     prices: PriceDq
+    fundamentals: FundamentalsDq
+
+
+# -- backup.yaml -----------------------------------------------------------------------------
+class BackupConfig(Strict):
+    recipients: list[str]
+    pooler_host: str
+    bucket: str = Field(pattern=r"^[a-z0-9-]+$")
+    keep_weekly: int = Field(ge=1, le=104)
+    keep_monthly: int = Field(ge=1, le=120)
+
+    @field_validator("recipients")
+    @classmethod
+    def _age(cls, v: list[str]) -> list[str]:
+        bad = [r for r in v if not re.fullmatch(r"age1[0-9a-z]{58}", r)]
+        if bad:
+            raise ValueError(f"not age public keys: {bad} (private keys never belong here)")
+        return v
 
 
 # -- lenses.yaml -----------------------------------------------------------------------------

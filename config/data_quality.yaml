@@ -11,3 +11,18 @@ prices:
   max_unexplained_move_ratio: 0.40
   # why: more than 3 trading days without a bar means the feed stalled or the stock is suspended
   max_stale_trading_days: 3
+
+fundamentals:
+  # why: plan 09 Phase 1 exit gate: 10 years of fundamentals per pilot (since listing for young ones)
+  min_annual_years: 10
+  # why: Screener rounds to ₹0.01 Cr; a gap over ₹0.5 Cr on a line is a definition or data
+  # difference, not rounding (M&M and HDFC Bank tie to the paisa when the map is right)
+  xbrl_tolerance_cr: 0.5
+  # why: and over 0.02% of the line (₹8 Cr on M&M's ₹41,470 Cr quarter): lines tie to the
+  # paisa when the map is right, so anything larger is a real difference
+  xbrl_tolerance_pct: 0.02
+  # why: the latest 4 quarters are cross-checked on every load; older ones were checked before
+  xbrl_quarters: 4
+  # why: SEBI LODR: quarterly results within 45 days, annual within 60; a quarter older than
+  # 150 days at load time means the export is stale
+  max_latest_quarter_age_days: 150

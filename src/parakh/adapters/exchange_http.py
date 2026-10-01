@@ -29,6 +29,7 @@ from parakh.adapters.prices import (
     parse_bse_bhavcopy,
     parse_nse_bhavcopy,
 )
+from parakh.adapters.xbrl import Filing, parse_financial_results, parse_integrated_filings
 
 BROWSER_HEADERS = {
     "User-Agent": (
@@ -119,14 +120,16 @@ class NseApi:  # pragma: no cover - network; parsers are tested on recorded resp
         self.client = client or _client()
         self._warm = False
 
-    def _json(self, path: str, params: dict[str, str]) -> Any:
+    def _json(
+        self, path: str, params: dict[str, str], referer: str = "https://www.nseindia.com/"
+    ) -> Any:
         if not self._warm:
             self.client.get("https://www.nseindia.com/")
             self._warm = True
         resp = self.client.get(
             f"https://www.nseindia.com/api/{path}",
             params=params,
-            headers={"Referer": "https://www.nseindia.com/", "Accept": "application/json"},
+            headers={"Referer": referer, "Accept": "application/json"},
         )
         resp.raise_for_status()
         return json.loads(resp.text)
@@ -139,3 +142,37 @@ class NseApi:  # pragma: no cover - network; parsers are tested on recorded resp
         resp = self.client.get("https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv")
         resp.raise_for_status()
         return resp.content
+
+
+class NseFilings:  # pragma: no cover - network; parsers are tested on recorded responses
+    """FilingsSource over both NSE result feeds (to Dec 2024, and integrated filings after)."""
+
+    def __init__(self, api: NseApi, raw_dir: Path | None = None) -> None:
+        self.api = api
+        self.raw_dir = raw_dir
+
+    def filings(self, symbol: str) -> list[Filing]:
+        old = self.api._json(
+            "corporates-financial-results",
+            {"index": "equities", "symbol": symbol, "period": "Quarterly"},
+        )
+        new = self.api._json(
+            "integrated-filing-results",
+            {"index": "equities", "symbol": symbol, "type": "Integrated Filing- Financials"},
+            referer="https://www.nseindia.com/companies-listing/corporate-integrated-filing",
+        )
+        return parse_financial_results(
+            old if isinstance(old, list) else []
+        ) + parse_integrated_filings(new if isinstance(new, dict) else {})
+
+    def xbrl(self, url: str) -> str:
+        name = url.rsplit("/", 1)[-1]
+        cached = self.raw_dir / "xbrl" / name if self.raw_dir else None
+        if cached and cached.exists():
+            return cached.read_text(encoding="utf-8")
+        resp = self.api.client.get(url)
+        resp.raise_for_status()
+        if cached:
+            cached.parent.mkdir(parents=True, exist_ok=True)
+            cached.write_text(resp.text, encoding="utf-8")
+        return resp.text
