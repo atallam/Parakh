@@ -10,13 +10,15 @@ divided by 1e7 to ₹ crore. The quarter itself is the context `OneD`; `FourD` i
 
 Definition map, verified to the paisa on M&M (Dec 2024, Jun 2026) and HDFC Bank (Jun 2026):
 - Ind AS companies: Sales = RevenueFromOperations; Interest = FinanceCosts; Depreciation;
-  Tax = TaxExpense; PBT = ProfitBeforeTax + share of associates/JVs (Screener adds it back);
-  Net profit = profit attributable to owners of the parent (consolidated).
-  Screener splits Expenses and Other Income differently from the filing (M&M Jun 2026: ₹262 Cr
-  moved between them), so only their difference, `Expenses − Other Income`, is compared.
+  Tax = TaxExpense; PBT includes the share of associates/JVs, which some companies report after
+  PBT (M&M) and others inside it (MAZDOCK), detected from Income − Expenses; Net profit = profit
+  attributable to owners of the parent (consolidated). Screener splits Expenses and Other
+  Income its own way (M&M Jun 2026: ₹262 Cr moved between them), so only their difference is
+  compared, as implied by Screener's identity (PBT = Sales − that − Depreciation − Interest).
 - Banks: Sales = InterestEarned; Interest = InterestExpended; Expenses = operating expenses +
-  provisions; PBT = profit from ordinary activities before tax; Net profit after minority
+  provisions; PBT before exceptional items (HDFC Bank Sep 2025); Net profit after minority
   interest and associates.
+Verified on the first full pilot load (2 Oct 2026): 7 pilots, the latest 4 quarters each.
 """
 
 from __future__ import annotations
@@ -89,7 +91,9 @@ def screener_lines(x: XbrlResult) -> dict[str, float]:
         opex, prov = x.get("OperatingExpenses"), x.get("ProvisionsOtherThanTaxAndContingencies")
         if opex is not None:
             put("Expenses", opex + (prov or 0.0))
-        put("Profit before tax", x.get("ProfitLossFromOrdinaryActivitiesBeforeTax"))
+        pbt = x.get("ProfitLossFromOrdinaryActivitiesBeforeTax")
+        # Screener's bank PBT is before exceptional items (HDFC Bank Sep 2025: −₹753.10 Cr)
+        put("Profit before tax", None if pbt is None else pbt - (x.get("ExceptionalItems") or 0.0))
         put("Tax", x.get("TaxExpense"))
         put(
             "Net profit",
@@ -105,19 +109,28 @@ def screener_lines(x: XbrlResult) -> dict[str, float]:
     )
     fin = x.get("FinanceCosts")
     dep = x.get("DepreciationDepletionAndAmortisationExpense")
-    put("Sales", x.get("RevenueFromOperations"))
+    sales = x.get("RevenueFromOperations")
+    put("Sales", sales)
     put("Interest", fin)
     put("Depreciation", dep)
     put("Tax", x.get("TaxExpense"))
     pbt = x.get("ProfitBeforeTax")
-    put("Profit before tax", None if pbt is None else pbt + assoc)
+    if pbt is not None:
+        # Companies place the associates' share either after PBT (M&M) or inside it (MAZDOCK).
+        # Income − Expenses (+ exceptional) tells which; Screener's PBT always includes it.
+        income, expenses = x.get("Income"), x.get("Expenses")
+        exceptional = x.get("ExceptionalItemsBeforeTax") or 0.0
+        inside = False
+        if income is not None and expenses is not None and assoc:
+            base = income - expenses + exceptional
+            inside = abs(base + assoc - pbt) < abs(base - pbt)
+        put("Profit before tax", pbt if inside else pbt + assoc)
     net = x.get("ProfitOrLossAttributableToOwnersOfParent") if x.consolidated else None
     put("Net profit", net if net is not None else x.get("ProfitLossForPeriod"))
-    expenses, other = x.get("Expenses"), x.get("OtherIncome")
-    if expenses is not None and other is not None:
-        exceptional = x.get("ExceptionalItemsBeforeTax") or 0.0
-        operating = expenses - (fin or 0.0) - (dep or 0.0)
-        put(NET_COST, operating - (other + assoc + exceptional))
+    if sales is not None and "Profit before tax" in out:
+        # Screener splits Expenses and Other Income its own way, so compare their difference,
+        # implied by Screener's identity: PBT = Sales − (Expenses − Other Income) − Dep − Int.
+        put(NET_COST, sales - (dep or 0.0) - (fin or 0.0) - out["Profit before tax"])
     return out
 
 

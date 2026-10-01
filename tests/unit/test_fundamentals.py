@@ -13,6 +13,7 @@ import pytest
 from parakh.adapters.xbrl import (
     NET_COST,
     Filing,
+    XbrlResult,
     first_reported,
     parse_financial_results,
     parse_integrated_filings,
@@ -193,3 +194,27 @@ def test_a_filing_without_a_broadcast_date_uses_its_creation_date() -> None:
     (f,) = parse_integrated_filings({"data": [row]})
     assert f.broadcast_at == dt.datetime(2026, 8, 1, 10, 0)
     assert parse_integrated_filings({"data": [{**row, "creation_Date": None}]}) == []
+
+
+def _synthetic(values: dict[str, float], banking: bool = False) -> XbrlResult:
+    return XbrlResult(None, dt.date(2025, 9, 30), True, "banking" if banking else "indas", values)
+
+
+def test_associates_inside_pbt_are_not_added_twice() -> None:
+    """T-FUN-10: MAZDOCK reports its associates' share inside PBT (first pilot load)."""
+    inside = _synthetic(
+        {"RevenueFromOperations": 3000.0, "Income": 3200.0, "Expenses": 2306.06, "FinanceCosts": 5.0,
+         "DepreciationDepletionAndAmortisationExpense": 30.0, "ProfitBeforeTax": 933.55,
+         "ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod": 39.61}
+    )  # fmt: skip
+    assert screener_lines(inside)["Profit before tax"] == 933.55
+    outside = _synthetic({**inside.values_cr, "ProfitBeforeTax": 893.94})
+    assert screener_lines(outside)["Profit before tax"] == 933.55
+    assert screener_lines(inside)[NET_COST] == pytest.approx(3000 - 30 - 5 - 933.55)
+
+
+def test_bank_pbt_is_before_exceptional_items() -> None:
+    """T-FUN-11: HDFC Bank Sep 2025, exceptional −753.10."""
+    x = _synthetic({"InterestEarned": 86993.84, "ProfitLossFromOrdinaryActivitiesBeforeTax": 25905.79,
+                    "ExceptionalItems": -753.10}, banking=True)  # fmt: skip
+    assert screener_lines(x)["Profit before tax"] == 26658.89
