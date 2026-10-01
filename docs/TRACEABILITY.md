@@ -2,7 +2,7 @@
 
 # Traceability: acceptance criteria → tests
 
-20 of 179 acceptance criteria have tests; 20 are due now (tools/traceability_due.txt).
+21 of 179 acceptance criteria have tests; 21 are due now (tools/traceability_due.txt).
 
 | AC | Feature | Due | Tests | Last result |
 |---|---|---|---|---|
@@ -15,13 +15,13 @@
 | AC-F02.3 | F02 |  | — | — |
 | AC-F02.4 | F02 |  | — | — |
 | AC-F02.5 | F02 |  | — | — |
-| AC-F03.1 | F03 | ✅ | `tests/unit/test_holdings_lots.py::test_seeded_lots_reconcile_with_the_cas_and_the_broker_average` | — |
+| AC-F03.1 | F03 | ✅ | `tests/unit/test_holdings_import.py::test_first_import_seeds_lots_and_stores_positions`<br>`tests/unit/test_holdings_lots.py::test_seeded_lots_reconcile_with_the_cas_and_the_broker_average` | — |
 | AC-F03.2 | F03 | ✅ | `tests/unit/test_holdings_lots.py::test_a_partial_sale_reduces_the_oldest_lots_first` | — |
 | AC-F03.3 | F03 |  | — | — |
-| AC-F03.4 | F03 |  | — | — |
+| AC-F03.4 | F03 | ✅ | `tests/unit/test_holdings_import.py::test_private_files_are_refused_at_commit` | — |
 | AC-F03.5 | F03 |  | — | — |
-| AC-F03.6 | F03 | ✅ | `tests/unit/test_holdings_lots.py::test_a_missing_buy_becomes_one_cost_pending_prompt` | — |
-| AC-F03.7 | F03 | ✅ | `tests/unit/test_broker_pnl.py::test_name_and_client_code_never_leave_the_parser`<br>`tests/unit/test_cas_adapter.py::test_no_identifier_survives_the_import` | — |
+| AC-F03.6 | F03 | ✅ | `tests/unit/test_holdings_import.py::test_a_new_statement_with_more_shares_creates_one_cost_pending_lot`<br>`tests/unit/test_holdings_lots.py::test_a_missing_buy_becomes_one_cost_pending_prompt` | — |
+| AC-F03.7 | F03 | ✅ | `tests/unit/test_broker_pnl.py::test_name_and_client_code_never_leave_the_parser`<br>`tests/unit/test_cas_adapter.py::test_no_identifier_survives_the_import`<br>`tests/unit/test_holdings_import.py::test_audit_events_carry_counts_never_quantities_or_identifiers` | — |
 | AC-F04.1 | F04 |  | — | — |
 | AC-F04.2 | F04 |  | — | — |
 | AC-F04.3 | F04 |  | — | — |

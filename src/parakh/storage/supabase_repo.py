@@ -192,6 +192,63 @@ class SupabaseRepository:
             ).execute()
         return len(rows)
 
+    # -- holdings (restricted tables; service role only) -------------------------------------
+    def statement_exists(self, file_sha256: str) -> bool:
+        rows = (
+            self.client.table("cas_statements")
+            .select("statement_id")
+            .eq("file_sha256", file_sha256)
+            .execute()
+            .data
+        )
+        return bool(rows)
+
+    def lots_for_account(self, account_ref: str) -> list[Any]:
+        import datetime as dt
+
+        from parakh.holdings.lots import Lot
+
+        rows = self._all(
+            "holdings_lots",
+            "lot_id,account_ref,isin,qty,trade_date,settle_date,price_inr,source,status",
+            account_ref=account_ref,
+        )
+        return [
+            Lot(
+                r["lot_id"],
+                r["account_ref"],
+                r["isin"],
+                float(r["qty"]),
+                dt.date.fromisoformat(r["trade_date"]),
+                dt.date.fromisoformat(r["settle_date"]),
+                None if r["price_inr"] is None else float(r["price_inr"]),
+                r["source"],
+            )
+            for r in rows
+            if r["status"] == "open"
+        ]
+
+    def write_holdings(self, plan: Any, run_id: str) -> None:
+        """Statement → positions → lots → transactions (foreign-key order)."""
+        from parakh.orchestration.holdings import lot_row
+
+        if plan.statement is not None:
+            self.client.table("cas_statements").insert(
+                {**plan.statement, "run_id": run_id}
+            ).execute()
+            if plan.positions:
+                self.client.table("cas_positions").insert(
+                    plan.positions, returning=ReturnMethod.minimal
+                ).execute()
+        if plan.lots:
+            self.client.table("holdings_lots").insert(
+                [lot_row(lot) for lot in plan.lots], returning=ReturnMethod.minimal
+            ).execute()
+        if plan.transactions:
+            self.client.table("transactions").insert(
+                plan.transactions, returning=ReturnMethod.minimal
+            ).execute()
+
     def insert_audit_events(self, events: list[AuditEvent]) -> int:
         rows = [audit_row(e) for e in events]
         for i in range(0, len(rows), BATCH):

@@ -352,6 +352,73 @@ def _holdings_check(cas: str | None, broker: str | None) -> int:
     return 0 if all(r.status in ("match", "no_lots") for r in rows) else 1
 
 
+def _holdings_import() -> int:
+    """Store the newest CAS + broker report in Supabase (restricted tables). Counts only."""
+    import hashlib
+
+    from parakh.adapters.broker_pnl import parse_groww_pnl
+    from parakh.adapters.cas import read_cas_pdf
+    from parakh.orchestration.holdings import import_holdings
+    from parakh.privacy import AccountKeyMissing, account_key
+
+    inbox = _inbox()
+    cas_path = max(inbox.glob("*CAS*.[Pp][Dd][Ff]"), default=None, key=lambda p: p.stat().st_mtime)
+    pnl_path = max(
+        inbox.glob("Stocks_PnL_Report*.xlsx"), default=None, key=lambda p: p.stat().st_mtime
+    )
+    password = get_settings().cas_password
+    if cas_path is None or password is None:
+        print(f"need a CAS PDF in {inbox} and CAS_PASSWORD in .env", file=sys.stderr)
+        return 2
+    try:
+        key = account_key(require_stable=True)
+    except AccountKeyMissing as exc:
+        print(exc, file=sys.stderr)
+        return 2
+    repo = _supabase_repo()
+    if repo is None:
+        return 2
+    data = cas_path.read_bytes()
+    statement = read_cas_pdf(cas_path, password.get_secret_value(), key)
+    report = parse_groww_pnl(pnl_path.read_bytes()) if pnl_path else None
+    ctx, outcome, r = import_holdings(
+        statement, "sha256:" + hashlib.sha256(data).hexdigest(), report, repo
+    )
+    print(f"run {ctx.run_id} · {outcome.status}")
+    print(
+        f"statement {statement.period_to}: {'new' if r.statement_new else 'already imported'} · "
+        f"{r.positions} positions · {r.lots_added} lots added ({r.cost_pending} cost pending)"
+        f"{' · seeded from broker report' if r.seeded else ''}"
+    )
+    print(
+        "reconciliation: "
+        + ", ".join(f"{k} {v}" for k, v in sorted(r.recon.items()))
+        + f" · in transit {r.in_transit}"
+    )
+    return 0
+
+
+def _holdings_keygen() -> int:
+    """Append a stable PARAKH_ACCOUNT_KEY to your .env (never printed)."""
+    import secrets
+
+    from parakh.config import env_file
+
+    path = env_file()
+    if path is None:
+        print("no .env found", file=sys.stderr)
+        return 2
+    if get_settings().parakh_account_key is not None:
+        print("PARAKH_ACCOUNT_KEY is already set; not changing it (that would orphan stored lots)")
+        return 0
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(
+            f"\n# Parakh: key behind account references (plan 13 P6). Never change it.\nPARAKH_ACCOUNT_KEY={secrets.token_hex(32)}\n"
+        )
+    print(f"PARAKH_ACCOUNT_KEY added to {path}")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="parakh",
@@ -397,7 +464,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_bak.add_argument("action", choices=["keygen", "run", "verify"])
 
     p_hold = sub.add_parser("holdings", help="holdings tools (local only)")
-    p_hold.add_argument("action", choices=["check"])
+    p_hold.add_argument("action", choices=["check", "import", "keygen"])
     p_hold.add_argument("--cas", help="CAS PDF (default: newest in FILES FOR ANALYSIS)")
     p_hold.add_argument("--broker", help="Groww Stocks P&L report (default: newest)")
 
@@ -433,6 +500,10 @@ def main(argv: list[str] | None = None) -> int:
         case "backup":
             return _backup(args.action)
         case "holdings":
+            if args.action == "import":
+                return _holdings_import()
+            if args.action == "keygen":
+                return _holdings_keygen()
             return _holdings_check(args.cas, args.broker)
         case "summarize":
             return _summarize(args.path)
