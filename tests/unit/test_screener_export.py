@@ -118,3 +118,17 @@ def test_pre_listing_share_counts_are_flagged() -> None:
     wb.save(buf)
     issues = parse_export(buf.getvalue()).issues
     assert any("pre-listing" in i and "2019-03-31" in i for i in issues)
+
+
+def test_every_fact_has_a_unique_key() -> None:
+    """T-ADP-17: the balance sheet's two "Total" rows collided in the fundamentals table
+    (found on the first real load, 1 Oct 2026)."""
+    from collections import Counter
+
+    export = parse_export(DATA)
+    keys = Counter((f.section, f.item, f.period_end) for f in export.facts)
+    assert max(keys.values()) == 1
+    fy26 = dt.date(2026, 3, 31)
+    assets = export.series("balance_sheet", "Total Assets")[fy26]
+    liabilities = export.series("balance_sheet", "Total Liabilities")[fy26]
+    assert assets is not None and assets == pytest.approx(liabilities)

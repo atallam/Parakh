@@ -112,6 +112,7 @@ def parse_export(data: bytes) -> ScreenerExport:
     # compacted list of years (Ather, Shadowfax: found on the Phase 1 pilot exports).
     annual_header: list[dt.date | None] = []
     in_meta = False
+    seen: dict[tuple[str, str], int] = {}
     for row in rows[4:]:
         if not row or row[0] is None:
             continue
@@ -142,6 +143,7 @@ def parse_export(data: bytes) -> ScreenerExport:
         if section_for_row == "derived":
             dates_for_row = annual_header
         unit = UNIT_OVERRIDES.get(label, "cr")
+        label = _unique_label(section_for_row, label, seen, issues)
         for period_end, raw in zip(dates_for_row, row[1:], strict=False):
             if period_end is not None:
                 facts.append(Fact(section_for_row, label, period_end, _as_float(raw), unit))
@@ -149,6 +151,24 @@ def parse_export(data: bytes) -> ScreenerExport:
     export = ScreenerExport(name.strip(), version, meta, facts, issues)
     _check(export)
     return export
+
+
+# The balance sheet repeats "Total": liabilities side first, then assets (all 7 pilot exports).
+BALANCE_TOTALS = ("Total Liabilities", "Total Assets")
+
+
+def _unique_label(
+    section: str, label: str, seen: dict[tuple[str, str], int], issues: list[str]
+) -> str:
+    """Line items must be unique per section (they key the fundamentals table)."""
+    n = seen.get((section, label), 0)
+    seen[(section, label)] = n + 1
+    if section == "balance_sheet" and label == "Total" and n < len(BALANCE_TOTALS):
+        return BALANCE_TOTALS[n]
+    if n:
+        issues.append(f"{section}: label '{label}' repeats; kept as '{label} ({n + 1})'")
+        return f"{label} ({n + 1})"
+    return label
 
 
 def _check(export: ScreenerExport) -> None:
@@ -159,7 +179,7 @@ def _check(export: ScreenerExport) -> None:
             issues.append(f"section {key} missing")
     if export.meta.get("Number of shares") is None:
         issues.append("META 'Number of shares' is blank; use balance-sheet share counts")
-    totals = [f for f in export.facts if f.section == "balance_sheet" and f.item == "Total"]
+    totals = [f for f in export.facts if f.section == "balance_sheet" and f.item in BALANCE_TOTALS]
     by_period: dict[dt.date, list[float]] = {}
     for f in totals:
         if f.value is not None:
