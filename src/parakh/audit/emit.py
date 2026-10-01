@@ -55,6 +55,21 @@ class NoSyncer:
         return 0
 
 
+class RunRecorder(Protocol):
+    """Mirrors runs into durable storage: a RUNNING row at START, the manifest at the end."""
+
+    def begin(self, ctx: Any) -> None: ...
+    def end(self, manifest: Any) -> None: ...
+
+
+class NoRecorder:
+    def begin(self, ctx: Any) -> None:
+        return None
+
+    def end(self, manifest: Any) -> None:
+        return None
+
+
 @dataclass(frozen=True)
 class ChainCheck:
     ok: bool
@@ -71,6 +86,7 @@ class AuditSink:
         self.outbox = root / "outbox"
         self.head_file = root / "chain_head.json"
         self.syncer: AuditSyncer = syncer or NoSyncer()
+        self.recorder: RunRecorder = NoRecorder()
         self._lock = threading.Lock()
 
     # -- writing -----------------------------------------------------------------------

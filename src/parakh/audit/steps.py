@@ -81,6 +81,7 @@ def run_lifecycle(ctx: RunContext, sink: AuditSink | None = None) -> Iterator[Ru
         details={"mode": ctx.mode, "asof": ctx.asof.isoformat(), "trigger": ctx.trigger},
     )
     log.info("run.start", mode=ctx.mode, asof=ctx.asof.isoformat())
+    _record(sink.recorder.begin, ctx)
     try:
         yield outcome
     except BaseException as exc:
@@ -104,7 +105,7 @@ def run_lifecycle(ctx: RunContext, sink: AuditSink | None = None) -> Iterator[Ru
         )
         synced, pending = _finish(ctx, sink, outcome)
         outcome.status = "SUCCESS" if pending == 0 else "SUCCESS_AUDIT_PENDING"
-        write_manifest(ctx, outcome.status, sink, pending)
+        _record(sink.recorder.end, write_manifest(ctx, outcome.status, sink, pending))
         log.info("run.end", status=outcome.status, synced=synced, audit_pending=pending)
 
 
@@ -112,5 +113,13 @@ def _finish(ctx: RunContext, sink: AuditSink, outcome: RunOutcome) -> tuple[int,
     synced, pending = sink.flush(ctx.run_id)
     outcome.audit_pending = pending
     if outcome.status == "FAILED":
-        write_manifest(ctx, outcome.status, sink, pending)
+        _record(sink.recorder.end, write_manifest(ctx, outcome.status, sink, pending))
     return synced, pending
+
+
+def _record(call: Any, arg: Any) -> None:
+    """Mirroring a run must never break it; a failure is logged and the outbox still holds it."""
+    try:
+        call(arg)
+    except Exception as exc:  # noqa: BLE001 - deliberately broad: storage is best-effort here
+        log.warning("run.record_failed", error=scrub_text(f"{type(exc).__name__}: {exc}")[:300])

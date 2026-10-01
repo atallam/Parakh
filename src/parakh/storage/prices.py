@@ -8,7 +8,9 @@ copies, so a run downloads only the files it needs.
 from __future__ import annotations
 
 import datetime as dt
+import hashlib
 import io
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Protocol
 
@@ -71,6 +73,19 @@ class SupabaseBlobs:
             return None
 
 
+@dataclass(frozen=True)
+class WrittenFile:
+    """Lineage for one Parquet file (the `price_files` row)."""
+
+    isin: str
+    year: int
+    path: str
+    sha256: str
+    rows: int
+    first: dt.date
+    last: dt.date
+
+
 def price_path(isin: str, year: int) -> str:
     return f"{isin}/{year}.parquet"
 
@@ -80,6 +95,7 @@ class ParquetPriceStore:
         self.blobs = blobs
         self.cache = cache_dir
         self.cache.mkdir(parents=True, exist_ok=True)
+        self.written: list[WrittenFile] = []
 
     def write(self, frame: pd.DataFrame) -> list[str]:
         """Write rows grouped by ISIN and year; replaces each touched file whole."""
@@ -97,9 +113,21 @@ class ParquetPriceStore:
             isin, year = key
             part = frame[(frame["isin"] == isin) & (frame["_year"] == year)].drop(columns="_year")
             buf = io.BytesIO()
-            pd.DataFrame(part).sort_values(by="trade_date").to_parquet(buf, index=False)
+            ordered = pd.DataFrame(part).sort_values(by="trade_date")
+            ordered.to_parquet(buf, index=False)
             path = price_path(isin, year)
             self.blobs.put(path, buf.getvalue())
+            self.written.append(
+                WrittenFile(
+                    isin,
+                    year,
+                    path,
+                    "sha256:" + hashlib.sha256(buf.getvalue()).hexdigest(),
+                    len(ordered),
+                    min(ordered["trade_date"]),
+                    max(ordered["trade_date"]),
+                )
+            )
             (self.cache / path).parent.mkdir(parents=True, exist_ok=True)
             (self.cache / path).write_bytes(buf.getvalue())
             written.append(path)
