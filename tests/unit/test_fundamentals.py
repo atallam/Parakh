@@ -213,6 +213,25 @@ def test_associates_inside_pbt_are_not_added_twice() -> None:
     assert screener_lines(inside)[NET_COST] == pytest.approx(3000 - 30 - 5 - 933.55)
 
 
+def test_screener_pbt_with_or_without_associates_both_tie() -> None:
+    """T-FUN-12: Screener adds the associates' share for M&M but not for MAZDOCK."""
+    filed = _synthetic(
+        {"RevenueFromOperations": 2929.24, "Income": 3199.87, "Expenses": 2265.93,
+         "FinanceCosts": 7.82, "DepreciationDepletionAndAmortisationExpense": 23.53,
+         "ProfitBeforeTax": 933.94, "TaxExpense": 224.07,
+         "ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod": 39.61}
+    )  # fmt: skip
+    lines = screener_lines(filed)
+    mazdock = screener_quarter(
+        {"Sales": 2929.24, "Expenses": 1963.95 + 270.63, "Other Income": 270.63,
+         "Depreciation": 23.53, "Interest": 7.82, "Profit before tax": 933.94, "Tax": 224.07}
+    )  # fmt: skip
+    compared, bad = tieout(mazdock, lines, CFG)
+    assert bad == [] and "Profit before tax | alt" in compared
+    _, bad = tieout({**mazdock, "Profit before tax": 950.0}, lines, CFG)
+    assert [b["line"] for b in bad] == ["Profit before tax"]
+
+
 def test_bank_pbt_is_before_exceptional_items() -> None:
     """T-FUN-11: HDFC Bank Sep 2025, exceptional −753.10."""
     x = _synthetic({"InterestEarned": 86993.84, "ProfitLossFromOrdinaryActivitiesBeforeTax": 25905.79,

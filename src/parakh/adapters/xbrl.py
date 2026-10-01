@@ -10,8 +10,8 @@ divided by 1e7 to ₹ crore. The quarter itself is the context `OneD`; `FourD` i
 
 Definition map, verified to the paisa on M&M (Dec 2024, Jun 2026) and HDFC Bank (Jun 2026):
 - Ind AS companies: Sales = RevenueFromOperations; Interest = FinanceCosts; Depreciation;
-  Tax = TaxExpense; PBT includes the share of associates/JVs, which some companies report after
-  PBT (M&M) and others inside it (MAZDOCK), detected from Income − Expenses; Net profit = profit
+  Tax = TaxExpense; PBT with or without the share of associates/JVs (Screener adds it for M&M,
+  not for MAZDOCK; both accepted, the match recorded); Net profit = profit
   attributable to owners of the parent (consolidated). Screener splits Expenses and Other
   Income its own way (M&M Jun 2026: ₹262 Cr moved between them), so only their difference is
   compared, as implied by Screener's identity (PBT = Sales − that − Depreciation − Interest).
@@ -31,6 +31,7 @@ from typing import Literal
 CRORE = 1e7
 _FACT = re.compile(r'<[a-z][a-z\-]*:([A-Za-z]+)\b[^>]*contextRef="([^"]+)"[^>]*>([^<]*)<')
 NET_COST = "Expenses less Other Income"  # the comparable form of Screener's two split lines
+ALT = " | alt"  # suffix for an accepted alternative definition of the same line
 
 
 @dataclass
@@ -116,21 +117,30 @@ def screener_lines(x: XbrlResult) -> dict[str, float]:
     put("Tax", x.get("TaxExpense"))
     pbt = x.get("ProfitBeforeTax")
     if pbt is not None:
-        # Companies place the associates' share either after PBT (M&M) or inside it (MAZDOCK).
-        # Income − Expenses (+ exceptional) tells which; Screener's PBT always includes it.
+        # The associates' share sits after PBT in most filings (M&M, MAZDOCK) and inside it in
+        # some; Income − Expenses (+ exceptional) tells which. Screener is not consistent across
+        # companies either: it adds the share into PBT for M&M but not for MAZDOCK (first pilot
+        # load, 2 Oct 2026). So PBT with the share is the primary value and PBT without it the
+        # alternative; the tie-out accepts either and records which matched.
         income, expenses = x.get("Income"), x.get("Expenses")
         exceptional = x.get("ExceptionalItemsBeforeTax") or 0.0
         inside = False
         if income is not None and expenses is not None and assoc:
             base = income - expenses + exceptional
             inside = abs(base + assoc - pbt) < abs(base - pbt)
-        put("Profit before tax", pbt if inside else pbt + assoc)
+        with_share, without = (pbt, pbt - assoc) if inside else (pbt + assoc, pbt)
+        put("Profit before tax", with_share)
+        if assoc:
+            put("Profit before tax" + ALT, without)
     net = x.get("ProfitOrLossAttributableToOwnersOfParent") if x.consolidated else None
     put("Net profit", net if net is not None else x.get("ProfitLossForPeriod"))
     if sales is not None and "Profit before tax" in out:
         # Screener splits Expenses and Other Income its own way, so compare their difference,
         # implied by Screener's identity: PBT = Sales − (Expenses − Other Income) − Dep − Int.
-        put(NET_COST, sales - (dep or 0.0) - (fin or 0.0) - out["Profit before tax"])
+        base_cost = sales - (dep or 0.0) - (fin or 0.0)
+        put(NET_COST, base_cost - out["Profit before tax"])
+        if "Profit before tax" + ALT in out:
+            put(NET_COST + ALT, base_cost - out["Profit before tax" + ALT])
     return out
 
 

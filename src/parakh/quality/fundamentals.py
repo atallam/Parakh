@@ -89,21 +89,35 @@ def check_export(
 def tieout(
     screener: dict[str, float], filed: dict[str, float], cfg: FundamentalsDq
 ) -> tuple[list[str], list[dict[str, object]]]:
-    """(lines compared, mismatches) between Screener's quarter and the filing's mapped lines."""
-    compared, bad = [], []
+    """(lines compared, mismatches) between Screener's quarter and the filing's mapped lines.
+
+    A line may carry an accepted alternative (`<line> | alt`, see adapters.xbrl); it passes
+    when either value is within tolerance, and the compared name records which one matched.
+    """
+    from parakh.adapters.xbrl import ALT
+
+    compared: list[str] = []
+    bad: list[dict[str, object]] = []
     for item, value in filed.items():
-        if item not in screener:
+        if item.endswith(ALT) or item not in screener:
             continue
-        compared.append(item)
-        diff = abs(screener[item] - value)
-        limit = max(cfg.xbrl_tolerance_cr, abs(value) * cfg.xbrl_tolerance_pct / 100)
-        if diff > limit:
+        candidates = [(item, value)]
+        if item + ALT in filed:
+            candidates.append((item + ALT, filed[item + ALT]))
+        ok = None
+        for name, v in candidates:
+            limit = max(cfg.xbrl_tolerance_cr, abs(v) * cfg.xbrl_tolerance_pct / 100)
+            if abs(screener[item] - v) <= limit:
+                ok = name
+                break
+        compared.append(ok or item)
+        if ok is None:
             bad.append(
                 {
                     "line": item,
                     "screener": screener[item],
                     "filed": value,
-                    "diff_cr": round(diff, 2),
+                    "diff_cr": round(abs(screener[item] - value), 2),
                 }
             )
     return compared, bad
