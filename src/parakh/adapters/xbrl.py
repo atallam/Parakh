@@ -141,8 +141,16 @@ class Filing:
     revised: bool = False
 
 
-def _ts(text: str) -> dt.datetime:
-    return dt.datetime.strptime(text.strip(), "%d-%b-%Y %H:%M:%S")
+def _ts(*candidates: object) -> dt.datetime | None:
+    """First parseable timestamp. Some integrated-filing rows have no broadcast date (seen on
+    the Phase 1 pilot load, 2 Oct 2026); their creation date is the fallback."""
+    for value in candidates:
+        if isinstance(value, str) and value.strip() and value.strip() not in ("-", "None"):
+            try:
+                return dt.datetime.strptime(value.strip(), "%d-%b-%Y %H:%M:%S")
+            except ValueError:
+                continue
+    return None
 
 
 def parse_financial_results(rows: list[dict[str, object]]) -> list[Filing]:
@@ -152,14 +160,15 @@ def parse_financial_results(rows: list[dict[str, object]]) -> list[Filing]:
         if r.get("period") != "Quarterly" or r.get("cumulative") == "Cumulative":
             continue
         url = str(r.get("xbrl") or "")
-        if not url.endswith(".xml"):
+        when = _ts(r.get("broadCastDate"), r.get("exchdisstime"), r.get("filingDate"))
+        if not url.endswith(".xml") or when is None:
             continue
         out.append(
             Filing(
                 symbol=str(r["symbol"]),
                 period_end=dt.datetime.strptime(str(r["toDate"]), "%d-%b-%Y").date(),
                 consolidated=str(r.get("consolidated", "")).startswith("Consolidated"),
-                broadcast_at=_ts(str(r["broadCastDate"])),
+                broadcast_at=when,
                 xbrl_url=url,
                 source="nse_results",
             )
@@ -173,14 +182,15 @@ def parse_integrated_filings(payload: dict[str, object]) -> list[Filing]:
     out = []
     for r in rows if isinstance(rows, list) else []:
         url = str(r.get("xbrl") or "")
-        if not url.endswith(".xml"):
+        when = _ts(r.get("broadcast_Date"), r.get("creation_Date"))
+        if not url.endswith(".xml") or when is None:
             continue
         out.append(
             Filing(
                 symbol=str(r["symbol"]),
                 period_end=dt.datetime.strptime(str(r["qe_Date"]), "%d-%b-%Y").date(),
                 consolidated=str(r.get("consolidated", "")).startswith("Consolidated"),
-                broadcast_at=_ts(str(r["broadcast_Date"])),
+                broadcast_at=when,
                 xbrl_url=url,
                 source="nse_integrated",
                 revised=str(r.get("type_Sub", "Original")) != "Original",

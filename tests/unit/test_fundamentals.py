@@ -184,3 +184,12 @@ def test_versioning_skips_unchanged_and_appends_restatements() -> None:
     assert plan_fundamental_inserts([row], {key: (1, 100.0)}, "R2") == ([], 0)
     new, restated = plan_fundamental_inserts([{**row, "value": 101.0}], {key: (1, 100.0)}, "R3")
     assert restated == 1 and new[0]["version"] == 2 and new[0]["run_id"] == "R3"
+
+
+def test_a_filing_without_a_broadcast_date_uses_its_creation_date() -> None:
+    """T-FUN-09: seen on the first real load (2 Oct 2026)."""
+    row = {"symbol": "X", "qe_Date": "30-JUN-2026", "consolidated": "Consolidated",
+           "broadcast_Date": None, "creation_Date": "01-Aug-2026 10:00:00", "xbrl": "https://a/b.xml"}  # fmt: skip
+    (f,) = parse_integrated_filings({"data": [row]})
+    assert f.broadcast_at == dt.datetime(2026, 8, 1, 10, 0)
+    assert parse_integrated_filings({"data": [{**row, "creation_Date": None}]}) == []
