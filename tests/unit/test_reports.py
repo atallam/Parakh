@@ -45,7 +45,7 @@ def months(tmp_path, n: int = 2, owned: bool = True):
 
 
 @pytest.fixture(scope="module")
-def four(tmp_path_factory):
+def four(tmp_path_factory, module_isolation):
     """One four-month pilot run shared by the module (the pipeline is the slow part)."""
     return months(tmp_path_factory.mktemp("pilot"), 4)
 

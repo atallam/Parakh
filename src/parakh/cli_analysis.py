@@ -175,7 +175,7 @@ def thesis(action: str, symbol: str | None) -> int:
 
 
 def override_add(isin: str, fld: str, value: str, reason: str, days: int) -> int:
-    """Appends an override to config/overrides.yaml after validating it (reason ≥ 10 chars, ≤ 366 days)."""
+    """Appends an override to config/overrides.yaml after validating it (reason of 10+ characters, life up to 366 days)."""
     from parakh.audit.context import RunContext
     from parakh.audit.emit import get_sink
     from parakh.audit.events import AUD

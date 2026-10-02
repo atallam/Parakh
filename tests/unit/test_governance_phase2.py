@@ -18,7 +18,7 @@ from tests.unit.test_reports import HOLD
 
 
 @pytest.fixture(scope="module")
-def run(tmp_path_factory):
+def run(tmp_path_factory, module_isolation):
     bundle = load_all()
     res = run_monthly(bundle, pilot_data(bundle), END, out_root=tmp_path_factory.mktemp("gov"))
     return res

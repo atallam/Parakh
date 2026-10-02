@@ -36,7 +36,7 @@ def test_golden_facts_name_the_export_they_came_from() -> None:
 
 
 @pytest.fixture(scope="module")
-def snaps(tmp_path_factory):
+def snaps(tmp_path_factory, module_isolation):
     bundle = load_all()
     data = pilot_data(bundle)
     for isin, *_ in EXPECTED.values():

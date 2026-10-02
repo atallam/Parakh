@@ -43,6 +43,26 @@ def isolated_state(monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.Tem
     reset_sink()
 
 
+@pytest.fixture(scope="module")
+def module_isolation(tmp_path_factory: pytest.TempPathFactory):
+    """For module-scoped fixtures that run the pipeline: the autouse fixtures above are per test and
+    start too late, so without this a shared fixture would write into the real state folder."""
+    from parakh.audit.emit import reset_sink
+    from parakh.render.tokens import tokens
+
+    mp = pytest.MonkeyPatch()
+    mp.setattr(config, "env_file", lambda: None)
+    mp.setenv("APP_ENV", "test")
+    mp.setenv("PARAKH_STATE_DIR", str(tmp_path_factory.mktemp("module_state")))
+    config.get_settings.cache_clear()
+    reset_sink()
+    tokens.cache_clear()
+    yield
+    reset_sink()
+    mp.undo()
+    config.get_settings.cache_clear()
+
+
 @pytest.fixture(autouse=True)
 def reset_logging():
     """configure_logging() binds to the current stderr; undo it so later tests log cleanly."""
