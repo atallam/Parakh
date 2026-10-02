@@ -1,6 +1,6 @@
 ---
 title: Parakh — Plan Baseline v1.0 (locked)
-version: 1.20 (all Phase 0.5 spikes closed; BL-02/03/04 done; v1.19: Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
+version: 1.21 (Phase 1 built and loaded, §8.0c; order book and offer-document financials move to the Phase 2 document work; pilot is 4 Large, 1 Mid, 2 Small by AMFI; v1.20: all Phase 0.5 spikes closed; BL-02/03/04 done; v1.19: Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
 date: 2026-09-24
 owner: Avinash Tallam
 status: LOCKED. This is the plan of record; changes follow §6
@@ -229,6 +229,29 @@ All eight spikes ran, on branch `phase-0.5` (pull request #2, stacked on #1). Ou
 
 **Carried into Phase 1 (within existing tasks, no new scope):** ISIN history in the security master; an adapter for SEBI integrated-filing results; a Screener ↔ XBRL line-item map before reconciling profits; `casparser` as a dependency; market cap from adjusted shares.
 
+### 8.0c Phase 1 status *(2 Oct 2026)*
+
+Built on branch `phase-1` (pull request #4) and loaded into Supabase for the 7 pilots. **Not closed:** the golden freeze is dated 30 Oct 2026 (plan 14 §4.1) and UAT-0 follows it.
+
+| Exit-gate item | Status |
+|---|---|
+| Prices: 10 years or since listing, exchange cross-check | ✅ 7 pilots, 45 Parquet files, lineage and DQ recorded |
+| Fundamentals with lineage and filing dates; XBRL tie-out | ✅ 7 pilots; latest 4 quarters tie to exchange filings |
+| Shareholding and pledge | ✅ 46 quarterly patterns from NSE filings; promoter % ties to the exchange summary |
+| AMFI categories and index membership | ✅ Config equals AMFI for all 7 |
+| D24 profile inputs found in filings | ✅ INDIGO lease liabilities and rentals; MAZDOCK contract liabilities; M&M's 7 listed stakes |
+| Holdings: CAS import, cost seed, lots | ✅ Reconciles on settlement date; re-import is idempotent |
+| AC-F02.1–5, AC-F03.1/.2/.4/.6/.7 | ✅ Tests in place and green |
+| Governance: source registry, DQ scorecard, audit sync, encrypted backup | ✅ Scorecard 96.1% over 102 checks; first backup verified |
+| Golden inputs frozen | ⏳ On 30 Oct 2026. The golden folder holds the parsed facts and the hash of each Screener export, not the export itself (source terms) |
+| UAT-0 signed | ⏳ After the freeze |
+
+**Findings recorded in the code and config:** a CAS and a broker report reconcile only on settlement date (T+1); NSE has two results feeds (to Dec 2024, and integrated filings after); shareholding XBRL has two taxonomies and its percentages use the SCRR share base; balance-sheet "described lines" (lease liabilities, contract liabilities) appear only in the March 2026 filing so far.
+
+**Changes to the plan (within D24, no new scope):**
+- **MAZDOCK order book and the offer-document financials of GROWW, ATHERENERG and SHADOWFAX move from Phase 1 to the Phase 2 document work** (decided 2 Oct 2026). Neither is in any exchange feed; both are PDFs, read with the concall and filing documents.
+- **Pilot cap mix by AMFI (list to 30 Jun 2026): 4 Large (HDFCBANK, M&M, INDIGO, GROWW), 1 Mid (MAZDOCK), 2 Small (ATHERENERG, SHADOWFAX).** ATHERENERG is rank 260 (Small), not Mid; SHADOWFAX (rank 589) is outside the Nifty Smallcap 250.
+
 ### 8.1 Prep backlog
 
 Setup tasks that are pending but don't block the current phase. Feature ideas still go to F20+ (D25).
@@ -268,3 +291,4 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 | 1.1 | 2026-09-24 | Docs restructured around `README.md` with one owner per fact (decisions → 13, dates → 09, tests → 14). **Plan 14: Test & UAT plan** added. Defaults **D17** (staging schema) and **D18** (golden stocks) added. Contradictions with D10/D11 fixed in 00, 03, 06 and 09 (audit tables and backups now in Phase 1). THESIS.md schema moved to 05 §2.4; plan 11 and 00 §2 archived. Versions: 00 1.1, 01 0.5, 02 0.4, 03 0.9, 04 0.9, 05 0.8, 06 0.6, 07 1.4, 08 1.4, 09 1.4, 10 0.9, 12 1.2, 13 1.1, 14 1.0, archive/11 1.3; new README |
 
 *Personal analytical framework; not investment advice.*
+| 1.21 | 2026-10-02 | **Phase 1 built and loaded (§8.0c).** Order book (MAZDOCK) and offer-document financials (young listings) move to the Phase 2 document work. Pilot cap mix by AMFI is 4 Large, 1 Mid, 2 Small. Golden folder keeps parsed facts and export hashes, not the Screener exports |
