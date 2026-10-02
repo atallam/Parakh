@@ -97,6 +97,9 @@ class Security(Strict):
     cap: Cap
     cap_source: str
     profile: Profile
+    sector: str | None = (
+        None  # a label for reports; peers and sector indices come with later phases
+    )
     golden: bool = False
     listed_on: dt.date | None = None
     previous_isins: list[PreviousIsin] = []

@@ -48,6 +48,7 @@ class RunManifest(BaseModel):
     config_hash: str
     framework_version: str
     lens_versions: dict[str, str] = {}
+    policy_version: str | None = None
     prompt_versions: dict[str, str] = {}
     steps: list[StepView]
     audit_events: int
@@ -81,6 +82,8 @@ def write_manifest(ctx: RunContext, status: str, sink: AuditSink, pending: int) 
         code_version=ctx.code_version,
         config_hash=ctx.config_hash,
         framework_version=ctx.framework_version,
+        lens_versions=ctx.lens_versions,
+        policy_version=ctx.policy_version,
         steps=[
             StepView(
                 step_id=s.step_id,

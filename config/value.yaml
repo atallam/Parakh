@@ -1,0 +1,265 @@
+# Value lens settings (plan 01). Thresholds are starting points, calibrated in Phase 5.
+# Components map a metric linearly to 0–1 between `bad` and `good`. A missing metric drops out
+# and the rest of its sub-score re-normalises; it lowers confidence, never scores as zero.
+# why version: bump when any threshold below changes, so history can be re-scored (plan 04 §1.5)
+lens_version: "1.0.0"
+
+# why: plan 01 §4 cap-specific weights; required MoS 15/25/35 (§2.6); liquidity floors (§4)
+cap_settings:
+  large:
+    weights: {valuation: 40, quality: 25, balance_sheet: 10, growth: 10, governance: 15}
+    required_mos: 0.15
+  mid:
+    weights: {valuation: 35, quality: 25, balance_sheet: 15, growth: 10, governance: 15}
+    required_mos: 0.25
+    min_traded_value_cr: 5
+  small:
+    weights: {valuation: 30, quality: 25, balance_sheet: 20, growth: 5, governance: 20}
+    required_mos: 0.35
+    min_traded_value_cr: 1
+
+# why: plan 01 §3.1 history classes: H2 ≥ 60 months, H1 24–59, H0 < 24
+history:
+  h2_min_months: 60
+  h1_min_months: 24
+  own_history_min_years: {pe_5y: 5, pe_10y: 10, pe_3y: 3}
+
+confidence:
+  step_missing_weight: 0.15         # why: plan 01 §4, one level per 15% of weight missing
+
+# why: plan 01 §3.1, informational when under half of the valuation weight is computable
+informational_min_valuation_weight: 0.5
+# why: 10-year G-sec yield feeds earnings yield vs bonds; set when the macro feed (F16) lands
+g_sec_yield: null
+
+# why: plan 01 §2.6 and §11 #2; cost of equity 12–13% for India, hurdle rate locked at 15% (D12)
+dcf:
+  cost_of_equity: 0.125
+  terminal_growth: 0.05
+  fade_years: 5
+  explicit_years: 5
+  growth_cap: 0.15                  # why: base case growth = min(5-year EPS CAGR, 15%)
+  reverse_dcf_max_growth: 0.45
+  holdco_discount: 0.20             # why: plan 01 §3, default holdco discount 20%, range 20–40%
+  holdco_discount_range: [0.20, 0.40]
+  graham_multiplier: 22.5
+  hurdle_rate: 0.15
+  irr_years: 3
+  scenarios:                        # why: plan 01 §11 #2, probability-weighted bull/base/bear
+    bear: {growth_mult: 0.5, exit_pe_mult: 0.8, probability: 0.25}
+    base: {growth_mult: 1.0, exit_pe_mult: 1.0, probability: 0.50}
+    bull: {growth_mult: 1.3, exit_pe_mult: 1.1, probability: 0.25}
+
+archetype:                          # why: plan 01 §11 #1, Lynch types adapted; starting points
+  slow_grower_max_eps_cagr: 0.05
+  fast_grower_min_eps_cagr: 0.20
+  asset_play_max_pb: 1.0
+
+vetoes:
+  pledge_pct: {large: 0.25, mid: 0.20, small: 0.10}   # why: plan 01 §2.5 pledge veto by cap
+  negative_cfo_years_of_5: 3        # why: plan 01 §4 veto list
+  nnpa_pct_max: 0.02                # why: plan 01 §4 bank NNPA veto; threshold is a starting point
+  runway_months_min: 24             # why: AC-F04.12, pre-profit CFO veto only below this runway
+
+views:
+  undervalued_score: 70             # why: plan 01 §5
+  fair_score: 45
+  overvalued_above_high: 0.20       # why: plan 01 §5, price 20% above the intrinsic high
+
+flags:                              # why: plan 01 §2.7 rules of thumb
+  other_income_share: 0.25
+  debtor_days_rise: 0.20
+  dilution_3y: 0.03
+  eps_vs_revenue_gap: 0.10
+  lease_leverage: 4.0
+  net_cash_to_mcap_high: 0.20
+  promoter_drop_pp: -3.0
+  pe_percentile_fully_valued: 90    # why: plan 01 §5 fully-valued trigger
+  value_trap_min_signs: 3           # why: plan 01 §11 #3
+  cheap_pe_discount: 0.20           # why: value-trap detector needs a "cheap" stock first
+
+# Merger break (plan 14 §4.1): HDFC Ltd merged into HDFC Bank on 1 Jul 2023, so FY24 is the first
+# year of the combined balance sheet. Growth windows are cut at the break; per-share valuation
+# ratios (P/E, P/B) stay comparable because they are per share.
+history_breaks:
+  - isin: INE040A01034
+    break_on: 2024-03-31
+    reason: HDFC Ltd merger
+
+subscores:
+  valuation:
+    - {metric: MET.value.pe_discount_own_5y, bad: -0.30, good: 0.30, weight: 2}
+    - {metric: MET.value.pe_discount_own_10y, bad: -0.30, good: 0.30}
+    - {metric: MET.value.pe_sector_percentile, bad: 80, good: 20}
+    - {metric: MET.value.peg, bad: 2.5, good: 1.0}
+    - {metric: MET.value.ev_ebitda_discount_own, bad: -0.30, good: 0.30}
+    - {metric: MET.value.earnings_yield_spread, bad: 0.0, good: 0.06}
+    - {metric: MET.value.fcf_yield, bad: 0.0, good: 0.05}
+  quality:
+    - {metric: MET.value.roce_5y_avg, bad: 0.08, good: 0.25, weight: 2}
+    - {metric: MET.value.roce_latest, bad: 0.08, good: 0.25}
+    - {metric: MET.value.roe_5y_avg, bad: 0.08, good: 0.22}
+    - {metric: MET.value.cfo_to_ebitda_3y, bad: 0.4, good: 0.9}
+    - {metric: MET.value.cfo_to_pat_3y, bad: 0.4, good: 1.0}
+    - {metric: MET.value.op_margin_trend_pp, bad: -3, good: 2}
+    - {metric: MET.value.piotroski_fraction, bad: 0.3, good: 0.85}
+  balance_sheet:
+    - {metric: MET.value.debt_equity, bad: 1.5, good: 0.2, weight: 2}
+    - {metric: MET.value.interest_coverage, bad: 1.5, good: 8}
+    - {metric: MET.value.net_cash_to_mcap, bad: -0.3, good: 0.1}
+  growth:
+    - {metric: MET.value.revenue_cagr_3y, bad: 0.0, good: 0.20}
+    - {metric: MET.value.revenue_cagr_5y, bad: 0.0, good: 0.15}
+    - {metric: MET.value.eps_cagr_3y, bad: 0.0, good: 0.20}
+    - {metric: MET.value.eps_cagr_5y, bad: 0.0, good: 0.15}
+    - {metric: MET.value.growth_consistency, bad: 0.4, good: 1.0}
+  governance:
+    - {metric: MET.value.promoter_holding, bad: 0.20, good: 0.60}
+    - {metric: MET.value.promoter_trend_pp, bad: -3, good: 1}
+    - {metric: MET.value.pledge_pct, bad: 0.25, good: 0.0, weight: 2}
+    - {metric: MET.value.fii_trend_pp, bad: -2, good: 1}
+    - {metric: MET.value.dii_trend_pp, bad: -2, good: 1}
+    - {metric: MET.value.dilution_3y, bad: 0.05, good: 0.0}
+
+# Profiles replace sub-score component lists (plan 01 §3). Sub-scores not listed keep the standard
+# list. An empty list removes the sub-score; its weight re-normalises across the rest.
+profiles:
+  standard:
+    description: Non-financial operating company, standard metric set
+    intrinsic_methods: [reverse_dcf, dcf_2stage, hist_multiple, graham]
+  bank:
+    description: Banks, scored on P/B, ROE/ROA and asset quality; EV/EBITDA, D/E, FCF, Piotroski dropped
+    intrinsic_methods: [hist_pb, justified_pb, hist_multiple]
+    replace:
+      valuation:
+        - {metric: MET.value.pe_discount_own_5y, bad: -0.30, good: 0.30}
+        - {metric: MET.value.pb_discount_own_5y, bad: -0.30, good: 0.30, weight: 2}
+        - {metric: MET.value.pb_justified_gap, bad: -0.3, good: 0.5, weight: 2}
+        - {metric: MET.value.earnings_yield_spread, bad: 0.0, good: 0.06}
+        - {metric: MET.value.pe_sector_percentile, bad: 80, good: 20}
+      quality:
+        - {metric: MET.value.roe_5y_avg, bad: 0.08, good: 0.18, weight: 2}
+        - {metric: MET.value.roe_latest, bad: 0.08, good: 0.18}
+        - {metric: MET.value.roa_5y_avg, bad: 0.005, good: 0.015, weight: 2}
+        - {metric: MET.value.roa_latest, bad: 0.005, good: 0.015}
+      balance_sheet:
+        - {metric: MET.value.gnpa, bad: 0.06, good: 0.01, weight: 2}
+        - {metric: MET.value.nnpa, bad: 0.02, good: 0.003, weight: 2}
+        - {metric: MET.value.nim, bad: 0.025, good: 0.04}
+        - {metric: MET.value.car, bad: 0.12, good: 0.20}
+        - {metric: MET.value.casa, bad: 0.30, good: 0.45}
+      growth:
+        - {metric: MET.value.revenue_cagr_3y, bad: 0.0, good: 0.20}
+        - {metric: MET.value.eps_cagr_3y, bad: 0.0, good: 0.20}
+        - {metric: MET.value.growth_consistency, bad: 0.4, good: 1.0}
+  nbfc:
+    description: NBFCs and HFCs, scored on P/B, ROA and asset quality
+    intrinsic_methods: [hist_pb, justified_pb, hist_multiple]
+    replace:
+      valuation:
+        - {metric: MET.value.pe_discount_own_5y, bad: -0.30, good: 0.30}
+        - {metric: MET.value.pb_discount_own_5y, bad: -0.30, good: 0.30, weight: 2}
+        - {metric: MET.value.pb_justified_gap, bad: -0.3, good: 0.5, weight: 2}
+      quality:
+        - {metric: MET.value.roe_5y_avg, bad: 0.08, good: 0.18, weight: 2}
+        - {metric: MET.value.roa_5y_avg, bad: 0.005, good: 0.03, weight: 2}
+      balance_sheet:
+        - {metric: MET.value.gnpa, bad: 0.06, good: 0.01, weight: 2}
+        - {metric: MET.value.nnpa, bad: 0.02, good: 0.003}
+        - {metric: MET.value.car, bad: 0.12, good: 0.25}
+  insurance:
+    description: Insurers; value uses P/B and ROE until embedded-value data exists
+    intrinsic_methods: [hist_pb]
+    replace:
+      valuation:
+        - {metric: MET.value.pb_discount_own_5y, bad: -0.30, good: 0.30}
+        - {metric: MET.value.pe_discount_own_5y, bad: -0.30, good: 0.30}
+      quality:
+        - {metric: MET.value.roe_5y_avg, bad: 0.08, good: 0.18}
+      balance_sheet: []
+  cyclical:
+    description: Metals, cement, sugar, chemicals; normalised P/E replaces raw TTM P/E and PEG
+    intrinsic_methods: [hist_multiple_normalised, dcf_2stage]
+    replace:
+      valuation:
+        - {metric: MET.value.pe_normalised, bad: 30, good: 12, weight: 2}
+        - {metric: MET.value.ev_ebitda_discount_own, bad: -0.30, good: 0.30}
+        - {metric: MET.value.pb_discount_own_5y, bad: -0.30, good: 0.30}
+        - {metric: MET.value.fcf_yield, bad: 0.0, good: 0.05}
+  utility:
+    description: Utilities and PSUs; dividend yield replaces PEG
+    intrinsic_methods: [hist_multiple, graham]
+    replace:
+      valuation:
+        - {metric: MET.value.pe_discount_own_5y, bad: -0.30, good: 0.30}
+        - {metric: MET.value.pb_discount_own_5y, bad: -0.30, good: 0.30}
+        - {metric: MET.value.dividend_yield, bad: 0.01, good: 0.05, weight: 2}
+  airline_lease_heavy:
+    description: Airlines; EV/EBITDAR and lease-adjusted leverage replace P/E, D/E, Altman Z and Piotroski
+    intrinsic_methods: [hist_multiple_normalised, dcf_2stage]
+    replace:
+      valuation:
+        - {metric: MET.value.pe_normalised, bad: 30, good: 12, weight: 2}
+        - {metric: MET.value.ev_ebitdar, bad: 12, good: 5, weight: 2}
+      quality:
+        - {metric: MET.value.roe_5y_avg, bad: 0.08, good: 0.22}
+        - {metric: MET.value.cfo_to_ebitda_3y, bad: 0.4, good: 0.9}
+        - {metric: MET.value.op_margin_trend_pp, bad: -3, good: 2}
+      balance_sheet:
+        - {metric: MET.value.lease_adj_leverage, bad: 5, good: 1.5, weight: 3}
+        - {metric: MET.value.net_cash_to_mcap, bad: -0.3, good: 0.1}
+  conglomerate_sotp:
+    description: Conglomerates; SOTP is the primary intrinsic method and the core standalone business is scored
+    # why: consolidated operating cash flow includes a lending arm, so an earnings DCF is not used
+    intrinsic_methods: [sotp, hist_multiple]
+    replace:
+      valuation:
+        - {metric: MET.value.sotp_discount, bad: -0.2, good: 0.35, weight: 3}
+        - {metric: MET.value.pe_discount_own_5y, bad: -0.30, good: 0.30}
+      balance_sheet:
+        - {metric: MET.value.standalone_debt_equity, bad: 1.0, good: 0.1, weight: 3}
+  order_book:
+    description: Defence, shipbuilding, EPC; order cover and net cash excluding advances
+    intrinsic_methods: [hist_multiple, dcf_2stage]
+    replace:
+      valuation:
+        - {metric: MET.value.pe_2y_avg_discount_3y, bad: -0.30, good: 0.30, weight: 2}
+        - {metric: MET.value.pe_sector_percentile, bad: 80, good: 20}
+      quality:
+        - {metric: MET.value.roce_5y_avg, bad: 0.08, good: 0.25, weight: 2}
+        - {metric: MET.value.roce_latest, bad: 0.08, good: 0.25}
+        - {metric: MET.value.cfo_to_pat_3y, bad: 0.4, good: 1.0}
+        - {metric: MET.value.op_margin_trend_pp, bad: -3, good: 2}
+        - {metric: MET.value.order_cover, bad: 1, good: 4}
+      balance_sheet:
+        - {metric: MET.value.net_cash_ex_advances_to_mcap, bad: -0.2, good: 0.1, weight: 2}
+        - {metric: MET.value.interest_coverage, bad: 1.5, good: 8}
+  capital_market_intermediary:
+    description: Brokers, exchanges, AMCs; client-money borrowings are operating, so no D/E or coverage
+    intrinsic_methods: [hist_multiple]
+    replace:
+      valuation:
+        - {metric: MET.value.pe_discount_own_5y, bad: -0.30, good: 0.30}
+        - {metric: MET.value.pe_sector_percentile, bad: 80, good: 20}
+      quality:
+        - {metric: MET.value.roe_5y_avg, bad: 0.10, good: 0.30, weight: 2}
+        - {metric: MET.value.roe_latest, bad: 0.10, good: 0.30}
+        - {metric: MET.value.cost_to_income, bad: 0.8, good: 0.5}
+      balance_sheet:
+        - {metric: MET.value.net_cash_to_mcap, bad: -0.3, good: 0.1}
+  new_age:
+    description: Pre-profit growth; EV/Sales and runway replace P/E, PEG and earnings DCF; value is informational
+    informational: true
+    intrinsic_methods: []
+    replace:
+      valuation:
+        - {metric: MET.value.ev_sales_to_growth, bad: 1.5, good: 0.3, weight: 2}
+        - {metric: MET.value.ev_sales, bad: 8, good: 1}
+      quality:
+        - {metric: MET.value.op_margin_trend_pp, bad: -3, good: 3, weight: 2}
+      balance_sheet:
+        - {metric: MET.value.cash_runway_months, bad: 12, good: 36, weight: 3}
+        - {metric: MET.value.net_cash_to_mcap, bad: -0.3, good: 0.1}
+      growth:
+        - {metric: MET.value.revenue_growth_1y, bad: 0.0, good: 0.50, weight: 2}
+        - {metric: MET.value.revenue_cagr_3y, bad: 0.0, good: 0.40}

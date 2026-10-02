@@ -1,0 +1,200 @@
+---
+ticker: {{ s.symbol }}
+isin: {{ s.isin }}
+cap: {{ s.cap }}_cap
+sector: {{ s.sector or "N/A" }}
+peers: []   # peer sets arrive with Phase 3
+benchmark: {{ md.get("benchmark") or "N/A" }}
+period: {{ s.period }}
+price_asof: {{ s.price.last_session }}
+fundamentals_asof: {{ fund_asof }}
+value_score: {{ v.value_score }}{% if v.value_delta is not none %}   (Δ {{ "%+.0f"|format(v.value_delta) }}){% endif %}
+momentum_score: {{ v.momentum_score }}{% if v.momentum_delta is not none %} (Δ {{ "%+.0f"|format(v.momentum_delta) }}){% endif %}
+qualitative_score: not run (Phase 4)
+verdict: {{ verdict_plain }}{% if s.verdict.prev_verdict %}   (prev: {{ s.verdict.prev_verdict }}){% endif %}
+confidence: {{ s.verdict.confidence }}
+regime: {{ s.regime.regime }}{% if s.regime.flags %} ({{ s.regime.flags | join("; ") }}){% endif %}
+position: {{ v.position_line }}
+framework_version: {{ s.framework.version }} (policy {{ s.framework.policy_version }}, weights hash {{ s.framework.weights_hash }})
+next_event: N/A (event calendar arrives in Phase 3)
+---
+# {{ s.symbol }} — {{ month_label }}
+
+## 0. TL;DR
+
+{{ v.tldr }}
+
+**{{ v.chip }}** · confidence {{ v.confidence }}{% if v.limited_history %} · _{{ v.limited_history }}_{% endif %}
+
+**What changed since last month**
+{% for b in v.what_changed %}
+- {{ b }}
+{%- endfor %}
+
+## 1. Verdict, what changed & why
+
+| | Score | View | Band | Confidence |
+|---|---|---|---|---|
+| Value | {{ v.value_score }} | {{ s.value.view }}{% if s.value.informational %} (informational){% endif %} | {{ s.verdict.value_band }} | {{ s.value.confidence }} |
+| Momentum | {{ v.momentum_score }} | {{ s.momentum.view }}{% if s.momentum.informational %} (informational){% endif %} | {{ s.verdict.momentum_band }} | {{ s.momentum.confidence }} |
+
+Rule applied: `{{ s.verdict.rule_id }}`{% if s.verdict.held_by_hysteresis %} · held by hysteresis: {{ s.verdict.held_by_hysteresis | join(", ") }}{% endif %}
+
+{% if s.verdict.vetoes %}**Vetoes:** {{ s.verdict.vetoes | join("; ") }}
+{% endif %}{% if s.verdict.override %}**Owner override in force:** {{ s.verdict.override }}
+{% endif %}
+{% if s.verdict.drivers %}Top drivers of the change:
+{% for d in s.verdict.drivers %}
+{{ loop.index }}. {{ d.text }}
+{%- endfor %}
+{% endif %}
+Decision trail: {{ s.verdict.trail | join(" → ") }}
+
+## 2. Action box
+
+| | |
+|---|---|
+| Suggested action | {{ a.action }} |
+| Entry zone | {% if a.entry_zone %}{{ inr(a.entry_zone[0], 2) }} – {{ inr(a.entry_zone[1], 2) }} (staggered tranches){% else %}not applicable for this verdict{% endif %} |
+| Stop | {% if a.stop is none %}N/A{% elif a.stop >= s.price.close %}trailing stop breached: the close is below {{ inr(a.stop, 2) }} (52-week peak less the cap's stop band); 200 DMA exit {{ inr(a.trend_exit, 2) }}{% else %}{{ inr(a.stop, 2) }} (trailing); 200 DMA exit {{ inr(a.trend_exit, 2) }}{% endif %} |
+| Fair-value range | {% if a.fair_value %}{{ inr(a.fair_value.low, 2) }} – {{ inr(a.fair_value.high, 2) }} (mid {{ inr(a.fair_value.mid, 2) }}){% else %}N/A{% endif %} |
+| Margin of safety | {{ ratio(a.margin_of_safety) }} (required {{ ratio(vd.get("mos_required")) }}) |
+| Expected return vs hurdle | {{ ratio(a.expected_return) }} vs {{ ratio(a.hurdle) }} |
+| Risk / reward | {% if a.risk_reward is none %}N/A (needs a stop below the price and a fair-value mid){% else %}{{ "%.2f"|format(a.risk_reward) }}{% endif %} |
+| Your position | {{ v.position_line }} |
+| Tax if sold now | {{ tax_line }} |
+
+_The entry zone, stop and risk/reward are read off the lenses' own levels; they are not price targets._
+
+## 3. Bull / Base / Bear cases
+
+{% if irr.get("scenarios") %}| Case | Expected annual return | Basis |
+|---|---|---|
+{% for k in ("bull", "base", "bear") %}| {{ k | capitalize }} | {{ ratio(irr.scenarios.get(k)) }} | scenario growth and exit multiple from `value.yaml` |
+{% endfor %}
+Probability-weighted {{ ratio(irr.weighted) }} against a {{ ratio(irr.hurdle) }} hurdle. Fair-value methods: {{ methods }}.
+{% else %}N/A: expected-return scenarios need earnings and a valuation anchor that are not available for this stock.
+{% endif %}
+
+<details>
+<summary><strong>4. Value scorecard</strong> — {{ v.value_score }}/100 · {{ s.value.view }} · profile {{ s.profile }} · history {{ s.history_class }}</summary>
+
+{{ value_table }}
+
+{% if s.value.na %}**Not available (excluded and re-weighted):**
+{% for k, why in s.value.na.items() %}
+- `{{ k }}`: {{ why }}
+{%- endfor %}
+{% endif %}
+{% if s.value.flags %}**Flags:** {{ s.value.flags | join("; ") }}
+{% endif %}
+</details>
+
+<details>
+<summary><strong>5. Momentum scorecard</strong> — {{ v.momentum_score }}/100 · {{ s.momentum.view }}</summary>
+
+{{ momentum_table }}
+
+**Trend Template:** {{ tt.passed }} of {{ tt.computable }} computable criteria met ({{ tt.of }} in total). Stage {{ md.get("stage") or "N/A" }}.
+{% for it in md.get("template_items", []) %}
+- {{ "✅" if it.passed else ("❔" if it.passed is none else "❌") }} {{ it.label }}
+{%- endfor %}
+
+**Strong-momentum gate:** {{ "passed" if gate.passed else "not passed: " ~ (gate.failed | join(", ")) }}
+
+**Signals fired:** {{ fired }}
+
+{% if s.momentum.na %}**Not available:**
+{% for k, why in s.momentum.na.items() %}
+- `{{ k }}`: {{ why }}
+{%- endfor %}
+{% endif %}
+</details>
+
+<details>
+<summary><strong>6. Earnings &amp; concall tracker</strong> — not run</summary>
+
+N/A: {{ s.qualitative.reason }}.
+</details>
+
+<details>
+<summary><strong>7. Peer comparison</strong> — N/A</summary>
+
+N/A: peer sets and peer prices arrive with Phase 3; the pilot universe has no 3–5 listed peers loaded.
+</details>
+
+<details>
+<summary><strong>8. Ownership &amp; smart money</strong></summary>
+
+{{ ownership_table }}
+</details>
+
+<details>
+<summary><strong>9. Qualitative view</strong> — not run</summary>
+
+N/A: {{ s.qualitative.reason }}.
+</details>
+
+<details>
+<summary><strong>10. Thesis check</strong> — {{ thesis_pill }}</summary>
+
+{{ thesis_block }}
+</details>
+
+<details>
+<summary><strong>11. Time-series view &amp; charts</strong></summary>
+
+{% if price_png %}![Price context]({{ price_png }})
+
+{% endif %}{% if score_png %}![Score trajectory]({{ score_png }})
+{% endif %}{% if not price_png and not score_png %}N/A: no chart data.{% endif %}
+
+Fundamentals are as of {{ fund_asof }}. {{ price_only_note }}
+</details>
+
+<details>
+<summary><strong>12. Upcoming events &amp; catalysts</strong> — unavailable</summary>
+
+❔ UNKNOWN: {{ s.events.reason }}.
+</details>
+
+<details>
+<summary><strong>13. Red flags, risks &amp; watch items</strong> — {{ flag_summary }}</summary>
+
+| Check | State | Detail |
+|---|---|---|
+{% for c in v.checks %}| {{ c.name }} | {{ c.text }} | {{ c.detail }} |
+{% endfor %}
+{% if s.value.vetoes %}**Vetoes (value lens):** {{ s.value.vetoes | join("; ") }}
+{% endif %}{% if s.momentum.vetoes %}**Vetoes (momentum lens):** {{ s.momentum.vetoes | join("; ") }}
+{% endif %}{% if s.momentum.flags %}**Momentum notes:** {{ s.momentum.flags | join("; ") }}
+{% endif %}
+</details>
+
+<details>
+<summary><strong>14. Data quality &amp; sources</strong> — confidence {{ s.data_quality.confidence }}</summary>
+
+| Input | As of | Source |
+|---|---|---|
+| Prices | {{ s.price.last_session }} | {{ s.price.source }} |
+| Annual fundamentals | {{ s.fundamentals_asof.get("annual") or "N/A" }} | {{ lineage_sources }} |
+| Latest quarter | {{ s.fundamentals_asof.get("quarter") or "N/A" }} | {{ lineage_sources }} |
+| Shareholding | {{ s.fundamentals_asof.get("shareholding") or "N/A" }} | exchange filing |
+
+{% if s.data_quality.notes %}{% for n in s.data_quality.notes %}- {{ n }}
+{% endfor %}{% else %}No data-quality notes.{% endif %}
+
+Fundamentals are visible only after their publication date plus an assumed {{ s.fundamentals_asof.get("assumed_report_lag_days", "N/A") }}-day lag when the filing date is unknown (point-in-time). Price history: {{ (s.lineage.get("prices") or {}).get("rows", 0) }} sessions{% if (s.lineage.get("prices") or {}).get("sha256") %} · `{{ s.lineage.prices.sha256[:19] }}…`{% endif %}.
+{% for n in s.notes %}- {{ n }}
+{% endfor %}
+</details>
+
+<details>
+<summary><strong>15. Methodology &amp; disclaimer</strong></summary>
+
+Framework {{ s.framework.version }} · policy {{ s.framework.policy_version }} · lenses {{ lens_versions }} · weights hash `{{ s.framework.weights_hash }}` · config hash `{{ s.framework.config_hash }}` · run `{{ s.run_id }}` · code `{{ s.framework.code_version }}`.
+
+Value and momentum are scored separately (0–100) and combined through a fixed matrix with vetoes and ±5-point hysteresis; the rule that decided this verdict is `{{ s.verdict.rule_id }}`. No language model has computed or changed any number in this report. To see how any figure was derived: `parakh explain {{ s.symbol }}`.
+
+{{ disclaimer }}
+</details>

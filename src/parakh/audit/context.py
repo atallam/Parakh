@@ -91,6 +91,8 @@ class RunContext:
     framework_version: str
     started_at: dt.datetime = field(default_factory=lambda: dt.datetime.now(dt.UTC))
     steps: list[StepRecord] = field(default_factory=list)
+    lens_versions: dict[str, str] = field(default_factory=dict)
+    policy_version: str | None = None
     _step_seq: int = 0
 
     @classmethod

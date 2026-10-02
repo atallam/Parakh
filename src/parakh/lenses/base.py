@@ -27,7 +27,12 @@ class StockContext(BaseModel):
     asof: dt.date
     profile: str
     history_class: HistoryClass = "H3"
+    cap: str = "large"
     metrics: dict[str, float | None] = Field(default_factory=dict)  # MET.* id → value
+    # Why a metric is missing, by MET.* id (UX-05: ❔ N/A with its reason, never zero).
+    na_reasons: dict[str, str] = Field(default_factory=dict)
+    # Non-numeric inputs a lens needs (flags, labels); keys are documented by the lens.
+    extras: dict[str, Any] = Field(default_factory=dict)
     owned: bool = False
 
 
@@ -54,6 +59,10 @@ class LensResult(BaseModel):
     signals: list[str] = Field(default_factory=list)  # signal ids fired
     vetoes: list[str] = Field(default_factory=list)  # RULE.* ids
     explanations: list[str] = Field(default_factory=list)  # top drivers
+    # Phase 2 additions, all optional so earlier lenses stay valid.
+    flags: list[str] = Field(default_factory=list)  # warnings that do not veto
+    na: dict[str, str] = Field(default_factory=dict)  # MET.* id → reason it could not be scored
+    details: dict[str, Any] = Field(default_factory=dict)  # lens-specific snapshot block
 
     @field_validator("subscores")
     @classmethod
