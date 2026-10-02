@@ -1,3 +1,5 @@
+# pyright: reportAttributeAccessIssue=false, reportCallIssue=false, reportReturnType=false, reportArgumentType=false, reportOperatorIssue=false, reportAssignmentType=false
+# why: the pandas stubs infer ndarray/Series unions for indexing and sorting that are Series at run time; tests cover these paths
 """A point-in-time view over fundamentals rows (plan 05 §3.4, AC-F02.3).
 
 Build it from rows already filtered with `storage.point_in_time.visible_asof`, so a restatement

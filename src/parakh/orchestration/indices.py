@@ -1,3 +1,5 @@
+# pyright: reportAttributeAccessIssue=false, reportCallIssue=false, reportReturnType=false, reportArgumentType=false, reportOperatorIssue=false, reportAssignmentType=false
+# why: the pandas stubs infer ndarray/Series unions for indexing and sorting that are Series at run time; tests cover these paths
 """Index series loader (benchmarks and India VIX) → the price store under `IDX-<NAME>` keys.
 
 A wrong Yahoo symbol returns nothing, and that fails loudly with the symbol named, so an empty

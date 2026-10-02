@@ -168,8 +168,10 @@ def thesis(action: str, symbol: str | None) -> int:
             for e in errs:
                 print(f"    - {e}")
         else:
+            front = parsed.front
+            assert front is not None  # no errors means it parsed
             print(
-                f"{s.symbol:11} valid · {len(parsed.front.breakers)} breakers · review by {parsed.front.review_by or 'not set'}"
+                f"{s.symbol:11} valid · {len(front.breakers)} breakers · review by {front.review_by or 'not set'}"
             )
     return 1 if bad else 0
 

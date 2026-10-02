@@ -1,3 +1,5 @@
+# pyright: reportAttributeAccessIssue=false, reportCallIssue=false, reportReturnType=false, reportArgumentType=false, reportOperatorIssue=false, reportAssignmentType=false
+# why: the pandas stubs infer ndarray/Series unions for indexing and sorting that are Series at run time; tests cover these paths
 """Where the analysis reads its inputs from (plan 05). One protocol, two implementations.
 
 The monthly run asks an `AnalysisData` for a stock's prices, fundamentals, shareholding and the

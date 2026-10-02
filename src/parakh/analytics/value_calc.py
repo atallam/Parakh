@@ -1,3 +1,5 @@
+# pyright: reportAttributeAccessIssue=false, reportCallIssue=false, reportReturnType=false, reportArgumentType=false, reportOperatorIssue=false, reportAssignmentType=false
+# why: the pandas stubs infer ndarray/Series unions for indexing and sorting that are Series at run time; tests cover these paths
 """Value calculation context: point-in-time fundamentals, price, shareholding and profile inputs.
 
 `VCalc` mirrors the momentum `Calc`: lazily computed, memoised measures, each either a value or

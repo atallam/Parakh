@@ -1,3 +1,5 @@
+# pyright: reportAttributeAccessIssue=false, reportCallIssue=false, reportReturnType=false, reportArgumentType=false, reportOperatorIssue=false, reportAssignmentType=false
+# why: the pandas stubs infer ndarray/Series unions for indexing and sorting that are Series at run time; tests cover these paths
 """Momentum calculation context: price bars, the listing exclusion and a memoising `Calc`.
 
 `Calc` holds one stock's aligned price arrays and hands out measures lazily. A `Measure` is a
