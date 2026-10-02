@@ -160,7 +160,8 @@ def load_reference(
                 off = abs(len(members) - expected) if expected else 0
                 report.dq.append(
                     DqResult(
-                        "DQ.reference.index_size",
+                        # one check per index: results are keyed (run, check, isin)
+                        "DQ.reference.index_size_" + index_id.lower().replace(" ", "_"),
                         "*",
                         "pass"
                         if off == 0

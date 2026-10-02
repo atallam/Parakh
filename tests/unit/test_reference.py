@@ -75,7 +75,9 @@ def test_config_caps_agree_with_amfi_and_membership_is_stored() -> None:
     assert report.membership[SHADOWFAX] == []  # rank 589: outside the Smallcap 250 (D9)
     assert len(writer.caps) == 7 and len(writer.members) == 6
     sizes = {
-        r.detail["index"]: r.status for r in report.dq if r.check_id == "DQ.reference.index_size"
+        r.detail["index"]: r.status
+        for r in report.dq
+        if r.check_id.startswith("DQ.reference.index_size_")
     }
     assert sizes["NIFTY SMALLCAP 250"] == "warn"  # 251 rows on 29 Sep 2026
     assert report.status == "warn"
@@ -115,3 +117,10 @@ def test_membership_history_opens_and_closes() -> None:
     }
     assert ("NIFTY 100", MAZDOCK) in {(x["index_id"], x["isin"]) for x in leaves}
     assert all(x["index_id"] != "NIFTY SMALLCAP 250" for x in leaves)  # that file wasn't loaded
+
+
+def test_dq_results_have_unique_keys() -> None:
+    """T-REF-05: (check_id, isin) is the stored key, so no two results may share it."""
+    _, _, report = load_reference(BUNDLE, AMFI, INDEX, ASOF, MemoryWriter())
+    keys = [(r.check_id, r.isin) for r in report.dq]
+    assert len(keys) == len(set(keys))
