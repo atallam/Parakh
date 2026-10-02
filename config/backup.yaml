@@ -1,0 +1,11 @@
+# Encrypted database backups (plan 10 §11-12, plan 13 P9). Public keys only: the matching private
+# key stays with you (password manager), never in the repo, the database or GitHub.
+# `parakh backup keygen` creates a key pair and prints the public key to paste below.
+recipients:
+  - age1zyt52x53gh3j5kz75tdfwyhmhnx07ja00rnwcxml5dqj0d3aq9qql4n0yx  # Avinash, created 1 Oct 2026
+# Supabase session pooler (IPv4) for the `parakh` project; not a secret
+pooler_host: aws-0-ap-south-1.pooler.supabase.com
+bucket: backups
+# why: plan 10 §12 retention: 12 weekly + 12 monthly backups
+keep_weekly: 12
+keep_monthly: 12

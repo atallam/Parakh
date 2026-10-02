@@ -20,6 +20,9 @@ from dataclasses import dataclass, field
 import openpyxl
 
 SUPPORTED_VERSIONS = {2.1}
+# why: a real share history never shrinks 100×; below 1% of today's count means pre-listing
+# counts Screener did not adjust for the pre-IPO bonus issue.
+PRE_LISTING_SHARE_RATIO = 0.01
 SHEET = "Data Sheet"
 # Section header text in column A → section key
 SECTIONS = {
@@ -104,7 +107,12 @@ def parse_export(data: bytes) -> ScreenerExport:
     issues: list[str] = []
     section: str | None = None
     dates: list[dt.date | None] = []
+    # The annual P&L header, kept positionally: companies with fewer than ten years of history
+    # have blank leading columns, and PRICE/DERIVED rows line up with this header, not with a
+    # compacted list of years (Ather, Shadowfax: found on the Phase 1 pilot exports).
+    annual_header: list[dt.date | None] = []
     in_meta = False
+    seen: dict[tuple[str, str], int] = {}
     for row in rows[4:]:
         if not row or row[0] is None:
             continue
@@ -123,17 +131,19 @@ def parse_export(data: bytes) -> ScreenerExport:
             continue
         if label == "Report Date":
             dates = [_as_date(v) for v in row[1:]]
+            if section == "annual_pl" and not annual_header:
+                annual_header = dates
             continue
         if label == "PRICE:":
-            section_for_row = "annual_price"
-            dates_for_row = _annual_dates(facts)
+            section_for_row, dates_for_row = "annual_price", annual_header
         else:
             section_for_row, dates_for_row = section, dates
         if section_for_row is None or not dates_for_row:
             continue
         if section_for_row == "derived":
-            dates_for_row = _annual_dates(facts)
+            dates_for_row = annual_header
         unit = UNIT_OVERRIDES.get(label, "cr")
+        label = _unique_label(section_for_row, label, seen, issues)
         for period_end, raw in zip(dates_for_row, row[1:], strict=False):
             if period_end is not None:
                 facts.append(Fact(section_for_row, label, period_end, _as_float(raw), unit))
@@ -143,8 +153,22 @@ def parse_export(data: bytes) -> ScreenerExport:
     return export
 
 
-def _annual_dates(facts: list[Fact]) -> list[dt.date | None]:
-    return list(sorted({f.period_end for f in facts if f.section == "annual_pl"}))  # type: ignore[arg-type]
+# The balance sheet repeats "Total": liabilities side first, then assets (all 7 pilot exports).
+BALANCE_TOTALS = ("Total Liabilities", "Total Assets")
+
+
+def _unique_label(
+    section: str, label: str, seen: dict[tuple[str, str], int], issues: list[str]
+) -> str:
+    """Line items must be unique per section (they key the fundamentals table)."""
+    n = seen.get((section, label), 0)
+    seen[(section, label)] = n + 1
+    if section == "balance_sheet" and label == "Total" and n < len(BALANCE_TOTALS):
+        return BALANCE_TOTALS[n]
+    if n:
+        issues.append(f"{section}: label '{label}' repeats; kept as '{label} ({n + 1})'")
+        return f"{label} ({n + 1})"
+    return label
 
 
 def _check(export: ScreenerExport) -> None:
@@ -155,7 +179,7 @@ def _check(export: ScreenerExport) -> None:
             issues.append(f"section {key} missing")
     if export.meta.get("Number of shares") is None:
         issues.append("META 'Number of shares' is blank; use balance-sheet share counts")
-    totals = [f for f in export.facts if f.section == "balance_sheet" and f.item == "Total"]
+    totals = [f for f in export.facts if f.section == "balance_sheet" and f.item in BALANCE_TOTALS]
     by_period: dict[dt.date, list[float]] = {}
     for f in totals:
         if f.value is not None:
@@ -175,3 +199,17 @@ def _check(export: ScreenerExport) -> None:
                     f"share count differs from adjusted shares by {gap:.0%} at {last} "
                     f"({count / 1e7:.2f} Cr vs {adj} Cr)"
                 )
+    # Recent IPOs: Screener leaves pre-listing years at the pre-bonus count (Ather 0.01 Cr vs
+    # 38.27 Cr), so per-share history for those years is meaningless.
+    if adjusted:
+        latest = adjusted[max(adjusted)]
+        tiny = sorted(
+            p
+            for p, v in adjusted.items()
+            if v is not None and latest and v < PRE_LISTING_SHARE_RATIO * latest
+        )
+        if tiny:
+            issues.append(
+                f"adjusted shares up to {tiny[-1]} are under {PRE_LISTING_SHARE_RATIO:.0%} of the "
+                "latest (pre-listing, not bonus-adjusted); per-share history before then is unusable"
+            )

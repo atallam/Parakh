@@ -4,8 +4,10 @@
 
 | ID | Kind | Summary |
 |---|---|---|
-| — | | No rules registered yet (vetoes and the verdict policy land in Phase 2). |
+| `RULE.value.negative_cfo` | veto | Negative operating cash flow in 3 of the last 5 years vetoes the stock. |
+| `RULE.value.nnpa_cap` | veto | Net NPA above the threshold vetoes a bank or NBFC. |
+| `RULE.value.pledge_cap` | veto | Promoter pledge above the cap's limit vetoes the stock. |
 
 ## Lenses
 
-None registered yet.
+`LENS.momentum`, `LENS.value`

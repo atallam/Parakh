@@ -4,4 +4,20 @@
 
 | ID | Name | Lens | Severity | Summary |
 |---|---|---|---|---|
-| — | | | | No signals registered yet (M01–M30 land in Phase 2, events in Phase 3). |
+| `M01` | RS line new high before price | momentum | High | RS line makes a 52-week high while price is still below its 52-week high. |
+| `M02` | Stage 1 to 2 transition | momentum | High | Price breaks out of a base of at least six weeks above a flattening or rising 150 DMA on volume. |
+| `M03` | 52-week-high breakout on volume | momentum | High | Close at a new 52-week high with volume at or above the cap multiple of the 50-day average. |
+| `M04` | Volatility contraction pattern | momentum | Medium | Three or more successive pullbacks, each shallower than the last, with volume drying up. |
+| `M05` | Trend Template newly 8 of 8 | momentum | High | The Trend Template score moves to 8 of 8 from 7 or lower a month ago. |
+| `M06` | 200 DMA reclaim | momentum | Medium | Close back above the 200 DMA after at least 20 sessions below it. |
+| `M07` | Sector rotation in | momentum | Medium | The sector index's Mansfield RS against the benchmark crosses above zero. |
+| `M08` | Earnings gap and hold | momentum | High | A results-day gap of 4% or more on at least twice normal volume that holds above the gap-day low for five sessions. |
+| `M10` | Golden Cross | momentum | Medium | The 50 DMA crosses above the 200 DMA within the last five sessions. |
+| `M11` | Death Cross | momentum | High | The 50 DMA crosses below the 200 DMA within the last five sessions. |
+| `M12` | 50 DMA pullback bounce | momentum | Medium | In Stage 2, price touches the 50 DMA (within 2%) and closes back up on volume. |
+| `M20` | 50 DMA breakdown | momentum | Medium | Two closes below the 50 DMA on above-average volume. |
+| `M21` | 200 DMA breakdown | momentum | High | Two closes below the 200 DMA. |
+| `M22` | Stage 2 to 3 (topping) | momentum | High | The 150 DMA flattens after an advance, with distribution days increasing. |
+| `M23` | Bearish RSI divergence | momentum | Medium | Price makes a higher high while RSI makes a lower high, near a 52-week high. |
+| `M24` | Over-extension | momentum | Low | Price more than the cap's threshold above its 200 DMA. |
+| `M26` | Climax run | momentum | Medium | A gain of 25% or more in about three weeks, with the advance's largest volume today. |

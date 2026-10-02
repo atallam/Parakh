@@ -48,3 +48,64 @@ class RunLookup(BaseModel):
     found: bool
     run: RunView | None = None
     message: str = ""
+
+
+# -- Reports and analytics (Phase 2; plan 15 §4.2) ----------------------------------------------
+from typing import Any  # noqa: E402
+
+
+class StockLookup(BaseModel):
+    stamp: Stamp
+    found: bool
+    message: str = ""
+    symbol: str | None = None
+    period: str | None = None
+    view: dict[str, Any] | None = None
+
+
+class ChangeItem(BaseModel):
+    symbol: str
+    owned: bool
+    kind: str  # verdict | thesis | signal | red_flag | regime
+    text: str
+
+
+class WhatChanged(BaseModel):
+    stamp: Stamp
+    found: bool
+    message: str = ""
+    period: str | None = None
+    items: list[ChangeItem] = Field(default_factory=list)
+
+
+class SegmentLookup(BaseModel):
+    stamp: Stamp
+    found: bool
+    message: str = ""
+    cap: str | None = None
+    period: str | None = None
+    summary: dict[str, Any] | None = None
+    truncated: bool = False
+
+
+class HistoryLookup(BaseModel):
+    stamp: Stamp
+    found: bool
+    message: str = ""
+    symbol: str | None = None
+    columns: list[str] = Field(default_factory=list)
+    rows: list[dict[str, Any]] = Field(default_factory=list)
+
+
+class ExplainLookup(BaseModel):
+    stamp: Stamp
+    found: bool
+    message: str = ""
+    tree: dict[str, Any] | None = None
+    text: str = ""
+
+
+class CatalogueLookup(BaseModel):
+    stamp: Stamp
+    kind: str
+    items: list[dict[str, Any]] = Field(default_factory=list)

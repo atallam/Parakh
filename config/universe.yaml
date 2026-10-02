@@ -4,11 +4,12 @@ mode: pilot
 # why: plan 13 D9, small caps are the Nifty Smallcap 250 only.
 small_cap_index: NIFTY SMALLCAP 250
 
-# Pilot (plan 13 D3). Cap buckets from the AMFI July 2026 list; ATHERENERG and SHADOWFAX are
-# placed by market cap and confirmed from the AMFI file in Phase 1. Profiles per D24 (plan 01 §3).
+# Pilot (plan 13 D3). Cap buckets from the AMFI July 2026 list (confirmed for all seven in
+# Phase 1, 2 Oct 2026: 4 large, 1 mid, 2 small). Profiles per D24 (plan 01 §3).
 # Golden test stocks per D18: the only pilots with 10+ years of listed history.
 # ISINs checked against NSE quote pages on 29 Sep 2026; `parakh config validate` checks the
-# ISO 6166 check digit. listed_on for the young listings is filled in Phase 1 (D24).
+# ISO 6166 check digit. listed_on is the NSE listing date from EQUITY_L.csv (29 Sep 2026; D24);
+# it bounds the price history of young listings.
 pilot:
   - symbol: INDIGO
     isin: INE646L01027
@@ -16,6 +17,8 @@ pilot:
     cap: large
     cap_source: AMFI Jul 2026
     profile: airline_lease_heavy
+    sector: "Aviation – Airlines"
+    listed_on: 2015-11-10
     golden: true
   - symbol: M&M
     isin: INE101A01026
@@ -23,6 +26,8 @@ pilot:
     cap: large
     cap_source: AMFI Jul 2026
     profile: conglomerate_sotp
+    sector: "Automobiles – Diversified (holdco)"
+    listed_on: 1996-01-03
     golden: true
   - symbol: HDFCBANK
     isin: INE040A01034
@@ -30,6 +35,8 @@ pilot:
     cap: large
     cap_source: AMFI Jul 2026
     profile: bank
+    sector: "Banks – Private"
+    listed_on: 1995-11-08
     golden: true
   - symbol: GROWW
     isin: INE0HOQ01053
@@ -37,21 +44,38 @@ pilot:
     cap: large
     cap_source: AMFI Jul 2026
     profile: capital_market_intermediary
+    sector: "Capital Markets – Broking & Wealth"
+    listed_on: 2025-11-12
   - symbol: MAZDOCK
     isin: INE249Z01020
     name: Mazagon Dock Shipbuilders Ltd
     cap: mid
     cap_source: AMFI Jul 2026
     profile: order_book
+    sector: "Defence – Shipbuilding"
+    listed_on: 2020-10-12
+    # why: the 1:2 split (face value 10 -> 5) issued a new ISIN; NSE corporate-action and
+    # older price files still use the old one (spike ④, 29 Sep 2026)
+    previous_isins:
+      - isin: INE249Z01012
+        changed_on: 2024-12-27
+        reason: split
+        source: nse_archives
   - symbol: ATHERENERG
     isin: INE0LEZ01016
     name: Ather Energy Ltd
-    cap: mid
-    cap_source: market cap (provisional; confirm from AMFI in Phase 1)
+    # why small, not mid: AMFI rank 260 in the list for the six months to 30 Jun 2026
+    cap: small
+    cap_source: AMFI Jul 2026
     profile: new_age
+    sector: "Automobiles – Electric Two-Wheelers"
+    listed_on: 2025-05-06
   - symbol: SHADOWFAX
     isin: INE12UN01015
     name: Shadowfax Technologies Ltd
+    # AMFI rank 589: small cap, but outside the Nifty Smallcap 250 (D9); kept as a named pilot
     cap: small
-    cap_source: market cap (provisional; confirm from AMFI in Phase 1)
+    cap_source: AMFI Jul 2026
     profile: new_age
+    sector: "Logistics – Express & Last-Mile"
+    listed_on: 2026-01-28

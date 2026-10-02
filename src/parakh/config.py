@@ -66,9 +66,15 @@ class Settings(BaseSettings):
     parakh_config_dir: Path | None = None
     # audit outbox, run manifests, caches (git-ignored); default <repo>/state
     parakh_state_dir: Path | None = None
+    # generated reports and snapshots: <output>/<cap>_cap/<SYMBOL>/… (plan 00 §4); default <repo>
+    parakh_output_dir: Path | None = None
+    # plan 13 D19: your private files (CAS PDFs, exports) stay in OneDrive, outside the repo
+    parakh_inbox_dir: Path | None = None
 
     # Project-specific
     cas_password: SecretStr | None = None
+    # plan 13 P6: key behind account_ref hashes; must stay stable once lots are stored
+    parakh_account_key: SecretStr | None = None
     telegram_bot_token: SecretStr | None = None
     telegram_chat_id: SecretStr | None = None
     supabase_db_password: SecretStr | None = None
@@ -82,6 +88,11 @@ def config_dir() -> Path:
 def state_dir() -> Path:
     """Where local state lives: audit outbox, run manifests (PARAKH_STATE_DIR overrides)."""
     return get_settings().parakh_state_dir or REPO_ROOT / "state"
+
+
+def output_dir() -> Path:
+    """Root of the generated cap folders (PARAKH_OUTPUT_DIR overrides; default: the repo root)."""
+    return get_settings().parakh_output_dir or REPO_ROOT
 
 
 @lru_cache(maxsize=1)

@@ -26,6 +26,15 @@ repos:
         entry: uv run ruff format
         language: system
         types: [python]
+      - id: private-files
+        name: private files (AC-F03.4)
+        entry: uv run python tools/check_private_files.py
+        language: system
+      - id: thesis-original
+        name: THESIS.md original is immutable (F23)
+        entry: uv run python tools/check_thesis_original.py
+        language: system
+        files: THESIS\.md$
       - id: repo-rules
         name: token and layering lint
         entry: uv run python tools/lint_rules.py

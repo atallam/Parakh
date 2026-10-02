@@ -1,0 +1,41 @@
+[
+ {
+  "date": "30-JUN-2026",
+  "broadcastDate": "20-JUL-2026 14:07:50",
+  "submissionDate": "20-JUL-2026",
+  "systemDate": "20-JUL-2026 14:07:54",
+  "pr_and_prgrp": "16.51",
+  "public_val": "83.49",
+  "employeeTrusts": "0",
+  "xbrl": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1696637_20072026020744_WEB.xml",
+  "revisedData": "N",
+  "symbol": "SHADOWFAX",
+  "isin": "INE12UN01015"
+ },
+ {
+  "date": "31-MAR-2026",
+  "broadcastDate": "12-MAY-2026 10:48:16",
+  "submissionDate": "21-APR-2026",
+  "systemDate": "12-MAY-2026 10:48:21",
+  "pr_and_prgrp": "16.59",
+  "public_val": "83.41",
+  "employeeTrusts": "0",
+  "xbrl": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1664812_08052026124813_WEB.xml",
+  "revisedData": "Revised",
+  "symbol": "SHADOWFAX",
+  "isin": "INE12UN01015"
+ },
+ {
+  "date": "23-JAN-2026",
+  "broadcastDate": "02-FEB-2026 12:49:16",
+  "submissionDate": "28-JAN-2026",
+  "systemDate": "02-FEB-2026 12:49:21",
+  "pr_and_prgrp": "16.71",
+  "public_val": "83.29",
+  "employeeTrusts": "0",
+  "xbrl": "https://nsearchives.nseindia.com/corporate/xbrl/SHP_1614812_30012026054653_WEB.xml",
+  "revisedData": "Revised",
+  "symbol": "SHADOWFAX",
+  "isin": "INE12UN01015"
+ }
+]

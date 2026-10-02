@@ -1,0 +1,52 @@
+# Sector-profile inputs read from exchange filings (plan 13 D24; plan 01 §3). Each entry says
+# where a number is found in a filing; the numbers themselves are never typed here.
+# Stored in `fundamentals` as metric `profile.<id>` (source nse_archives, T1).
+
+# why: balance-sheet lines are filed only with the September and March results, so 8 quarters
+# give 4 balance-sheet dates, enough for a 2-year trend of lease debt or customer advances
+quarters: 8
+# why: SOTP needs the current stake and whether it moved in the last year; each investee
+# filing is a 0.7 MB download, so 4 quarters keeps the load under a minute
+stake_quarters: 4
+
+filing_items:
+  INE646L01027:   # INDIGO: airline / lease-heavy profile
+    # why: IndiGo's group accounts include its leasing and other subsidiaries; Screener's
+    # export for it is consolidated, so the profile inputs use the same basis
+    basis: consolidated
+    items:
+      # why: lease liabilities are debt in all but name for an airline: EV and net debt include them
+      - {id: lease_liabilities_noncurrent_cr, tag: OtherNoncurrentFinancialLiabilities, match: "lease liabilit", kind: balance}
+      - {id: lease_liabilities_current_cr, tag: OtherCurrentFinancialLiabilities, match: "lease liabilit", kind: balance}
+      # why: EBITDAR = EBITDA + aircraft and engine rentals (short-term leases kept off the balance sheet)
+      - {id: aircraft_engine_rentals_cr, tag: OtherExpenses, match: "aircraft and engine rentals", kind: flow}
+      # why: supplementary rentals are maintenance reserves paid to lessors; shown beside EBITDAR, not added back
+      - {id: supplementary_rentals_maintenance_cr, tag: OtherExpenses, match: "supplementary rentals", kind: flow}
+      # why: dollar lease liabilities are revalued every quarter; the loss distorts reported profit
+      - {id: forex_loss_cr, tag: OtherExpenses, match: "foreign exchange loss", kind: flow}
+      # why: fuel is the largest cost line and the main driver of the cycle
+      - {id: aircraft_fuel_cr, tag: OtherExpenses, match: "aircraft fuel", kind: flow}
+  INE249Z01020:   # MAZDOCK: order-book profile
+    # why: the shipyard has no material subsidiaries; Screener's export for it is consolidated
+    basis: consolidated
+    items:
+      # why: customer advances fund the yard's working capital; a falling balance without new
+      # orders is the early sign of an order-book run-down
+      - {id: contract_liabilities_cr, tag: OtherCurrentLiabilities, match: "contract liabilit", kind: balance}
+      # why: sub-contracting share of cost shows how much work is passed outside the yard
+      - {id: subcontract_cost_cr, tag: OtherExpenses, match: "sub-contract", kind: flow}
+
+listed_stakes:
+  INE101A01026:   # M&M: conglomerate / holdco profile (SOTP)
+    holder: "Mahindra & Mahindra Limited"
+    # why: the listed group companies in which M&M itself is a named promoter holder. Stakes held
+    # through subsidiaries are not counted (they are inside the subsidiary's own value).
+    # Review this list at each UAT: a new listing or an exit changes the SOTP.
+    investees:
+      - {symbol: TECHM, isin: INE669C01036}
+      - {symbol: "M&MFIN", isin: INE774D01024}
+      - {symbol: MAHLIFE, isin: INE813A01018}
+      - {symbol: MHRIL, isin: INE998I01010}
+      - {symbol: MAHLOG, isin: INE766P01016}
+      - {symbol: SWARAJENG, isin: INE277A01016}
+      - {symbol: MAHEPC, isin: INE215D01010}

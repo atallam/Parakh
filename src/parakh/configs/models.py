@@ -74,6 +74,22 @@ Profile = Literal[
 ]
 
 
+class PreviousIsin(Strict):
+    """An ISIN the security had before a split or face-value change (spike ④; plan 05 isin_history)."""
+
+    isin: str
+    changed_on: dt.date
+    reason: Literal["split", "face_value", "merger", "other"]
+    source: str
+
+    @field_validator("isin")
+    @classmethod
+    def _isin(cls, v: str) -> str:
+        if not isin_check_digit_ok(v):
+            raise ValueError(f"{v} is not a valid ISIN (format or check digit)")
+        return v
+
+
 class Security(Strict):
     symbol: str
     isin: str
@@ -81,8 +97,12 @@ class Security(Strict):
     cap: Cap
     cap_source: str
     profile: Profile
+    sector: str | None = (
+        None  # a label for reports; peers and sector indices come with later phases
+    )
     golden: bool = False
     listed_on: dt.date | None = None
+    previous_isins: list[PreviousIsin] = []
 
     @field_validator("isin")
     @classmethod
@@ -112,6 +132,85 @@ class UniverseConfig(Strict):
 
     def by_isin(self, isin: str) -> Security | None:
         return next((s for s in self.pilot if s.isin == isin), None)
+
+
+# -- sources.yaml ----------------------------------------------------------------------------
+class SourceSpec(Strict):
+    id: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
+    tier: Literal["T1", "T2", "T3"]
+    data_types: list[str] = Field(min_length=1)
+    access: str
+    terms: str
+    cadence: str
+
+
+class SourcesConfig(Strict):
+    sources: list[SourceSpec]
+
+    @model_validator(mode="after")
+    def _unique(self) -> SourcesConfig:
+        ids = [s.id for s in self.sources]
+        dupes = {i for i in ids if ids.count(i) > 1}
+        if dupes:
+            raise ValueError(f"duplicate source ids: {sorted(dupes)}")
+        return self
+
+    def ids(self) -> set[str]:
+        return {s.id for s in self.sources}
+
+
+# -- data_quality.yaml -----------------------------------------------------------------------
+class PriceDq(Strict):
+    history_years: int = Field(ge=1, le=30)
+    close_mismatch_pct: float = Field(gt=0, le=10)
+    cross_check_sessions: int = Field(ge=1, le=60)
+    max_unexplained_move_ratio: float = Field(gt=0, lt=1)
+    max_stale_trading_days: int = Field(ge=1, le=30)
+
+
+class FundamentalsDq(Strict):
+    min_annual_years: int = Field(ge=1, le=30)
+    xbrl_tolerance_cr: float = Field(gt=0)
+    xbrl_tolerance_pct: float = Field(gt=0, le=10)
+    xbrl_quarters: int = Field(ge=1, le=20)
+    max_latest_quarter_age_days: int = Field(ge=30, le=400)
+    assumed_report_lag_days: int = Field(ge=30, le=180)
+
+
+class ReferenceDq(Strict):
+    index_size_tolerance: int = Field(ge=0, le=20)
+    amfi_max_age_days: int = Field(ge=30, le=400)
+
+
+class ShareholdingDq(Strict):
+    quarters: int = Field(ge=1, le=40)
+    promoter_tolerance_pp: float = Field(gt=0, le=1)
+    period_slack_days: int = Field(ge=0, le=30)
+    max_latest_age_days: int = Field(ge=30, le=400)
+
+
+class DataQualityConfig(Strict):
+    prices: PriceDq
+    fundamentals: FundamentalsDq
+    reference: ReferenceDq
+    shareholding: ShareholdingDq
+
+
+# -- backup.yaml -----------------------------------------------------------------------------
+class BackupConfig(Strict):
+    recipients: list[str]
+    pooler_host: str
+    bucket: str = Field(pattern=r"^[a-z0-9-]+$")
+    keep_weekly: int = Field(ge=1, le=104)
+    keep_monthly: int = Field(ge=1, le=120)
+
+    @field_validator("recipients")
+    @classmethod
+    def _age(cls, v: list[str]) -> list[str]:
+        bad = [r for r in v if not re.fullmatch(r"age1[0-9a-z]{58}", r)]
+        if bad:
+            raise ValueError(f"not age public keys: {bad} (private keys never belong here)")
+        return v
 
 
 # -- lenses.yaml -----------------------------------------------------------------------------
@@ -236,3 +335,33 @@ class UiTokens(Strict):
                 if style.token not in self.colors:
                     raise ValueError(f"statuses.{family}.{status}: unknown token {style.token}")
         return self
+
+
+# -- profile_inputs.yaml (plan 13 D24) ------------------------------------------------------
+class FilingItem(Strict):
+    id: str = Field(pattern=r"^[a-z][a-z0-9_]*_cr$")
+    tag: str = Field(pattern=r"^[A-Za-z]+$")
+    match: str = Field(min_length=3)
+    kind: Literal["balance", "flow"]
+
+
+class FilingProfile(Strict):
+    basis: Literal["consolidated", "standalone"]
+    items: list[FilingItem] = Field(min_length=1)
+
+
+class Investee(Strict):
+    symbol: str = Field(min_length=1)
+    isin: str = Field(pattern=r"^[A-Z]{2}[A-Z0-9]{9}[0-9]$")
+
+
+class StakeRegister(Strict):
+    holder: str = Field(min_length=3)
+    investees: list[Investee] = Field(min_length=1)
+
+
+class ProfileInputsConfig(Strict):
+    quarters: int = Field(ge=1, le=40)
+    stake_quarters: int = Field(ge=1, le=20)
+    filing_items: dict[str, FilingProfile] = Field(default_factory=dict)
+    listed_stakes: dict[str, StakeRegister] = Field(default_factory=dict)

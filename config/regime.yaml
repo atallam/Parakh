@@ -1,0 +1,15 @@
+# Market regime per segment (plan 02 §5, F16). Computed from the segment benchmark.
+risk_on_breadth_min: 0.55         # why: plan 02 §5, share of constituents above their 200 DMA
+risk_off_breadth_max: 0.40
+# why: pilot mode has no constituent prices, so breadth is unknown; the regime then uses the
+# benchmark's own trend only and says so in the report (never a guess at breadth)
+breadth_unavailable: benchmark_only
+vix_percentile_high: 0.80         # why: plan 02 §5 modifier, VIX above its 1-year 80th percentile and rising
+vix_rising_sessions: 5
+ma_long: 200
+ma_short: 50
+market_valuation_top_decile: 0.90 # why: plan 01 §2.7, top decile of the index P/E band raises required MoS
+mos_uplift_pp: 5
+risk_off_view_cap: WATCH          # why: plan 02 §5, momentum BUYs capped at WATCH in Risk-Off
+neutral_template_min: 7           # why: plan 02 §5, Neutral needs Trend Template ≥ 7/8 for a BUY
+flow_headwind_cr: 20000           # why: plan 02 §5 modifier; 20-day FII net selling threshold, tuned later

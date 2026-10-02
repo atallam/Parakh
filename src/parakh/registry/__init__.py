@@ -160,10 +160,21 @@ DISCOVERY_PACKAGES = (
 )
 
 
+_DISCOVERED = False
+
+
 def discover() -> Registries:
-    """Import every module that registers something, so the registries are complete."""
+    """Import every module that registers something, so the registries are complete.
+
+    The package walk touches the file system for every module, so it runs once per process;
+    callers on hot paths (report formatting) can call this freely.
+    """
+    global _DISCOVERED
+    if _DISCOVERED:
+        return REGISTRY
     for pkg_name in DISCOVERY_PACKAGES:
         pkg = importlib.import_module(pkg_name)
         for mod in pkgutil.walk_packages(pkg.__path__, prefix=pkg_name + "."):
             importlib.import_module(mod.name)
+    _DISCOVERED = True
     return REGISTRY

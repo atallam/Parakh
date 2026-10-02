@@ -8,12 +8,16 @@ UPDATE (which the trigger would reject). That is what lets a run retry its outbo
 
 from __future__ import annotations
 
+import math
+from collections.abc import Iterable
 from typing import Any
 
 from postgrest.types import ReturnMethod
 
+from parakh.audit.context import RunContext
 from parakh.audit.emit import AuditEvent
 from parakh.audit.manifest import RunManifest
+from parakh.quality import DqResult
 
 AUDIT_COLUMNS = {
     "event_id", "event_type", "ts_utc", "trading_date_ist", "run_id", "step_id", "actor_type",
@@ -22,6 +26,37 @@ AUDIT_COLUMNS = {
     "prev_hash", "record_hash",
 }  # fmt: skip
 BATCH = 500
+PAGE = 1000  # PostgREST's default row cap per request
+FUNDAMENTAL_KEY = ("isin", "metric_id", "period_type", "period_end", "source_id")
+
+
+def plan_fundamental_inserts(
+    rows: list[dict[str, Any]], latest: dict[tuple[Any, ...], tuple[int, Any]], run_id: str
+) -> tuple[list[dict[str, Any]], int]:
+    """Rows to insert given the latest stored (version, value) per key; and how many restate.
+
+    New key → version 1. Same value → skipped. Different value → next version (a restatement:
+    the old row stays, so past runs remain reproducible).
+    """
+    new: list[dict[str, Any]] = []
+    restated = 0
+    for r in rows:
+        key = tuple(r[k] for k in FUNDAMENTAL_KEY)
+        value = r["value"]
+        if isinstance(value, float) and math.isnan(value):
+            value = None
+        if key in latest:
+            version, old = latest[key]
+            same = (old is None and value is None) or (
+                old is not None and value is not None and abs(float(old) - float(value)) < 1e-9
+            )
+            if same:
+                continue
+            restated += 1
+            new.append({**r, "value": value, "version": version + 1, "run_id": run_id})
+        else:
+            new.append({**r, "value": value, "version": 1, "run_id": run_id})
+    return new, restated
 
 
 def audit_row(event: AuditEvent) -> dict[str, Any]:
@@ -78,6 +113,224 @@ class SupabaseRepository:
         if steps:
             self.client.table("run_steps").upsert(steps, on_conflict="step_id").execute()
 
+    def begin_run(self, ctx: RunContext) -> None:
+        """A RUNNING row at START, so rows written during the run can reference it."""
+        self.client.table("runs").upsert(
+            {
+                "run_id": ctx.run_id,
+                "mode": ctx.mode,
+                "env": ctx.env,
+                "asof": ctx.asof.isoformat(),
+                "trigger_type": ctx.trigger,
+                "triggered_by": ctx.actor,
+                "started_at": ctx.started_at.isoformat(),
+                "status": "RUNNING",
+                "code_version": ctx.code_version,
+                "config_hash": ctx.config_hash,
+                "framework_version": ctx.framework_version,
+            },
+            on_conflict="run_id",
+        ).execute()
+
+    def _all(self, table: str, columns: str, **eq: str) -> list[dict[str, Any]]:
+        rows: list[dict[str, Any]] = []
+        start = 0
+        while True:
+            query = self.client.table(table).select(columns)
+            for col, value in eq.items():
+                query = query.eq(col, value)
+            batch = query.range(start, start + PAGE - 1).execute().data or []
+            rows.extend(batch)
+            if len(batch) < PAGE:
+                return rows
+            start += PAGE
+
+    def write_fundamentals(self, rows: list[dict[str, Any]], run_id: str) -> tuple[int, int]:
+        """Append-only, versioned (plan 05 §3.4): new keys get version 1, changed values the
+        next version (a restatement), unchanged values are skipped. Returns (inserted, restated).
+        """
+        isins = {r["isin"] for r in rows}
+        latest: dict[tuple[Any, ...], tuple[int, Any]] = {}
+        for isin in isins:
+            for r in self._all(
+                "fundamentals", ",".join((*FUNDAMENTAL_KEY, "version", "value")), isin=isin
+            ):
+                key = tuple(r[k] for k in FUNDAMENTAL_KEY)
+                if key not in latest or r["version"] > latest[key][0]:
+                    latest[key] = (r["version"], r["value"])
+        new, restated = plan_fundamental_inserts(rows, latest, run_id)
+        for i in range(0, len(new), BATCH):
+            self.client.table("fundamentals").insert(
+                new[i : i + BATCH], returning=ReturnMethod.minimal
+            ).execute()
+        return len(new), restated
+
+    def record_price_files(self, rows: list[dict[str, Any]]) -> int:
+        if rows:
+            self.client.table("price_files").upsert(
+                rows,
+                on_conflict="storage_path,sha256",
+                ignore_duplicates=True,
+                returning=ReturnMethod.minimal,
+            ).execute()
+        return len(rows)
+
+    def record_dq(self, run_id: str, results: Iterable[DqResult]) -> int:
+        rows = [
+            {
+                "run_id": run_id,
+                "isin": r.isin,
+                "check_id": r.check_id,
+                "status": r.status,
+                "detail": r.detail,
+            }
+            for r in results
+        ]
+        if rows:
+            self.client.table("dq_results").upsert(
+                rows, on_conflict="run_id,check_id,isin", returning=ReturnMethod.minimal
+            ).execute()
+        return len(rows)
+
+    def dq_rows(self) -> list[dict[str, Any]]:
+        return self._all("dq_results", "run_id,isin,check_id,status,detail")
+
+    # -- reference data ---------------------------------------------------------------------
+    def open_memberships(self) -> list[dict[str, Any]]:
+        return (
+            self.client.table("index_membership")
+            .select("index_id,isin,valid_from")
+            .is_("valid_to", "null")
+            .execute()
+            .data
+            or []
+        )
+
+    def write_reference(
+        self, caps: list[dict[str, Any]], joins: list[dict[str, Any]], leaves: list[dict[str, Any]]
+    ) -> None:
+        if caps:
+            self.client.table("cap_classification").upsert(
+                caps,
+                on_conflict="isin,effective_date",
+                ignore_duplicates=True,
+                returning=ReturnMethod.minimal,
+            ).execute()
+        if joins:
+            self.client.table("index_membership").upsert(
+                joins,
+                on_conflict="index_id,isin,valid_from",
+                ignore_duplicates=True,
+                returning=ReturnMethod.minimal,
+            ).execute()
+        for leave in leaves:
+            (
+                self.client.table("index_membership")
+                .update({"valid_to": leave["valid_to"]})
+                .eq("index_id", leave["index_id"])
+                .eq("isin", leave["isin"])
+                .is_("valid_to", "null")
+                .execute()
+            )
+
+    # -- shareholding (append-only: a revised filing is a new row) ----------------------------
+    def stored_shareholding(self, isin: str) -> list[dict[str, Any]]:
+        return self._all("shareholding", "*", isin=isin)
+
+    def write_shareholding(self, rows: list[dict[str, Any]]) -> None:
+        if rows:
+            self.client.table("shareholding").upsert(
+                rows,
+                on_conflict="isin,period_end,reported_on",
+                ignore_duplicates=True,
+                returning=ReturnMethod.minimal,
+            ).execute()
+
+    # -- holdings (restricted tables; service role only) -------------------------------------
+    def statement_exists(self, file_sha256: str) -> bool:
+        rows = (
+            self.client.table("cas_statements")
+            .select("statement_id")
+            .eq("file_sha256", file_sha256)
+            .execute()
+            .data
+        )
+        return bool(rows)
+
+    def lots_for_account(self, account_ref: str) -> list[Any]:
+        import datetime as dt
+
+        from parakh.holdings.lots import Lot
+
+        rows = self._all(
+            "holdings_lots",
+            "lot_id,account_ref,isin,qty,trade_date,settle_date,price_inr,source,status",
+            account_ref=account_ref,
+        )
+        return [
+            Lot(
+                r["lot_id"],
+                r["account_ref"],
+                r["isin"],
+                float(r["qty"]),
+                dt.date.fromisoformat(r["trade_date"]),
+                dt.date.fromisoformat(r["settle_date"]),
+                None if r["price_inr"] is None else float(r["price_inr"]),
+                r["source"],
+            )
+            for r in rows
+            if r["status"] == "open"
+        ]
+
+    def open_lots(self) -> list[Any]:
+        """Every open tax lot across accounts (restricted table; service role only)."""
+        import datetime as dt
+
+        from parakh.holdings.lots import Lot
+
+        rows = self._all(
+            "holdings_lots",
+            "lot_id,account_ref,isin,qty,trade_date,settle_date,price_inr,source,status",
+        )
+        return [
+            Lot(
+                r["lot_id"],
+                r["account_ref"],
+                r["isin"],
+                float(r["qty"]),
+                dt.date.fromisoformat(r["trade_date"]),
+                dt.date.fromisoformat(r["settle_date"]),
+                None if r["price_inr"] is None else float(r["price_inr"]),
+                r["source"],
+            )
+            for r in rows
+            if r["status"] == "open"
+        ]
+
+    def fundamentals_for(self, isin: str) -> list[dict[str, Any]]:
+        return self._all("fundamentals", "*", isin=isin)
+
+    def write_holdings(self, plan: Any, run_id: str) -> None:
+        """Statement → positions → lots → transactions (foreign-key order)."""
+        from parakh.orchestration.holdings import lot_row
+
+        if plan.statement is not None:
+            self.client.table("cas_statements").insert(
+                {**plan.statement, "run_id": run_id}
+            ).execute()
+            if plan.positions:
+                self.client.table("cas_positions").insert(
+                    plan.positions, returning=ReturnMethod.minimal
+                ).execute()
+        if plan.lots:
+            self.client.table("holdings_lots").insert(
+                [lot_row(lot) for lot in plan.lots], returning=ReturnMethod.minimal
+            ).execute()
+        if plan.transactions:
+            self.client.table("transactions").insert(
+                plan.transactions, returning=ReturnMethod.minimal
+            ).execute()
+
     def insert_audit_events(self, events: list[AuditEvent]) -> int:
         rows = [audit_row(e) for e in events]
         for i in range(0, len(rows), BATCH):
@@ -114,3 +367,29 @@ class SupabaseAuditSyncer:
             return self.repo.insert_audit_events(events)
         except Exception:
             return 0
+
+
+class SupabaseRunRecorder:
+    """RunRecorder: mirrors each run into `runs` and `run_steps` (plan 10 §5)."""
+
+    def __init__(self, repo: SupabaseRepository) -> None:
+        self.repo = repo
+
+    def begin(self, ctx: RunContext) -> None:
+        self.repo.begin_run(ctx)
+
+    def end(self, manifest: RunManifest) -> None:
+        self.repo.save_run(manifest)
+
+
+def connect_supabase(url: str, key: str) -> SupabaseRepository:
+    """Wire the process audit sink to Supabase (outbox flush + run mirroring) and return the repo."""
+    from supabase import create_client
+
+    from parakh.audit.emit import get_sink
+
+    repo = SupabaseRepository(create_client(url, key))
+    sink = get_sink()
+    sink.syncer = SupabaseAuditSyncer(repo)
+    sink.recorder = SupabaseRunRecorder(repo)
+    return repo

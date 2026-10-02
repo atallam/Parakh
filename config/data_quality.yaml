@@ -1,0 +1,52 @@
+# Data-quality thresholds (plan 04 §4, plan 10 §13; AC-F02.x). Code reads these; it never
+# hard-codes a threshold.
+prices:
+  # why: plan 09 Phase 1 exit gate: 10 years per pilot (since listing for young listings, D24)
+  history_years: 10
+  # why: plan 00 "Data sources": cross-check Yahoo's close with the exchange; flag >1% mismatch
+  close_mismatch_pct: 1.0
+  # why: recent sessions compared with the exchange on every load; 5 covers a trading week
+  cross_check_sessions: 5
+  # why: plan 04 §4 #8: a one-day move over 40% needs a corporate action to explain it
+  max_unexplained_move_ratio: 0.40
+  # why: more than 3 trading days without a bar means the feed stalled or the stock is suspended
+  max_stale_trading_days: 3
+
+fundamentals:
+  # why: plan 09 Phase 1 exit gate: 10 years of fundamentals per pilot (since listing for young ones)
+  min_annual_years: 10
+  # why: Screener rounds to ₹0.01 Cr; a gap over ₹0.5 Cr on a line is a definition or data
+  # difference, not rounding (M&M and HDFC Bank tie to the paisa when the map is right)
+  xbrl_tolerance_cr: 0.5
+  # why: and over 0.02% of the line (₹8 Cr on M&M's ₹41,470 Cr quarter): lines tie to the
+  # paisa when the map is right, so anything larger is a real difference
+  xbrl_tolerance_pct: 0.02
+  # why: the latest 4 quarters are cross-checked on every load; older ones were checked before
+  xbrl_quarters: 4
+  # why: SEBI LODR: quarterly results within 45 days, annual within 60; a quarter older than
+  # 150 days at load time means the export is stale
+  max_latest_quarter_age_days: 150
+  # why: SEBI LODR Reg. 33: annual results within 60 days of the year end, quarterly within 45.
+  # A figure with no filing date on record is treated as public only 60 days after its period
+  # end, so a past-date score can never see it early (AC-F02.3)
+  assumed_report_lag_days: 60
+
+reference:
+  # why: an index briefly carries an extra row during a demerger or replacement (the Smallcap
+  # 250 file had 251 on 29 Sep 2026); more than 2 off means the wrong or a truncated file
+  index_size_tolerance: 2
+  # why: AMFI publishes each January and July; a list older than ~7 months has been superseded
+  amfi_max_age_days: 220
+
+shareholding:
+  # why: plan 01 "Ownership trend" reads promoter, FII, DII and pledge over the last 8 quarters
+  quarters: 8
+  # why: the exchange summary shows 2 decimals; the XBRL share counts give the same figure to
+  # within rounding (0.005), so 0.02 points apart means a wrong context or a revised filing
+  promoter_tolerance_pp: 0.02
+  # why: SEBI LODR Reg. 31: the pattern is filed within 21 days of the quarter end, so the
+  # newest one is at most 92 + 21 days old; beyond 120 a filing was missed
+  max_latest_age_days: 120
+  # why: the pattern filed at listing is dated the listing day in the XBRL and up to 5 days
+  # earlier in the exchange list (SHADOWFAX, GROWW); 7 days allows that and nothing near a quarter
+  period_slack_days: 7

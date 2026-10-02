@@ -1,0 +1,75 @@
+# Verdict policy: how the two lenses combine (plan 00 §5, F08). Thresholds only here (plan 04 §3.2).
+# A change to any key here changes the config hash, which every snapshot records (AC-F08.5);
+# bump policy_version in the same pull request.
+policy_version: "1.0.0"
+
+# why: plan 00 §5, the 70 and 45 cut-offs apply to both lenses
+value_bands: {high: 70, low: 45}
+momentum_bands: {high: 70, low: 45}
+# why: plan 00 §5, a band only changes when the score is more than 5 points past the cut-off
+hysteresis: 5
+
+# Rows are the value band (high ≥ 70, fair 45–70, low < 45); columns the momentum band.
+matrix:
+  high:
+    strong:  {verdict: STRONG_BUY}
+    neutral: {verdict: BUY, qualifier: staggered}               # why: build in 3–4 tranches
+    weak:    {verdict: WATCH}                                    # why: cheap but falling; see refinements
+  fair:
+    strong:  {verdict: BUY, qualifier: momentum-led, momentum_led: true}  # why: needs a trailing stop
+    neutral: {verdict: HOLD}
+    weak:    {verdict: REDUCE}
+  low:
+    strong:  {verdict: MOMENTUM_ONLY, momentum_led: true}      # why: tight stop, no averaging down
+    neutral: {verdict: REDUCE}
+    weak:    {verdict: SELL}
+
+# why: plan 00 §5 offers "WATCH / ACCUMULATE slowly" for cheap-but-falling stocks. We accumulate
+# only when no value-trap warning is raised and the value lens is at least Med confidence.
+refinements:
+  - {cell: high/weak, verdict: ACCUMULATE, requires_no_flag_prefix: "value-trap", min_value_confidence: Med}
+
+# why: plan 00 §5, any red-flag veto overrides the matrix: AVOID unless momentum is also weak
+veto_matrix:
+  strong:  {verdict: AVOID}
+  neutral: {verdict: AVOID}
+  weak:    {verdict: SELL}
+
+# why: plan 12 §3.2 position verbs for stocks you own
+owned_wording:
+  STRONG_BUY: ADD
+  BUY: ADD
+  ACCUMULATE: ADD
+  HOLD: HOLD
+  WATCH: HOLD
+  MOMENTUM_ONLY: HOLD
+  REDUCE: TRIM
+  SELL: EXIT
+  AVOID: EXIT
+# why: plan 00 §5 prints "SELL / AVOID"; a stock you do not hold has nothing to sell
+not_owned_remap: {SELL: AVOID}
+# why: F23, a broken thesis leads to an EXIT suggestion for an owned stock
+thesis_broken_action: EXIT
+
+# Strongest first; the order is used by the attribution to say whether a move is an upgrade.
+verdict_order: [STRONG_BUY, BUY, ACCUMULATE, MOMENTUM_ONLY, HOLD, WATCH, REDUCE, SELL, AVOID]
+
+# why: plan 00 §5 and AC-F05.3, in a Risk-Off segment momentum cannot count as strong, so
+# momentum-led buys fall to HOLD and cheap stocks to a staggered BUY
+regime_momentum_downgrade:
+  Risk-Off: {strong: neutral}
+
+# why: AC-F05.4, a circuit trap (M27) or surveillance listing (M28) blocks a momentum-led buy.
+# These signals need exchange price-band and surveillance data, which arrive in Phase 3.
+momentum_blockers: [M27, M28]
+
+# why: plan 00 §5 limited-history rule (D24): value informational → Fair value row, Low confidence
+informational_value_row: fair
+limited_history_label: limited history
+# why: plan 00 §5, with fewer than 126 sessions the verdict comes from vetoes only, WATCH at best
+informational_momentum_verdict: WATCH
+# why: AC-F08.4, each verdict change lists its top three drivers
+top_drivers: 3
+# Lenses with a policy row. A lens registered later but not listed here is shown as
+# informational and cannot change a verdict (AC-F08.3).
+policy_lens_ids: [value, momentum]

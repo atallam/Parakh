@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import socket
+import sys
 import threading
 from dataclasses import dataclass, field
+from typing import Any
 
 import pytest
 import structlog
@@ -48,9 +50,23 @@ def reset_logging():
     structlog.reset_defaults()
 
 
+def called_from_socketpair() -> bool:
+    """True when the caller is CPython's loopback socketpair emulation.
+
+    On Windows, socket.socketpair() is built from bind/listen/connect on 127.0.0.1,
+    and every asyncio event loop uses it for its internal self-pipe. That is not
+    network access, so the guards below let it through and block everything else.
+    """
+    return sys._getframe(2).f_code.co_name == "_fallback_socketpair"
+
+
 @pytest.fixture(autouse=True)
 def no_network(monkeypatch: pytest.MonkeyPatch):
-    def blocked(*_args: object, **_kwargs: object) -> None:
+    real_connect = socket.socket.connect
+
+    def blocked(self: socket.socket, *args: Any, **kwargs: Any) -> None:
+        if called_from_socketpair():
+            return real_connect(self, *args, **kwargs)
         raise RuntimeError("network access is blocked in tests")
 
     monkeypatch.setattr(socket.socket, "connect", blocked)

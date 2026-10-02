@@ -18,8 +18,8 @@ mcp:
   # Toolsets exposed by parakh-mcp (plan 15 §4.2). Only R-tier tools before M1.
   toolsets:
     audit: true
-    reports: false
-    analytics: false
+    reports: true
+    analytics: true
     data: false
     portfolio: false
     notify: false
