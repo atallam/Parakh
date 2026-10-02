@@ -230,6 +230,19 @@ class SupabaseRepository:
                 .execute()
             )
 
+    # -- shareholding (append-only: a revised filing is a new row) ----------------------------
+    def stored_shareholding(self, isin: str) -> list[dict[str, Any]]:
+        return self._all("shareholding", "*", isin=isin)
+
+    def write_shareholding(self, rows: list[dict[str, Any]]) -> None:
+        if rows:
+            self.client.table("shareholding").upsert(
+                rows,
+                on_conflict="isin,period_end,reported_on",
+                ignore_duplicates=True,
+                returning=ReturnMethod.minimal,
+            ).execute()
+
     # -- holdings (restricted tables; service role only) -------------------------------------
     def statement_exists(self, file_sha256: str) -> bool:
         rows = (

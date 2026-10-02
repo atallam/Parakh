@@ -216,6 +216,40 @@ def _reference_load(store: str, amfi_file: str | None) -> int:
     return 0 if report.status != "fail" else 1
 
 
+def _shareholding_load(store: str, symbols: list[str] | None) -> int:
+    """Quarterly shareholding pattern and promoter pledge from NSE filings. Needs the network."""
+    from parakh.adapters.exchange_http import NseApi
+    from parakh.configs import load_all
+    from parakh.orchestration.shareholding import load_shareholding
+    from parakh.render.format import pct
+
+    repo = _supabase_repo() if store == "supabase" else None
+    if store == "supabase" and repo is None:
+        return 2
+    ctx, outcome, report = load_shareholding(load_all(), NseApi(), symbols, writer=repo)
+    if repo is not None:
+        repo.record_dq(ctx.run_id, report.dq)
+    print(f"run {ctx.run_id} · {outcome.status}")
+    print(
+        f"{'SYMBOL':11} {'QTRS':>4} {'NEW':>4}  {'LATEST':10} {'PROMOTER':>9} {'FII':>7} "
+        f"{'DII':>7} {'MF':>7} {'PLEDGE':>7}  DQ"
+    )
+    for x in report.loads:
+        r = x.latest or {}
+        cells = [
+            pct(r.get(k), decimals=2, signed=False)
+            for k in ("promoter_pct", "fii_pct", "dii_pct", "mf_pct", "pledge_pct")
+        ]
+        print(
+            f"{x.symbol:11} {x.quarters:>4} {x.added:>4}  {r.get('period_end', '-'):10} "
+            f"{cells[0]:>9} {cells[1]:>7} {cells[2]:>7} {cells[3]:>7} {cells[4]:>7}  {x.status}"
+        )
+    for r in report.dq:
+        if r.status != "pass":
+            print(f"  {r.status}: {r.check_id} {r.isin} {r.detail}")
+    return 0 if report.status != "fail" else 1
+
+
 BACKUP_KEY_FILE = "parakh-backup-key.txt"  # beside the repo, in Stock Analysis (never committed)
 
 
@@ -522,6 +556,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_fund.add_argument("--no-xbrl", action="store_true", help="skip the exchange XBRL tie-out")
     p_fund.add_argument("--store", choices=["none", "supabase"], default="none")
 
+    p_shp = sub.add_parser("shareholding", help="shareholding pattern and pledge (Phase 1)")
+    p_shp.add_argument("action", choices=["load"])
+    p_shp.add_argument("--symbol", action="append", help="pilot symbol(s); default: all")
+    p_shp.add_argument("--store", choices=["none", "supabase"], default="none")
+
     p_ref = sub.add_parser("reference", help="AMFI cap list and index constituents (Phase 1)")
     p_ref.add_argument("action", choices=["load"])
     p_ref.add_argument("--store", choices=["none", "supabase"], default="none")
@@ -564,6 +603,8 @@ def main(argv: list[str] | None = None) -> int:
             return _prices_load(args.symbol, args.store, not args.no_exchange)
         case "fundamentals":
             return _fundamentals_load(args.file, not args.no_xbrl, args.store)
+        case "shareholding":
+            return _shareholding_load(args.store, args.symbol)
         case "reference":
             return _reference_load(args.store, args.amfi)
         case "backup":

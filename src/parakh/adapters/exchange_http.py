@@ -138,6 +138,23 @@ class NseApi:  # pragma: no cover - network; parsers are tested on recorded resp
         data = self._json("corporates-corporateActions", {"index": "equities", "symbol": symbol})
         return data if isinstance(data, list) else []
 
+    def shareholding_master(self, symbol: str) -> list[dict[str, Any]]:
+        data = self._json(
+            "corporate-share-holdings-master",
+            {"index": "equities", "symbol": symbol},
+            referer="https://www.nseindia.com/companies-listing/corporate-filings-shareholding-pattern",
+        )
+        return data if isinstance(data, list) else []
+
+    def shareholding_xbrl(self, url: str) -> str:
+        """Fetched, parsed and dropped: the file names holders above 1%, so it is not archived."""
+        if not self._warm:
+            self.client.get("https://www.nseindia.com/")
+            self._warm = True
+        resp = self.client.get(url)
+        resp.raise_for_status()
+        return resp.text
+
     def equity_list(self) -> bytes:
         resp = self.client.get("https://nsearchives.nseindia.com/content/equities/EQUITY_L.csv")
         resp.raise_for_status()

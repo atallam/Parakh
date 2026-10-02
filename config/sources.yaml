@@ -5,7 +5,7 @@
 sources:
   - id: nse_archives
     tier: T1
-    data_types: [prices_unadjusted, corporate_actions, financial_results_xbrl, announcements, holidays]
+    data_types: [prices_unadjusted, corporate_actions, financial_results_xbrl, shareholding_pattern, announcements, holidays]
     access: HTTPS (nsearchives.nseindia.com, www.nseindia.com/api), reachable from GitHub runners (spike ②)
     terms: NSE website terms; personal, non-commercial research; throttled, cached, never redistributed
     cadence: daily

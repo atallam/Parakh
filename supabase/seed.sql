@@ -16,7 +16,7 @@ on conflict (isin) do update set symbol = excluded.symbol, name = excluded.name,
 -- Source registry (plan 10 §13).
 insert into public.sources (source_id, tier, data_types, access_method, terms_note,
   refresh_cadence) values
-  ('nse_archives', 'T1', array['prices_unadjusted', 'corporate_actions', 'financial_results_xbrl', 'announcements', 'holidays']::text[], 'HTTPS (nsearchives.nseindia.com, www.nseindia.com/api), reachable from GitHub runners (spike ②)', 'NSE website terms; personal, non-commercial research; throttled, cached, never redistributed', 'daily'),
+  ('nse_archives', 'T1', array['prices_unadjusted', 'corporate_actions', 'financial_results_xbrl', 'shareholding_pattern', 'announcements', 'holidays']::text[], 'HTTPS (nsearchives.nseindia.com, www.nseindia.com/api), reachable from GitHub runners (spike ②)', 'NSE website terms; personal, non-commercial research; throttled, cached, never redistributed', 'daily'),
   ('bse', 'T1', array['prices_unadjusted', 'filings', 'announcements', 'concall_transcripts']::text[], 'HTTPS (bseindia.com bhavcopy and filings)', 'BSE website terms; personal, non-commercial research; throttled, cached', 'daily'),
   ('niftyindices', 'T1', array['index_constituents']::text[], 'HTTPS constituent CSVs (niftyindices.com)', 'NSE Indices website terms; personal research', 'monthly'),
   ('amfi', 'T1', array['cap_classification']::text[], 'HTTPS semi-annual list (amfiindia.com)', 'public regulatory disclosure', 'semi-annual (January, July)'),

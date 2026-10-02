@@ -33,3 +33,13 @@ reference:
   index_size_tolerance: 2
   # why: AMFI publishes each January and July; a list older than ~7 months has been superseded
   amfi_max_age_days: 220
+
+shareholding:
+  # why: plan 01 "Ownership trend" reads promoter, FII, DII and pledge over the last 8 quarters
+  quarters: 8
+  # why: the exchange summary shows 2 decimals; the XBRL share counts give the same figure to
+  # within rounding (0.005), so 0.02 points apart means a wrong context or a revised filing
+  promoter_tolerance_pp: 0.02
+  # why: SEBI LODR Reg. 31: the pattern is filed within 21 days of the quarter end, so the
+  # newest one is at most 92 + 21 days old; beyond 120 a filing was missed
+  max_latest_age_days: 120

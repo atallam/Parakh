@@ -178,10 +178,17 @@ class ReferenceDq(Strict):
     amfi_max_age_days: int = Field(ge=30, le=400)
 
 
+class ShareholdingDq(Strict):
+    quarters: int = Field(ge=1, le=40)
+    promoter_tolerance_pp: float = Field(gt=0, le=1)
+    max_latest_age_days: int = Field(ge=30, le=400)
+
+
 class DataQualityConfig(Strict):
     prices: PriceDq
     fundamentals: FundamentalsDq
     reference: ReferenceDq
+    shareholding: ShareholdingDq
 
 
 # -- backup.yaml -----------------------------------------------------------------------------

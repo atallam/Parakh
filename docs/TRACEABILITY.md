@@ -2,7 +2,7 @@
 
 # Traceability: acceptance criteria → tests
 
-22 of 179 acceptance criteria have tests; 21 are due now (tools/traceability_due.txt).
+25 of 179 acceptance criteria have tests; 21 are due now (tools/traceability_due.txt).
 
 | AC | Feature | Due | Tests | Last result |
 |---|---|---|---|---|
@@ -12,9 +12,9 @@
 | AC-F01.4 | F01 |  | — | — |
 | AC-F02.1 | F02 |  | — | — |
 | AC-F02.2 | F02 |  | — | — |
-| AC-F02.3 | F02 |  | — | — |
-| AC-F02.4 | F02 |  | — | — |
-| AC-F02.5 | F02 |  | — | — |
+| AC-F02.3 | F02 |  | `tests/unit/test_shareholding.py::test_job_stores_the_filing_date_beside_every_quarter` | — |
+| AC-F02.4 | F02 |  | `tests/unit/test_shareholding.py::test_a_disagreement_with_the_exchange_summary_fails_and_is_audited` | — |
+| AC-F02.5 | F02 |  | `tests/unit/test_shareholding.py::test_a_second_load_downloads_nothing` | — |
 | AC-F03.1 | F03 | ✅ | `tests/unit/test_holdings_import.py::test_first_import_seeds_lots_and_stores_positions`<br>`tests/unit/test_holdings_lots.py::test_seeded_lots_reconcile_with_the_cas_and_the_broker_average` | — |
 | AC-F03.2 | F03 | ✅ | `tests/unit/test_holdings_lots.py::test_a_partial_sale_reduces_the_oldest_lots_first` | — |
 | AC-F03.3 | F03 |  | — | — |
