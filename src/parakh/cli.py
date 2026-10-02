@@ -250,6 +250,35 @@ def _shareholding_load(store: str, symbols: list[str] | None) -> int:
     return 0 if report.status != "fail" else 1
 
 
+def _profile_load(store: str) -> int:
+    """D24 profile inputs from exchange filings (lease debt, rentals, advances, listed stakes)."""
+    from parakh.adapters.exchange_http import NseApi, NseFilings
+    from parakh.config import state_dir
+    from parakh.configs import load_all
+    from parakh.orchestration.profile_inputs import load_profile_inputs
+
+    repo = _supabase_repo() if store == "supabase" else None
+    if store == "supabase" and repo is None:
+        return 2
+    api = NseApi()
+    ctx, outcome, loads = load_profile_inputs(
+        load_all(), NseFilings(api, state_dir() / "raw"), api, writer=repo
+    )
+    if repo is not None:
+        repo.record_dq(ctx.run_id, [r for x in loads for r in x.dq])
+    print(f"run {ctx.run_id} · {outcome.status}")
+    for x in loads:
+        print(
+            f"{x.symbol}: {len(x.rows)} values, {x.inserted} new, {x.restated} restated · {x.status}"
+        )
+        for metric, (period, value) in sorted(x.latest().items()):
+            print(f"  {metric.removeprefix('profile.'):40} {period}  {value:>16,.2f}")
+        for r in x.dq:
+            if r.status != "pass":
+                print(f"  {r.status}: {r.check_id} {r.detail}")
+    return 0 if all(x.status != "fail" for x in loads) else 1
+
+
 def _dq_scorecard() -> int:
     """Latest data-quality result of every check, per stock (plan 10 §13)."""
     from parakh.configs import load_all
@@ -600,6 +629,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_fund.add_argument("--no-xbrl", action="store_true", help="skip the exchange XBRL tie-out")
     p_fund.add_argument("--store", choices=["none", "supabase"], default="none")
 
+    p_prof = sub.add_parser("profile", help="D24 profile inputs from filings (Phase 1)")
+    p_prof.add_argument("action", choices=["load"])
+    p_prof.add_argument("--store", choices=["none", "supabase"], default="none")
+
     p_dq = sub.add_parser("dq", help="data-quality scorecard (Phase 1)")
     p_dq.add_argument("action", choices=["scorecard"])
 
@@ -650,6 +683,8 @@ def main(argv: list[str] | None = None) -> int:
             return _prices_load(args.symbol, args.store, not args.no_exchange)
         case "fundamentals":
             return _fundamentals_load(args.file, not args.no_xbrl, args.store)
+        case "profile":
+            return _profile_load(args.store)
         case "dq":
             return _dq_scorecard()
         case "shareholding":

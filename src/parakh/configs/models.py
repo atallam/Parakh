@@ -332,3 +332,33 @@ class UiTokens(Strict):
                 if style.token not in self.colors:
                     raise ValueError(f"statuses.{family}.{status}: unknown token {style.token}")
         return self
+
+
+# -- profile_inputs.yaml (plan 13 D24) ------------------------------------------------------
+class FilingItem(Strict):
+    id: str = Field(pattern=r"^[a-z][a-z0-9_]*_cr$")
+    tag: str = Field(pattern=r"^[A-Za-z]+$")
+    match: str = Field(min_length=3)
+    kind: Literal["balance", "flow"]
+
+
+class FilingProfile(Strict):
+    basis: Literal["consolidated", "standalone"]
+    items: list[FilingItem] = Field(min_length=1)
+
+
+class Investee(Strict):
+    symbol: str = Field(min_length=1)
+    isin: str = Field(pattern=r"^[A-Z]{2}[A-Z0-9]{9}[0-9]$")
+
+
+class StakeRegister(Strict):
+    holder: str = Field(min_length=3)
+    investees: list[Investee] = Field(min_length=1)
+
+
+class ProfileInputsConfig(Strict):
+    quarters: int = Field(ge=1, le=40)
+    stake_quarters: int = Field(ge=1, le=20)
+    filing_items: dict[str, FilingProfile] = Field(default_factory=dict)
+    listed_stakes: dict[str, StakeRegister] = Field(default_factory=dict)

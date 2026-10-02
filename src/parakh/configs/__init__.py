@@ -15,6 +15,7 @@ from parakh.configs.models import (
     DataQualityConfig,
     FlagsConfig,
     LensesConfig,
+    ProfileInputsConfig,
     SourcesConfig,
     UiTokens,
     UniverseConfig,
@@ -29,6 +30,7 @@ FILES: dict[str, type[BaseModel]] = {
     "sources.yaml": SourcesConfig,
     "data_quality.yaml": DataQualityConfig,
     "backup.yaml": BackupConfig,
+    "profile_inputs.yaml": ProfileInputsConfig,
 }
 
 
@@ -68,6 +70,7 @@ class ConfigBundle:
     data_sources: SourcesConfig
     data_quality: DataQualityConfig
     backup: BackupConfig
+    profile_inputs: ProfileInputsConfig
     sources: list[str] = field(default_factory=list)
 
 
@@ -93,6 +96,12 @@ def load_all(root: Path | None = None) -> ConfigBundle:
                 problems.append(
                     f"universe.yaml: {sec.symbol} previous ISIN {prev.isin} cites unknown source {prev.source}"
                 )
+    profile = loaded["profile_inputs.yaml"]
+    assert isinstance(profile, ProfileInputsConfig)
+    known = {sec.isin for sec in universe.pilot}
+    for isin in [*profile.filing_items, *profile.listed_stakes]:
+        if isin not in known:
+            problems.append(f"profile_inputs.yaml: {isin} is not in the universe")
     if problems:
         raise ConfigError(problems)
     return ConfigBundle(
@@ -104,5 +113,6 @@ def load_all(root: Path | None = None) -> ConfigBundle:
         data_sources=registry,
         data_quality=loaded["data_quality.yaml"],  # type: ignore[arg-type]
         backup=loaded["backup.yaml"],  # type: ignore[arg-type]
+        profile_inputs=profile,
         sources=list(FILES),
     )

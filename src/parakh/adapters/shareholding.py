@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import datetime as dt
 import hashlib
+import html
 import re
 from dataclasses import dataclass
 from typing import Any
@@ -78,6 +79,7 @@ class Shareholding:
     dii_pct: float | None
     mf_pct: float | None
     raw_hash: str
+    pct_scale: int = 100  # 100 when the filing states fractions, 1 when it states numbers
 
     @property
     def pledge_pct(self) -> float:
@@ -179,6 +181,7 @@ def parse_shp_xbrl(xml: str) -> Shareholding:
         dii_pct=dii_pct,
         mf_pct=pct("mf"),
         raw_hash="sha256:" + hashlib.sha256(xml.encode("utf-8")).hexdigest(),
+        pct_scale=scale,
     )
 
 
@@ -228,3 +231,52 @@ def parse_shp_master(rows: list[dict[str, Any]]) -> list[ShpFiling]:
         if held is None or filing.reported_on > held.reported_on:
             out[filing.period_end] = filing
     return sorted(out.values(), key=lambda f: f.period_end, reverse=True)
+
+
+_NAME = re.compile(r'<[\w-]+:NameOfTheShareholder\s[^>]*contextRef="([^"]+)"[^>]*>([^<]*)<')
+_DOMAIN = re.compile(r"<[\w-]+:\w+Domain>([^<]+)</[\w-]+:\w+Domain>")
+
+
+def company_key(name: str) -> str:
+    """A company name reduced for matching: '&' = 'and', no 'Limited'/'Ltd', no punctuation."""
+    text = html.unescape(name).lower().replace("&", " and ")
+    text = re.sub(r"\(formerly[^)]*\)", " ", text)
+    text = re.sub(r"[^a-z0-9 ]", " ", text)
+    return " ".join(w for w in text.split() if w not in ("limited", "ltd"))
+
+
+@dataclass(frozen=True)
+class HolderStake:
+    shares: int
+    stake_pct: float  # % of the investee's shares, as filed (SCRR base)
+
+
+def holder_stake(xml: str, holder: str, pct_scale: int) -> HolderStake | None:
+    """The stake one named **company** holds in the filing entity (D24: M&M's listed stakes).
+
+    The filing names each holder in a duration context and gives the numbers in the instant
+    context that shares its typed-dimension value. Only rows whose name equals `holder` are
+    read; no other name, and no PAN field, is parsed or kept.
+    """
+    want = company_key(holder)
+    contexts = dict(_CONTEXT.findall(xml))
+    domains = set()
+    for cid, name in _NAME.findall(xml):
+        if company_key(name) == want and cid in contexts:
+            domains.update(_DOMAIN.findall(contexts[cid]))
+    if not domains:
+        return None
+    instants = {
+        cid
+        for cid, body in contexts.items()
+        if "<xbrli:instant>" in body and domains & set(_DOMAIN.findall(body))
+    }
+    shares, pct = 0, 0.0
+    for name, cid, value in _FACT.findall(xml):
+        if cid not in instants:
+            continue
+        if name == "NumberOfShares":
+            shares += _int(value) or 0
+        elif name == _PCT:
+            pct += (_float(value) or 0.0) * pct_scale
+    return HolderStake(shares, round(pct, 2)) if shares else None
