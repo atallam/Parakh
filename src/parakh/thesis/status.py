@@ -1,3 +1,5 @@
+# pyright: reportArgumentType=false, reportOperatorIssue=false, reportAttributeAccessIssue=false
+# why: pandas stubs type a datetime index element as a union; it is a Timestamp at run time (tested)
 """Thesis status: INTACT / WATCH / BROKEN / NOT SET (F23; plan 05 §2.4 status rules, D13).
 
 Inputs that can set a status in Phase 2:
@@ -64,7 +66,7 @@ def _yoy_pct(series: pd.Series) -> float | None:
     if len(series) < 5:
         return None
     last, then = series.index[-1], series.index[-5]
-    if not 340 <= (last - then).days <= 390 or series.iloc[-5] <= 0:
+    if not 340 <= (pd.Timestamp(last) - pd.Timestamp(then)).days <= 390 or series.iloc[-5] <= 0:
         return None
     return float((series.iloc[-1] / series.iloc[-5] - 1) * 100)
 

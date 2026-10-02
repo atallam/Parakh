@@ -183,7 +183,7 @@ def test_holdco_intrinsic_value_includes_sotp_and_uses_standalone_balance_sheet(
         {"name": "Listed finance arm", "isin": "INE0AAA01010", "stake": 0.5, "mcap_cr": 20000.0},
         {"name": "Listed IT arm", "isin": "INE0BBB01010", "stake": 0.25, "mcap_cr": 100000.0},
     ]
-    inputs = {
+    inputs: dict[str, float | None] = {
         "standalone_pat_cr": 500.0,
         "standalone_net_debt_cr": 100.0,
         "standalone_equity_cr": 1000.0,

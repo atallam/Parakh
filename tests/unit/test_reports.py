@@ -249,6 +249,7 @@ def test_segment_summary(four) -> None:
     import openpyxl
 
     ws = openpyxl.load_workbook(tmp / "large_cap" / "_SEGMENT_SUMMARY" / "2026-09.xlsx").active
+    assert ws is not None
     assert ws.max_row == len(large) + 1 and ws["A1"].value == "symbol"
 
 

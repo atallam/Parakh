@@ -144,6 +144,7 @@ def get_stock(
     view["position"] = mask_position(snap.get("position"))
     view["action_box"].pop("tax_if_sold_now_inr", None)
     view["data_confidence"] = snap["data_quality"].get("confidence")
+    assert sec is not None  # snap loaded, so the stock resolved
     view["report_path"] = f"{sec.cap}_cap/{sec.symbol}/reports/{snap['period']}.md"
     return StockLookup(
         stamp=_stamp(snap), found=True, symbol=sec.symbol, period=snap["period"], view=view

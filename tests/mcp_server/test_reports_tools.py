@@ -120,7 +120,7 @@ def test_prompts_and_resources_are_registered() -> None:
         prompts = {p.name for p in await server.list_prompts()}
         assert {"monthly-review", "explain"} <= prompts
         templates = {
-            str(t.uri_template if hasattr(t, "uri_template") else t.uriTemplate)
+            str(getattr(t, "uri_template", None) or getattr(t, "uriTemplate"))  # noqa: B009
             for t in await server.list_resource_templates()
         }
         assert any("snapshot" in t for t in templates) and any("plan" in t for t in templates)

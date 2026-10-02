@@ -37,7 +37,7 @@ def lens(
         lens_version="1",
         score=score,
         view=view,
-        confidence=conf,
+        confidence=conf,  # type: ignore[arg-type]
         informational=info,  # type: ignore[arg-type]
         vetoes=vetoes or [],
         flags=flags or [],

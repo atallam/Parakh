@@ -1,3 +1,5 @@
+# pyright: reportAttributeAccessIssue=false, reportCallIssue=false, reportReturnType=false, reportArgumentType=false, reportOperatorIssue=false, reportAssignmentType=false
+# why: the pandas stubs infer ndarray/Series unions for indexing and sorting that are Series at run time; tests cover these paths
 """Value metrics (plan 01 §2). Each takes a `VCalc` and returns a `Measure` (value or reason).
 
 Registered under `MET.value.*`. Figures come from the Screener export (consolidated, ₹ crore)

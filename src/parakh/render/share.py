@@ -13,6 +13,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.patches import Circle, Rectangle  # noqa: E402
 
 from parakh.render import format as fmt  # noqa: E402
 from parakh.render.tokens import status, tokens  # noqa: E402
@@ -69,9 +70,9 @@ def share_card(snap: dict[str, Any], path: Path) -> Path:
     st = status("verdict", s["verdict"]["verdict"].upper().replace(" ", "_"))
     fig = plt.figure(figsize=(6, 3.4), dpi=160)
     fig.patch.set_facecolor(c["bg_card"])
-    ax = fig.add_axes([0, 0, 1, 1])
+    ax = fig.add_axes((0.0, 0.0, 1.0, 1.0))
     ax.axis("off")
-    ax.add_patch(plt.Rectangle((0, 0.84), 1, 0.16, color=c["navy"], transform=ax.transAxes))
+    ax.add_patch(Rectangle((0, 0.84), 1, 0.16, color=c["navy"], transform=ax.transAxes))
     ax.text(
         0.04,
         0.92,
@@ -83,7 +84,7 @@ def share_card(snap: dict[str, Any], path: Path) -> Path:
     )
     # A drawn dot, not an emoji: the card font has no colour-emoji glyphs. The word carries the meaning.
     ax.add_patch(
-        plt.Circle((0.06, 0.66), 0.022, color=c[st.token], transform=ax.transAxes, clip_on=False)
+        Circle((0.06, 0.66), 0.022, color=c[st.token], transform=ax.transAxes, clip_on=False)
     )
     ax.text(0.10, 0.66, st.word, color=c[st.token], fontsize=22, weight="bold", va="center")
     ax.text(

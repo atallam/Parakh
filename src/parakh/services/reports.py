@@ -181,7 +181,7 @@ def action_box(snap: dict[str, Any]) -> dict[str, Any]:
         "stop": None if stop is None else round(stop, 2),
         "trend_exit": exits.get("trend_exit_200dma"),
         "fair_value": None
-        if lo is None
+        if lo is None or hi is None or mid is None
         else {"low": round(lo, 2), "high": round(hi, 2), "mid": round(mid, 2)},
         "margin_of_safety": (snap["value"].get("details") or {}).get("margin_of_safety"),
         "expected_return": irr.get("weighted"),

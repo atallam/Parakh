@@ -166,6 +166,7 @@ def write_segment(v: dict[str, Any], folder: Path) -> list[Path]:
 
     wb = openpyxl.Workbook()
     ws = wb.active
+    assert ws is not None
     ws.title = f"{v['cap']} {stem}"
     ws.append(HEADERS)
     for c in ws[1]:

@@ -1,3 +1,5 @@
+# pyright: reportAttributeAccessIssue=false, reportCallIssue=false, reportReturnType=false, reportArgumentType=false, reportOperatorIssue=false, reportAssignmentType=false
+# why: the pandas stubs infer ndarray/Series unions for indexing and sorting that are Series at run time; tests cover these paths
 """One stock, one as-of date → one snapshot (F09). Pure: callers pass frames and rows, not stores.
 
     result = analyse_stock(request, bundle, meta)
