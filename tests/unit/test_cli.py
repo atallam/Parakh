@@ -11,6 +11,18 @@ from parakh.cli import main
 from parakh.config import REPO_ROOT
 
 
+def test_help_prints_on_a_windows_console() -> None:
+    """Every help line must encode in cp1252, the default for a piped Windows console."""
+    from parakh.cli import build_parser
+
+    parser = build_parser()
+    parser.format_help().encode("cp1252")
+    for action in parser._actions:
+        for sub in getattr(action, "choices", None) or {}:
+            sub_parser = action.choices[sub]  # type: ignore[union-attr]
+            sub_parser.format_help().encode("cp1252")
+
+
 def test_run_py_help_works() -> None:
     """T-CLI-01"""
     out = subprocess.run(

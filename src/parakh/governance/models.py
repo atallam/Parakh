@@ -90,7 +90,9 @@ CARDS = {
 
 
 def _hash(name: str) -> str:
-    return hashlib.sha256((config_dir() / name).read_bytes()).hexdigest()[:8]
+    return hashlib.sha256((config_dir() / name).read_bytes().replace(b"\r\n", b"\n")).hexdigest()[
+        :8
+    ]
 
 
 def _versions() -> dict[str, str]:

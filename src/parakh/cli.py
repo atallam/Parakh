@@ -676,7 +676,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_show.add_argument("--period", help="YYYY-MM (default: latest)")
 
     p_exp = sub.add_parser(
-        "explain", help="verdict lineage: rule → lens → metric → source (plan 10 §6)"
+        "explain", help="verdict lineage: rule, lens, metric, source (plan 10 §6)"
     )
     p_exp.add_argument("symbol")
     p_exp.add_argument("--period", help="YYYY-MM (default: latest)")

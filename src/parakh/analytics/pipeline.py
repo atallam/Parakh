@@ -95,7 +95,8 @@ def weights_hash(root: Path | None = None) -> str:
     """Short hash of the files that move a score: value, momentum and policy config."""
     d = hashlib.sha256()
     for name in ("value.yaml", "momentum.yaml", "verdict_policy.yaml"):
-        d.update((root or config_dir()).joinpath(name).read_bytes())
+        # line endings differ between Windows and Linux checkouts; the hash must not
+        d.update((root or config_dir()).joinpath(name).read_bytes().replace(b"\r\n", b"\n"))
     return d.hexdigest()[:8]
 
 

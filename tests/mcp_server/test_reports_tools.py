@@ -20,7 +20,7 @@ from tests.unit.test_reports import HOLD, months
 
 
 @pytest.fixture(scope="module")
-def pilot_root(tmp_path_factory):
+def pilot_root(tmp_path_factory, module_isolation):
     _, _, tmp = months(tmp_path_factory.mktemp("mcp_pilot"), 2)
     return tmp
 
