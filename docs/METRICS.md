@@ -4,4 +4,95 @@
 
 | ID | Unit | Inputs | Used by | Summary |
 |---|---|---|---|---|
-| — | | | | No metrics registered yet (value and momentum metrics land in Phase 2). |
+| `MET.momentum.absolute_return_12m` | ratio | prices.adj_close | LENS.momentum | The stock's own 12-month return, for the dual-momentum filter. |
+| `MET.momentum.atr_14` | inr | prices.high, prices.low, prices.adj_close | LENS.momentum | Wilder's 14-day average true range. |
+| `MET.momentum.avg_traded_value_cr` | cr | prices.close, prices.volume | LENS.momentum | Average daily traded value over the last 50 sessions, in ₹ crore. |
+| `MET.momentum.dma150` | inr | prices.adj_close | LENS.momentum | 150-day simple moving average (about 30 weeks), the Weinstein stage line. |
+| `MET.momentum.dma200` | inr | prices.adj_close | LENS.momentum | 200-day simple moving average of the adjusted close. |
+| `MET.momentum.dma200_slope` | ratio | prices.adj_close | LENS.momentum | Change in the 200 DMA over the last 20 sessions. |
+| `MET.momentum.dma50` | inr | prices.adj_close | LENS.momentum | 50-day simple moving average of the adjusted close. |
+| `MET.momentum.earnings_accel` | score | fundamentals.quarterly | LENS.momentum | Acceleration of year-on-year earnings growth, in percentage points. |
+| `MET.momentum.excess_return_12m` | ratio | prices.adj_close, index.close | LENS.momentum | Stock return minus benchmark return over 12 months (252 sessions). |
+| `MET.momentum.excess_return_1m` | ratio | prices.adj_close, index.close | LENS.momentum | Stock return minus benchmark return over 1 month (21 sessions). |
+| `MET.momentum.excess_return_3m` | ratio | prices.adj_close, index.close | LENS.momentum | Stock return minus benchmark return over 3 months (63 sessions). |
+| `MET.momentum.excess_return_6m` | ratio | prices.adj_close, index.close | LENS.momentum | Stock return minus benchmark return over 6 months (126 sessions). |
+| `MET.momentum.extension_points` | score | prices.adj_close | LENS.momentum | 0–1 credit for where the price sits relative to its 200 DMA, given the cap's threshold. |
+| `MET.momentum.mansfield_rs` | score | prices.adj_close, index.close | LENS.momentum | Mansfield relative strength: RS line against its own 52-week average. |
+| `MET.momentum.mom_12_1` | ratio | prices.adj_close | LENS.momentum | 12-1 momentum: return from 12 months ago to 1 month ago, skipping the latest month. |
+| `MET.momentum.obv_slope` | ratio | prices.adj_close, prices.volume | LENS.momentum | On-balance volume change over 50 sessions, scaled by the window's total volume. |
+| `MET.momentum.pct_above_200` | ratio | prices.adj_close | LENS.momentum | Distance of the price above its 200 DMA. |
+| `MET.momentum.pct_above_52w_low` | ratio | prices.adj_close | LENS.momentum | Distance above the 52-week low close. |
+| `MET.momentum.pct_from_52w_high` | ratio | prices.adj_close | LENS.momentum | Distance below the 52-week high close (negative or zero). |
+| `MET.momentum.peak_close_52w` | inr | prices.adj_close | LENS.momentum | Highest adjusted close in the window used for the 52-week high. |
+| `MET.momentum.rs_percentile` | score | prices.adj_close, segment.constituents | LENS.momentum | Rank of the stock's momentum among its segment's constituents, 0–100. |
+| `MET.momentum.rs_slope_50d` | ratio | prices.adj_close, index.close | LENS.momentum | Change in the RS line over the last 50 sessions. |
+| `MET.momentum.sessions` | count | prices.adj_close | LENS.momentum | Trading sessions of price history after the listing exclusion. |
+| `MET.momentum.stage` | count | prices.adj_close | LENS.momentum | Weinstein stage from the 150 DMA: 1 basing, 2 advancing, 3 topping, 4 declining. |
+| `MET.momentum.stage_points` | score | prices.adj_close | LENS.momentum | 0–1 credit for the Weinstein stage, from config. |
+| `MET.momentum.trend_template_fraction` | ratio | prices.adj_close, segment.constituents | LENS.momentum | Share of computable Trend Template criteria that hold. |
+| `MET.momentum.trend_template_score` | count | prices.adj_close, segment.constituents | LENS.momentum | Minervini Trend Template criteria passed (reported as x of y computable). |
+| `MET.momentum.up_down_volume_ratio` | x | prices.volume | LENS.momentum | Volume on up-days divided by volume on down-days over 50 sessions. |
+| `MET.momentum.vol_adj_12m` | ratio | prices.adj_close | LENS.momentum | 12-month return divided by annualised volatility. |
+| `MET.momentum.vol_adj_6m` | ratio | prices.adj_close | LENS.momentum | 6-month return divided by annualised volatility. |
+| `MET.momentum.volatility_1y` | ratio | prices.adj_close | LENS.momentum | Annualised volatility of daily log returns over the last year. |
+| `MET.value.car` | ratio | profile_inputs.car_ratio | LENS.value | Capital adequacy ratio of a bank. |
+| `MET.value.casa` | ratio | profile_inputs.casa_ratio | LENS.value | CASA share of a bank's deposits. |
+| `MET.value.cash_runway_months` | count | fundamentals.balance_sheet, fundamentals.cash_flow | LENS.value | New-age companies: months of cash left at the latest year's free-cash-flow burn. |
+| `MET.value.cfo_to_ebitda_3y` | ratio | fundamentals.cash_flow, fundamentals.annual_pl | LENS.value | Operating cash flow as a share of EBITDA over three years. |
+| `MET.value.cfo_to_pat_3y` | ratio | fundamentals.cash_flow, fundamentals.annual_pl | LENS.value | Operating cash flow as a share of net profit over three years. |
+| `MET.value.cost_to_income` | ratio | profile_inputs.cost_to_income_ratio | LENS.value | Cost-to-income ratio of a capital-market intermediary. |
+| `MET.value.debt_equity` | x | fundamentals.balance_sheet | LENS.value | Borrowings divided by net worth. |
+| `MET.value.debtor_days_change` | ratio | fundamentals.balance_sheet, fundamentals.annual_pl | LENS.value | Year-on-year change in debtor days (receivables ÷ sales × 365). |
+| `MET.value.dii_trend_pp` | score | shareholding.dii_pct | LENS.value | Change in DII holding over the last two quarters, in percentage points. |
+| `MET.value.dilution_3y` | ratio | fundamentals.balance_sheet | LENS.value | Annual growth in the adjusted share count over three years. |
+| `MET.value.dividend_yield` | ratio | prices.close, fundamentals.annual_pl | LENS.value | Latest fiscal year's dividend divided by market cap. |
+| `MET.value.earnings_yield_spread` | ratio | prices.close, macro.g_sec_10y | LENS.value | Earnings yield minus the 10-year government bond yield. |
+| `MET.value.eps_cagr_3y` | ratio | fundamentals.annual_pl | LENS.value | Three-year compound annual EPS growth. |
+| `MET.value.eps_cagr_5y` | ratio | fundamentals.annual_pl | LENS.value | Five-year compound annual EPS growth. |
+| `MET.value.eps_vs_revenue_gap` | ratio | fundamentals.annual_pl | LENS.value | Three-year EPS CAGR minus three-year revenue CAGR (earnings-quality flag). |
+| `MET.value.ev_ebitda` | x | prices.close, fundamentals.balance_sheet, fundamentals.quarterly_pl | LENS.value | Enterprise value divided by trailing operating profit. |
+| `MET.value.ev_ebitda_discount_own` | ratio | prices.close, fundamentals.balance_sheet, fundamentals.annual_pl | LENS.value | Discount of the current EV/EBITDA to its own 5-year median at fiscal year-ends. |
+| `MET.value.ev_ebitdar` | x | prices.close, profile_inputs.lease_liabilities_cr | LENS.value | Airlines: EV including lease liabilities divided by EBITDAR (EBITDA before lease cost). |
+| `MET.value.ev_sales` | x | prices.close, fundamentals.quarterly_pl, fundamentals.balance_sheet | LENS.value | Enterprise value divided by trailing revenue. |
+| `MET.value.ev_sales_to_growth` | x | prices.close, fundamentals.quarterly_pl | LENS.value | EV/Sales divided by revenue growth in percent (a growth-adjusted sales multiple). |
+| `MET.value.fcf_yield` | ratio | prices.close, fundamentals.cash_flow | LENS.value | Three-year average free cash flow divided by market cap. |
+| `MET.value.fii_trend_pp` | score | shareholding.fii_pct | LENS.value | Change in FII holding over the last two quarters, in percentage points. |
+| `MET.value.gnpa` | ratio | profile_inputs.gnpa_ratio | LENS.value | Gross NPA ratio of a bank or NBFC. |
+| `MET.value.growth_consistency` | ratio | fundamentals.annual_pl | LENS.value | Share of the last five years with positive revenue growth. |
+| `MET.value.interest_coverage` | x | fundamentals.annual_pl | LENS.value | Operating earnings divided by interest cost. |
+| `MET.value.lease_adj_leverage` | x | fundamentals.balance_sheet, profile_inputs.lease_liabilities_cr | LENS.value | Airlines: lease-adjusted net debt divided by EBITDAR. |
+| `MET.value.net_cash_ex_advances_to_mcap` | ratio | prices.close, profile_inputs.customer_advances_cr | LENS.value | Order-book businesses: net cash less customer advances, as a share of market cap. |
+| `MET.value.net_cash_to_mcap` | ratio | prices.close, fundamentals.balance_sheet | LENS.value | Net cash (cash − borrowings) as a share of market cap. |
+| `MET.value.nim` | ratio | profile_inputs.nim_ratio | LENS.value | Net interest margin of a bank. |
+| `MET.value.nnpa` | ratio | profile_inputs.nnpa_ratio | LENS.value | Net NPA ratio of a bank or NBFC. |
+| `MET.value.op_margin_trend_pp` | score | fundamentals.quarterly_pl | LENS.value | Operating-margin change: latest four quarters versus the four before, in percentage points. |
+| `MET.value.order_cover` | x | profile_inputs.order_cover_x | LENS.value | Order book divided by trailing revenue. |
+| `MET.value.other_income_share` | ratio | fundamentals.annual_pl | LENS.value | Other income as a share of profit before tax (a flag above 25% for non-financials). |
+| `MET.value.pb` | x | prices.close, fundamentals.balance_sheet | LENS.value | Price divided by book value per share. |
+| `MET.value.pb_discount_own_5y` | ratio | prices.close, fundamentals.balance_sheet | LENS.value | Discount of the current P/B to the stock's own 5-year median year-end P/B. |
+| `MET.value.pb_justified_gap` | ratio | prices.close, fundamentals.balance_sheet, fundamentals.annual_pl | LENS.value | How far the market P/B sits below the P/B that ROE justifies. |
+| `MET.value.pe_2y_avg_discount_3y` | ratio | prices.close, fundamentals.annual_pl | LENS.value | Order-book businesses: P/E on 2-year average EPS versus its own 3-year median. |
+| `MET.value.pe_discount_own_10y` | ratio | prices.close, fundamentals.annual_price | LENS.value | Discount of the current P/E to the stock's own 10-year median year-end P/E. |
+| `MET.value.pe_discount_own_3y` | ratio | prices.close, fundamentals.annual_price | LENS.value | Discount of the current P/E to the stock's own 3-year median (the H1 and order-book anchor). |
+| `MET.value.pe_discount_own_5y` | ratio | prices.close, fundamentals.annual_price | LENS.value | Discount of the current P/E to the stock's own 5-year median year-end P/E. |
+| `MET.value.pe_normalised` | x | prices.close, fundamentals.annual_pl | LENS.value | Price divided by the average EPS of up to ten fiscal years (cyclicals and airlines). |
+| `MET.value.pe_percentile_10y` | score | prices.close, fundamentals.annual_price | LENS.value | Where the current P/E sits within the stock's own year-end P/E history, 0–100. |
+| `MET.value.pe_sector_percentile` | score | peers.pe | LENS.value | The stock's P/E rank among its sector peers, 0–100 (lower is cheaper). |
+| `MET.value.pe_ttm` | x | prices.close, fundamentals.quarterly_pl | LENS.value | Price ÷ trailing-twelve-month earnings per share. |
+| `MET.value.peg` | x | prices.close, fundamentals.annual_pl | LENS.value | P/E divided by the 3-year EPS growth rate in percent. |
+| `MET.value.piotroski_fraction` | ratio | fundamentals.annual_pl, fundamentals.balance_sheet, fundamentals.cash_flow | LENS.value | Share of the Piotroski F-score checks that pass, among those computable from the export. |
+| `MET.value.pledge_pct` | ratio | shareholding.pledge_pct | LENS.value | Promoter shares pledged, as a fraction of the promoter holding. |
+| `MET.value.promoter_holding` | ratio | shareholding.promoter_pct | LENS.value | Promoter holding at the latest filed quarter, as a fraction. |
+| `MET.value.promoter_trend_pp` | score | shareholding.promoter_pct | LENS.value | Change in promoter holding over the last four quarters, in percentage points. |
+| `MET.value.revenue_cagr_3y` | ratio | fundamentals.annual_pl | LENS.value | Three-year compound annual revenue growth. |
+| `MET.value.revenue_cagr_5y` | ratio | fundamentals.annual_pl | LENS.value | Five-year compound annual revenue growth. |
+| `MET.value.revenue_growth_1y` | ratio | fundamentals.annual_pl | LENS.value | Latest fiscal year's revenue growth. |
+| `MET.value.roa_5y_avg` | ratio | fundamentals.annual_pl, fundamentals.balance_sheet | LENS.value | Five-year average return on assets (the bank and NBFC quality measure). |
+| `MET.value.roa_latest` | ratio | fundamentals.annual_pl, fundamentals.balance_sheet | LENS.value | Latest fiscal year's return on assets. |
+| `MET.value.roce_5y_avg` | ratio | fundamentals.annual_pl, fundamentals.balance_sheet | LENS.value | Five-year average return on capital employed. |
+| `MET.value.roce_latest` | ratio | fundamentals.annual_pl, fundamentals.balance_sheet | LENS.value | Latest fiscal year's return on capital employed. |
+| `MET.value.roce_trend_pp` | score | fundamentals.annual_pl, fundamentals.balance_sheet | LENS.value | Change in ROCE over the last two fiscal years, in percentage points. |
+| `MET.value.roe_5y_avg` | ratio | fundamentals.annual_pl, fundamentals.balance_sheet | LENS.value | Five-year average return on equity. |
+| `MET.value.roe_latest` | ratio | fundamentals.annual_pl, fundamentals.balance_sheet | LENS.value | Latest fiscal year's return on equity. |
+| `MET.value.sotp_discount` | ratio | prices.close, profile_inputs.listed_stakes | LENS.value | Conglomerates: discount of the market cap to the sum of the parts. |
+| `MET.value.standalone_debt_equity` | x | profile_inputs.standalone_net_debt_cr | LENS.value | Conglomerates: the standalone core business's net debt divided by its equity. |

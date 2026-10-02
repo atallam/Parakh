@@ -6,4 +6,10 @@ Tiers: **R** read-only · **P** propose (writes a proposal row only) · **N** no
 
 | ID | MCP name | Tier | Toolset version | Input fields | Output | Summary |
 |---|---|---|---|---|---|---|
+| `TOOL.analytics.explain_verdict` | `mcp__parakh__analytics_explain_verdict` | R | 0.1.0 | symbol_or_isin, period | ExplainLookup | Return the lineage of one verdict: the policy rule that decided it, the value and |
+| `TOOL.analytics.list_catalogue` | `mcp__parakh__analytics_list_catalogue` | R | 0.1.0 | kind | CatalogueLookup | List the registered metrics (MET.*), momentum signals (M##), rules (RULE.*) or lenses, |
 | `TOOL.audit.get_run` | `mcp__parakh__audit_get_run` | R | 0.1.0 | run_id | RunLookup | Return one Parakh run: mode, as-of date, status, the code and config it ran on, each |
+| `TOOL.reports.get_history` | `mcp__parakh__reports_get_history` | R | 0.1.0 | symbol_or_isin, metrics, months | HistoryLookup | Return a stock's month-by-month history (scores, verdict, regime, fair value and so on) |
+| `TOOL.reports.get_stock` | `mcp__parakh__reports_get_stock` | R | 0.1.0 | symbol_or_isin, period | StockLookup | Return one stock's monthly view: TL;DR, verdict chip (previous → now), what changed |
+| `TOOL.reports.segment_summary` | `mcp__parakh__reports_segment_summary` | R | 0.1.0 | cap, period | SegmentLookup | Return one cap segment's monthly summary: regime and regime history, verdict counts, |
+| `TOOL.reports.what_changed` | `mcp__parakh__reports_what_changed` | R | 0.1.0 | period, cap | WhatChanged | List this month's verdict changes, thesis status changes, fired momentum signals, |

@@ -1,0 +1,145 @@
+# Momentum lens settings (plan 02). Thresholds are starting points, to be calibrated in Phase 5.
+# Metric IDs resolve against the registry; `bad`/`good` map a metric linearly to 0–1.
+# why version: bump when any threshold below changes, so history can be re-scored (plan 04 §1.5)
+lens_version: "1.0.0"
+
+# why: plan 02 §6 (RS 30, earnings momentum 5, vol-adjusted 20, trend 25, 52-week high 10, volume 10)
+weights:
+  rs: 30
+  earnings: 5
+  vol_adj: 20
+  trend: 25
+  high_prox: 10
+  volume: 10
+
+# why: plan 02 §2 and §6 cap table; traded-value floors from plan 02 §6
+cap_settings:
+  large:
+    benchmark: NIFTY 100
+    secondary_benchmark: NIFTY 50
+    over_extension: 0.30
+    breakout_volume_x: 1.5
+    trailing_stop_pct: 0.15
+    trailing_stop_atr_x: 2.5
+    weight_shift: {rs: 5, volume: -5}
+  mid:
+    benchmark: NIFTY MIDCAP 150
+    secondary_benchmark: NIFTY 500
+    over_extension: 0.40
+    breakout_volume_x: 1.75
+    trailing_stop_pct: 0.20
+    trailing_stop_atr_x: 3.0
+    min_traded_value_cr: 5
+  small:
+    benchmark: NIFTY SMALLCAP 250
+    secondary_benchmark: NIFTY 500
+    over_extension: 0.50
+    breakout_volume_x: 2.0
+    trailing_stop_pct: 0.25
+    trailing_stop_atr_x: 3.5
+    min_traded_value_cr: 1
+    weight_shift: {vol_adj: 5, high_prox: -5}
+
+# why: plan 02 §3.9 and D24; each measure needs its minimum sessions, after the listing exclusion
+history:
+  listing_exclusion_sessions: 20
+  listing_window_days: 14   # why: price history that starts within two weeks of listing includes the listing days
+  min_sessions:
+    excess_return_1m: 21
+    excess_return_3m: 63
+    excess_return_6m: 126
+    excess_return_12m: 252
+    mom_12_1: 252
+    mansfield_rs: 252
+    volatility: 252
+    high_52w: 252
+    dma50: 50
+    dma150: 150
+    dma200: 200
+    dma200_slope: 220
+    rs_slope_50d: 51
+    volume_50d: 50
+  since_listing_min_sessions: 126   # why: plan 02 §3.9 substitute for 52-week high/low and volatility
+  informational_below: 126          # why: below this the momentum lens is informational (plan 02 §3.9)
+  confidence_cap_below: 252         # why: 126–251 sessions: scored on what exists, confidence ≤ Med
+
+trend_template:
+  above_52w_low: 0.30               # why: Minervini item 6
+  within_52w_high: 0.25             # why: Minervini item 7
+  rs_percentile_min: 70             # why: Minervini item 8
+  ma200_rising_sessions: 21         # why: "rising for at least 1 month"
+  # why: pilot mode has no segment price universe, so the percentile can't be computed; the
+  # criterion is skipped and the template is reported x/y (plan 02 §3.9) rather than failed
+  rs_percentile_unavailable: skip
+
+stage:
+  slope_sessions: 21                # why: one month of change in the 150 DMA (30-week average)
+  flat_tolerance: 0.005             # why: under 0.5% a month is "flat"; starting point
+  prior_trend_sessions: 126         # why: decides topping (Stage 3) vs basing (Stage 1)
+  # why: only Stage 2 is a buy zone (plan 02 §3.3); a basing stock earns some credit, a topping one little
+  points: {1: 0.25, 2: 1.0, 3: 0.4, 4: 0.0}
+
+views:
+  strong_score: 70
+  weak_score: 45
+  strong_template_min: 7
+  neutral_template_min: 5
+  strong_rs_percentile_min: 70
+
+signals:
+  confirm_closes: 2                 # why: plan 02 §4, two consecutive closes avoid whipsaws
+  confirm_buffer: 0.01              # why: or a 1% buffer beyond the level
+  base_min_sessions: 30             # why: M02, a base of at least six weeks
+  base_max_range: 0.25              # why: M02, a base range under 25%
+  rs_new_high_sessions: 252
+  breakout_volume_window: 50
+  pullback_touch: 0.02              # why: M12, within 2% of the 50 DMA
+  bounce_volume_x: 1.0
+  below_ma_sessions: 20             # why: M06, at least 20 sessions below the 200 DMA
+  divergence_lookback: 30
+  divergence_near_high: 0.05
+  rs_percentile_drop_from: 80       # why: M25
+  rs_percentile_drop_to: 50
+  climax_gain: 0.25                 # why: M26, 25% in three weeks
+  climax_sessions: 15
+  gap_threshold: 0.04               # why: M08, results-day gap of 4% or more
+  gap_volume_x: 2.0
+  gap_hold_sessions: 5
+  vcp_min_pullbacks: 3              # why: M04
+  cross_lookback: 5
+  distribution_days_min: 4          # why: M22, 'distribution days increasing'; starting point
+  distribution_window: 25
+  distribution_drop: 0.002          # why: a down day of 0.2% or more on higher volume counts
+  stage_change_sessions: 21
+
+confidence:
+  step_missing_weight: 0.15         # why: plan 01 §4, one level per 15% of weight missing
+
+absolute_momentum_min: 0.065        # why: plan 02 §11 #1, 12M return must beat a liquid-fund yield (approx)
+volatility_window: 252
+atr_window: 14
+rsi_window: 14
+
+subscores:
+  rs:
+    - {metric: MET.momentum.excess_return_6m, bad: -0.10, good: 0.20}
+    - {metric: MET.momentum.excess_return_12m, bad: -0.15, good: 0.30}
+    - {metric: MET.momentum.mom_12_1, bad: -0.10, good: 0.35}
+    - {metric: MET.momentum.mansfield_rs, bad: -5, good: 15}
+    - {metric: MET.momentum.rs_percentile, bad: 30, good: 90}
+    - {metric: MET.momentum.rs_slope_50d, bad: -0.05, good: 0.10}
+  earnings:
+    - {metric: MET.momentum.earnings_accel, bad: -10, good: 10}
+  vol_adj:
+    - {metric: MET.momentum.vol_adj_6m, bad: 0.0, good: 1.0}
+    - {metric: MET.momentum.vol_adj_12m, bad: 0.0, good: 1.5}
+  trend:
+    - {metric: MET.momentum.trend_template_fraction, bad: 0.5, good: 1.0, weight: 2}
+    - {metric: MET.momentum.stage_points, bad: 0.0, good: 1.0}
+    - {metric: MET.momentum.dma200_slope, bad: -0.02, good: 0.03}
+    - {metric: MET.momentum.extension_points, bad: 0.0, good: 1.0}
+  high_prox:
+    - {metric: MET.momentum.pct_from_52w_high, bad: -0.30, good: -0.10}
+  volume:
+    - {metric: MET.momentum.up_down_volume_ratio, bad: 0.8, good: 1.5}
+    - {metric: MET.momentum.obv_slope, bad: -0.10, good: 0.10}

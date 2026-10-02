@@ -36,5 +36,5 @@ def test_config_validate_and_dummy_run_and_verify(capsys: pytest.CaptureFixture[
 
 def test_later_modes_say_when_they_arrive(capsys: pytest.CaptureFixture[str]) -> None:
     """T-CLI-03"""
-    assert main(["run", "--mode", "monthly"]) == 2
+    assert main(["run", "--mode", "watch"]) == 2
     assert "later phase" in capsys.readouterr().out

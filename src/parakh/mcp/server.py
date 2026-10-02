@@ -72,6 +72,9 @@ def build_server(client: str | None = None, gateway: Gateway | None = None) -> M
             annotations=spec.annotations,
             structured_output=True,
         )
+    from parakh.mcp.resources import register
+
+    register(server)
     return server
 
 

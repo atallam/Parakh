@@ -37,3 +37,14 @@ supabase/.temp/
 
 # spike outputs (uploaded by CI as artifacts)
 spikes/out/
+
+# generated monthly outputs (Phase 2); THESIS.md files are yours and are tracked
+large_cap/*/*
+mid_cap/*/*
+small_cap/*/*
+!large_cap/*/THESIS.md
+!mid_cap/*/THESIS.md
+!small_cap/*/THESIS.md
+large_cap/_SEGMENT_SUMMARY/
+mid_cap/_SEGMENT_SUMMARY/
+small_cap/_SEGMENT_SUMMARY/

@@ -1,0 +1,10 @@
+# Benchmark and context indices (plan 02 §2, §5). Names match momentum.yaml `benchmark`.
+# The Yahoo symbols are unverified until the first live load (`parakh indices load`), which
+# fails loudly with the symbol when Yahoo returns nothing, so a wrong symbol cannot pass as data.
+indices:
+  - {name: NIFTY 50, yahoo: "^NSEI"}
+  - {name: NIFTY 100, yahoo: "^CNX100"}
+  - {name: NIFTY 500, yahoo: "^CRSLDX"}
+  - {name: NIFTY MIDCAP 150, yahoo: "NIFTYMIDCAP150.NS"}
+  - {name: NIFTY SMALLCAP 250, yahoo: "NIFTYSMLCAP250.NS"}
+  - {name: INDIA VIX, yahoo: "^INDIAVIX"}

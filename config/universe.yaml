@@ -17,6 +17,7 @@ pilot:
     cap: large
     cap_source: AMFI Jul 2026
     profile: airline_lease_heavy
+    sector: "Aviation – Airlines"
     listed_on: 2015-11-10
     golden: true
   - symbol: M&M
@@ -25,6 +26,7 @@ pilot:
     cap: large
     cap_source: AMFI Jul 2026
     profile: conglomerate_sotp
+    sector: "Automobiles – Diversified (holdco)"
     listed_on: 1996-01-03
     golden: true
   - symbol: HDFCBANK
@@ -33,6 +35,7 @@ pilot:
     cap: large
     cap_source: AMFI Jul 2026
     profile: bank
+    sector: "Banks – Private"
     listed_on: 1995-11-08
     golden: true
   - symbol: GROWW
@@ -41,6 +44,7 @@ pilot:
     cap: large
     cap_source: AMFI Jul 2026
     profile: capital_market_intermediary
+    sector: "Capital Markets – Broking & Wealth"
     listed_on: 2025-11-12
   - symbol: MAZDOCK
     isin: INE249Z01020
@@ -48,6 +52,7 @@ pilot:
     cap: mid
     cap_source: AMFI Jul 2026
     profile: order_book
+    sector: "Defence – Shipbuilding"
     listed_on: 2020-10-12
     # why: the 1:2 split (face value 10 -> 5) issued a new ISIN; NSE corporate-action and
     # older price files still use the old one (spike ④, 29 Sep 2026)
@@ -63,6 +68,7 @@ pilot:
     cap: small
     cap_source: AMFI Jul 2026
     profile: new_age
+    sector: "Automobiles – Electric Two-Wheelers"
     listed_on: 2025-05-06
   - symbol: SHADOWFAX
     isin: INE12UN01015
@@ -71,4 +77,5 @@ pilot:
     cap: small
     cap_source: AMFI Jul 2026
     profile: new_age
+    sector: "Logistics – Express & Last-Mile"
     listed_on: 2026-01-28

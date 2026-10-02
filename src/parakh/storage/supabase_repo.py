@@ -282,6 +282,34 @@ class SupabaseRepository:
             if r["status"] == "open"
         ]
 
+    def open_lots(self) -> list[Any]:
+        """Every open tax lot across accounts (restricted table; service role only)."""
+        import datetime as dt
+
+        from parakh.holdings.lots import Lot
+
+        rows = self._all(
+            "holdings_lots",
+            "lot_id,account_ref,isin,qty,trade_date,settle_date,price_inr,source,status",
+        )
+        return [
+            Lot(
+                r["lot_id"],
+                r["account_ref"],
+                r["isin"],
+                float(r["qty"]),
+                dt.date.fromisoformat(r["trade_date"]),
+                dt.date.fromisoformat(r["settle_date"]),
+                None if r["price_inr"] is None else float(r["price_inr"]),
+                r["source"],
+            )
+            for r in rows
+            if r["status"] == "open"
+        ]
+
+    def fundamentals_for(self, isin: str) -> list[dict[str, Any]]:
+        return self._all("fundamentals", "*", isin=isin)
+
     def write_holdings(self, plan: Any, run_id: str) -> None:
         """Statement → positions → lots → transactions (foreign-key order)."""
         from parakh.orchestration.holdings import lot_row

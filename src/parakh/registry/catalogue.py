@@ -136,13 +136,16 @@ CATALOGUES = {
 def generate(check: bool = False, docs_dir: Path | None = None) -> list[str]:
     """Write every catalogue, or with check=True return the names that are stale."""
     root = docs_dir or REPO_ROOT / "docs"
+    from parakh.governance.models import model_docs
+
     stale = []
-    for name, build in CATALOGUES.items():
+    items = [(name, build()) for name, build in CATALOGUES.items()] + list(model_docs().items())
+    for name, content in items:
         path = root / name
-        content = build()
         current = path.read_text(encoding="utf-8") if path.exists() else None
         if current != content:
             stale.append(name)
             if not check:
+                path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(content, encoding="utf-8", newline="\n")
     return stale

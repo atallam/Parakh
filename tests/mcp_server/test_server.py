@@ -79,7 +79,9 @@ def test_stdio_end_to_end_with_a_real_client(isolated_state: Path) -> None:
         async with stdio_client(params) as (read, write), ClientSession(read, write) as session:
             await session.initialize()
             tools = await session.list_tools()
-            assert [t.name for t in tools.tools] == ["audit_get_run"]
+            names = {t.name for t in tools.tools}
+            assert {"audit_get_run", "reports_get_stock", "analytics_explain_verdict"} <= names
+            assert all(n.split("_", 1)[0] in {"audit", "reports", "analytics"} for n in names)
             result = await session.call_tool("audit_get_run", {"run_id": "latest"})
             assert (
                 result.structured_content is not None and result.structured_content["found"] is True

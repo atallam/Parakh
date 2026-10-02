@@ -1,0 +1,11 @@
+# Overrides: you may override a verdict, a sector profile or an archetype, but only with a reason
+# and an expiry (plan 10 §8; AC-F21.12). Active overrides are listed in every monthly summary
+# until they expire. Edit through a pull request, or `parakh override add`.
+overrides: []
+#  - id: OV-2026-001
+#    isin: INE040A01034
+#    field: verdict            # verdict | profile | archetype
+#    value: HOLD
+#    reason: "Merger integration year; value history distorted. Revisit after Q4 FY27 results."
+#    set_on: 2026-11-08
+#    expires_on: 2027-02-28

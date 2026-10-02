@@ -9,6 +9,15 @@ import yaml
 from pydantic import BaseModel, ValidationError
 
 from parakh.config import config_dir
+from parakh.configs.lens_models import (
+    IndicesConfig,
+    MomentumConfig,
+    OverridesConfig,
+    PortfolioConfig,
+    RegimeConfig,
+    ValueConfig,
+    VerdictPolicy,
+)
 from parakh.configs.models import (
     AgentsConfig,
     BackupConfig,
@@ -31,6 +40,13 @@ FILES: dict[str, type[BaseModel]] = {
     "data_quality.yaml": DataQualityConfig,
     "backup.yaml": BackupConfig,
     "profile_inputs.yaml": ProfileInputsConfig,
+    "value.yaml": ValueConfig,
+    "momentum.yaml": MomentumConfig,
+    "regime.yaml": RegimeConfig,
+    "verdict_policy.yaml": VerdictPolicy,
+        "overrides.yaml": OverridesConfig,
+    "portfolio.yaml": PortfolioConfig,
+    "indices.yaml": IndicesConfig,
 }
 
 
@@ -71,7 +87,50 @@ class ConfigBundle:
     data_quality: DataQualityConfig
     backup: BackupConfig
     profile_inputs: ProfileInputsConfig
+    value: ValueConfig
+    momentum: MomentumConfig
+    regime: RegimeConfig
+    verdict_policy: VerdictPolicy
+    overrides: OverridesConfig
+    portfolio: PortfolioConfig
+    indices: IndicesConfig
     sources: list[str] = field(default_factory=list)
+
+
+def _cross_checks(loaded: dict[str, BaseModel], universe: UniverseConfig) -> list[str]:
+    """Files that name things in other files must agree (a typo here would silently skip a stock)."""
+    out: list[str] = []
+    isins = {s.isin for s in universe.pilot}
+    value, momentum = loaded["value.yaml"], loaded["momentum.yaml"]
+    ovr, idx = loaded["overrides.yaml"], loaded["indices.yaml"]
+    assert isinstance(value, ValueConfig) and isinstance(momentum, MomentumConfig)
+    assert isinstance(ovr, OverridesConfig)
+    assert isinstance(idx, IndicesConfig)
+    verdicts = set(loaded["verdict_policy.yaml"].verdict_order)  # type: ignore[attr-defined]
+    for sec in universe.pilot:
+        if sec.profile not in value.profiles:
+            out.append(
+                f"universe.yaml: {sec.symbol} profile {sec.profile!r} has no entry in value.yaml"
+            )
+    for o in ovr.overrides:
+        if o.isin not in isins:
+            out.append(f"overrides.yaml: {o.id} names an ISIN outside the pilot: {o.isin}")
+        if o.field == "profile" and o.value not in value.profiles:
+            out.append(f"overrides.yaml: {o.id} profile {o.value!r} has no entry in value.yaml")
+        if o.field == "verdict" and o.value.upper().replace(" ", "_") not in verdicts:
+            out.append(
+                f"overrides.yaml: {o.id} verdict {o.value!r} is not one of {sorted(verdicts)}"
+            )
+        if o.field == "thesis_status" and o.value not in ("INTACT", "WATCH", "BROKEN"):
+            out.append(
+                f"overrides.yaml: {o.id} thesis_status {o.value!r} must be INTACT, WATCH or BROKEN"
+            )
+    known = {i.name for i in idx.indices}
+    for cap, spec in momentum.cap_settings.items():
+        for bench in (spec.benchmark, spec.secondary_benchmark):
+            if bench not in known:
+                out.append(f"indices.yaml: no entry for {bench} (momentum.yaml {cap} benchmark)")
+    return out
 
 
 def load_all(root: Path | None = None) -> ConfigBundle:
@@ -102,6 +161,7 @@ def load_all(root: Path | None = None) -> ConfigBundle:
     for isin in [*profile.filing_items, *profile.listed_stakes]:
         if isin not in known:
             problems.append(f"profile_inputs.yaml: {isin} is not in the universe")
+    problems.extend(_cross_checks(loaded, universe))
     if problems:
         raise ConfigError(problems)
     return ConfigBundle(
@@ -114,5 +174,12 @@ def load_all(root: Path | None = None) -> ConfigBundle:
         data_quality=loaded["data_quality.yaml"],  # type: ignore[arg-type]
         backup=loaded["backup.yaml"],  # type: ignore[arg-type]
         profile_inputs=profile,
+        value=loaded["value.yaml"],  # type: ignore[arg-type]
+        momentum=loaded["momentum.yaml"],  # type: ignore[arg-type]
+        regime=loaded["regime.yaml"],  # type: ignore[arg-type]
+        verdict_policy=loaded["verdict_policy.yaml"],  # type: ignore[arg-type]
+        overrides=loaded["overrides.yaml"],  # type: ignore[arg-type]
+        portfolio=loaded["portfolio.yaml"],  # type: ignore[arg-type]
+        indices=loaded["indices.yaml"],  # type: ignore[arg-type]
         sources=list(FILES),
     )

@@ -43,11 +43,19 @@ def _config_validate() -> int:
     return 0
 
 
-def _run(mode: str, asof: str | None) -> int:
+def _run(
+    mode: str, asof: str | None, symbols: list[str] | None = None, store: str = "supabase"
+) -> int:
     from parakh.orchestration.jobs import run_dummy
 
+    if mode == "monthly":
+        from parakh.cli_analysis import monthly
+
+        return monthly(asof, symbols, store)
     if mode != "dummy":
-        print(f"mode '{mode}' arrives in a later phase (plan 09); only 'dummy' exists in Phase 0")
+        print(
+            f"mode '{mode}' arrives in a later phase (plan 09); 'dummy' and 'monthly' exist so far"
+        )
         return 2
     ctx, outcome = run_dummy(dt.date.fromisoformat(asof) if asof else None)
     print(f"run {ctx.run_id} · {outcome.status} · {len(ctx.steps)} steps")
@@ -602,7 +610,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_run = sub.add_parser("run", help="run a job (Phase 0: --mode dummy)")
     p_run.add_argument("--mode", default="dummy", choices=["dummy", "monthly", "watch", "events"])
-    p_run.add_argument("--asof", help="as-of date, YYYY-MM-DD (default: today)")
+    p_run.add_argument("--asof", help="as-of date, YYYY-MM-DD (default: the latest month-end)")
+    p_run.add_argument(
+        "--symbol", action="append", help="monthly mode: pilot symbol(s); default: all"
+    )
+    p_run.add_argument(
+        "--store",
+        choices=["local", "supabase"],
+        default="supabase",
+        help="where prices are read from",
+    )
 
     p_audit = sub.add_parser("audit", help="audit trail tools")
     p_audit.add_argument("action", choices=["verify"])
@@ -654,6 +671,46 @@ def build_parser() -> argparse.ArgumentParser:
     p_hold.add_argument("--cas", help="CAS PDF (default: newest in FILES FOR ANALYSIS)")
     p_hold.add_argument("--broker", help="Groww Stocks P&L report (default: newest)")
 
+    p_show = sub.add_parser("show", help="TL;DR, verdict chip and what changed for one stock")
+    p_show.add_argument("symbol")
+    p_show.add_argument("--period", help="YYYY-MM (default: latest)")
+
+    p_exp = sub.add_parser(
+        "explain", help="verdict lineage: rule → lens → metric → source (plan 10 §6)"
+    )
+    p_exp.add_argument("symbol")
+    p_exp.add_argument("--period", help="YYYY-MM (default: latest)")
+    p_exp.add_argument("--json", action="store_true")
+
+    p_shr = sub.add_parser("share", help="share export: Markdown + PNG with no position data")
+    p_shr.add_argument("symbol")
+    p_shr.add_argument("--period", help="YYYY-MM (default: latest)")
+
+    p_th = sub.add_parser(
+        "thesis", help="validate THESIS.md files / list the variables rules may use"
+    )
+    p_th.add_argument("action", choices=["validate", "variables"])
+    p_th.add_argument("symbol", nargs="?")
+
+    p_ov = sub.add_parser(
+        "override", help="verdict/profile/archetype/thesis-status overrides (reason + expiry)"
+    )
+    p_ov.add_argument("action", choices=["add"])
+    p_ov.add_argument("--isin", required=True)
+    p_ov.add_argument(
+        "--field", required=True, choices=["verdict", "profile", "archetype", "thesis_status"]
+    )
+    p_ov.add_argument("--value", required=True)
+    p_ov.add_argument("--reason", required=True)
+    p_ov.add_argument("--days", type=int, default=90, help="life in days (max 366)")
+
+    p_idx = sub.add_parser("indices", help="benchmark and VIX series")
+    p_idx.add_argument("action", choices=["load"])
+    p_idx.add_argument("--store", choices=["local", "supabase"], default="local")
+
+    p_mod = sub.add_parser("models", help="regenerate docs/MODELS.md and the lens cards")
+    p_mod.add_argument("--check", action="store_true", help="fail if they are stale")
+
     p_sum = sub.add_parser("summarize", help="scaffold sample agent: summarise a text file")
     p_sum.add_argument("path")
     return parser
@@ -669,7 +726,7 @@ def main(argv: list[str] | None = None) -> int:
         case "config":
             return _config_validate()
         case "run":
-            return _run(args.mode, args.asof)
+            return _run(args.mode, args.asof, args.symbol, args.store)
         case "audit":
             return _audit_verify()
         case "catalogue":
@@ -699,6 +756,34 @@ def main(argv: list[str] | None = None) -> int:
             if args.action == "keygen":
                 return _holdings_keygen()
             return _holdings_check(args.cas, args.broker)
+        case "show":
+            from parakh.cli_analysis import show
+
+            return show(args.symbol, args.period)
+        case "explain":
+            from parakh.cli_analysis import explain
+
+            return explain(args.symbol, args.period, args.json)
+        case "share":
+            from parakh.cli_analysis import share
+
+            return share(args.symbol, args.period)
+        case "thesis":
+            from parakh.cli_analysis import thesis
+
+            return thesis(args.action, args.symbol)
+        case "override":
+            from parakh.cli_analysis import override_add
+
+            return override_add(args.isin, args.field, args.value, args.reason, args.days)
+        case "indices":
+            from parakh.cli_analysis import indices_load
+
+            return indices_load(args.store)
+        case "models":
+            from parakh.cli_analysis import models
+
+            return models(args.check)
         case "summarize":
             return _summarize(args.path)
     parser.print_help(sys.stdout)

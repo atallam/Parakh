@@ -1,0 +1,15 @@
+# Portfolio limits and tax rates (plan 05 §2, §4). Rates live here so a Budget change is a config edit.
+# why: your risk limits, starting values to be confirmed by you at the M1 review
+single_stock_max_weight_pct: 10
+sector_max_weight_pct: 30
+# why: plan 05 §1 flags "LTCG in < 30 days" so a sale is not made days before the lower rate
+near_ltcg_days: 30
+tax:
+  # Listed equity, Income-tax Act as amended by the Finance (No. 2) Act 2024 (from 23 Jul 2024):
+  # short-term 20%, long-term 12.5% above ₹1.25 lakh of gains a year, held more than 12 months,
+  # plus 4% cess. Confirm against the current Finance Act each April (plan 10 §10, annual review).
+  stcg_pct: 20
+  ltcg_pct: 12.5
+  ltcg_exempt_inr: 125000
+  cess_pct: 4
+  long_term_days: 365
