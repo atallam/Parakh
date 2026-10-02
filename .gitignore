@@ -48,3 +48,6 @@ small_cap/*/*
 large_cap/_SEGMENT_SUMMARY/
 mid_cap/_SEGMENT_SUMMARY/
 small_cap/_SEGMENT_SUMMARY/
+
+# UAT-0 oracle workbook holds the raw Screener export (source terms): kept in OneDrive, not committed
+tests/oracles/*.xlsx
