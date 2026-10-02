@@ -26,3 +26,10 @@ fundamentals:
   # why: SEBI LODR: quarterly results within 45 days, annual within 60; a quarter older than
   # 150 days at load time means the export is stale
   max_latest_quarter_age_days: 150
+
+reference:
+  # why: an index briefly carries an extra row during a demerger or replacement (the Smallcap
+  # 250 file had 251 on 29 Sep 2026); more than 2 off means the wrong or a truncated file
+  index_size_tolerance: 2
+  # why: AMFI publishes each January and July; a list older than ~7 months has been superseded
+  amfi_max_age_days: 220

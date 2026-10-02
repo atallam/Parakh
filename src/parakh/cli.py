@@ -154,6 +154,68 @@ def _fundamentals_load(files: list[str] | None, use_xbrl: bool, store: str) -> i
     return 0 if all(x.status != "fail" for x in loads) else 1
 
 
+def _reference_load(store: str, amfi_file: str | None) -> int:
+    """AMFI cap categories + Nifty index membership for the universe. Needs the network."""
+    import hashlib
+    import re
+
+    import httpx
+
+    from parakh.adapters.exchange_http import BROWSER_HEADERS
+    from parakh.adapters.reference import INDEX_FILES, index_url
+    from parakh.config import state_dir
+    from parakh.configs import load_all
+    from parakh.orchestration.reference import load_reference
+
+    raw = state_dir() / "raw" / "reference"
+    raw.mkdir(parents=True, exist_ok=True)
+    client = httpx.Client(headers=BROWSER_HEADERS, timeout=40, follow_redirects=True)
+
+    def keep(name: str, data: bytes) -> bytes:
+        (raw / f"{hashlib.sha256(data).hexdigest()[:12]}_{name}").write_bytes(data)
+        return data
+
+    if amfi_file:
+        amfi = Path(amfi_file).read_bytes()
+    else:
+        page = client.get("https://www.amfiindia.com/otherdata/categorisation-of-stocks")
+        page.raise_for_status()
+        links = re.findall(r'href="([^"]+\.xlsx?)"', page.text, flags=re.I)
+        if not links:
+            print("no AMFI list link found; download it and pass --amfi FILE", file=sys.stderr)
+            return 2
+        url = links[0] if links[0].startswith("http") else "https://www.amfiindia.com" + links[0]
+        resp = client.get(url)
+        resp.raise_for_status()
+        amfi = keep("amfi.xlsx", resp.content)
+    files = {}
+    for index_id in INDEX_FILES:
+        resp = client.get(index_url(index_id), headers={"Referer": "https://www.niftyindices.com/"})
+        resp.raise_for_status()
+        files[index_id] = keep(f"{INDEX_FILES[index_id]}.csv", resp.content)
+    repo = _supabase_repo() if store == "supabase" else None
+    if store == "supabase" and repo is None:
+        return 2
+    bundle = load_all()
+    ctx, outcome, report = load_reference(bundle, amfi, files, writer=repo)
+    if repo is not None:
+        repo.record_dq(ctx.run_id, report.dq)
+    print(f"run {ctx.run_id} · {outcome.status} · AMFI list to {report.amfi_period_end}")
+    caps = {c["isin"]: c for c in report.caps}
+    print(f"{'SYMBOL':11} {'RANK':>5}  {'AMFI':6} {'CONFIG':6}  INDICES")
+    for sec in bundle.universe.pilot:
+        c = caps.get(sec.isin)
+        print(
+            f"{sec.symbol:11} {c['amfi_rank'] if c else '-':>5}  {c['bucket'] if c else '-':6} {sec.cap:6}  "
+            f"{', '.join(report.membership.get(sec.isin, [])) or 'none of the three'}"
+        )
+    print(f"membership changes: {len(report.joins)} joined, {len(report.leaves)} left")
+    for r in report.dq:
+        if r.status != "pass":
+            print(f"  {r.status}: {r.check_id} {r.isin} {r.detail}")
+    return 0 if report.status != "fail" else 1
+
+
 BACKUP_KEY_FILE = "parakh-backup-key.txt"  # beside the repo, in Stock Analysis (never committed)
 
 
@@ -460,6 +522,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_fund.add_argument("--no-xbrl", action="store_true", help="skip the exchange XBRL tie-out")
     p_fund.add_argument("--store", choices=["none", "supabase"], default="none")
 
+    p_ref = sub.add_parser("reference", help="AMFI cap list and index constituents (Phase 1)")
+    p_ref.add_argument("action", choices=["load"])
+    p_ref.add_argument("--store", choices=["none", "supabase"], default="none")
+    p_ref.add_argument("--amfi", help="AMFI .xlsx file (default: latest from amfiindia.com)")
+
     p_bak = sub.add_parser("backup", help="encrypted database backups (plan 10 §11)")
     p_bak.add_argument("action", choices=["keygen", "run", "verify"])
 
@@ -497,6 +564,8 @@ def main(argv: list[str] | None = None) -> int:
             return _prices_load(args.symbol, args.store, not args.no_exchange)
         case "fundamentals":
             return _fundamentals_load(args.file, not args.no_xbrl, args.store)
+        case "reference":
+            return _reference_load(args.store, args.amfi)
         case "backup":
             return _backup(args.action)
         case "holdings":

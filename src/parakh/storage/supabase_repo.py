@@ -192,6 +192,44 @@ class SupabaseRepository:
             ).execute()
         return len(rows)
 
+    # -- reference data ---------------------------------------------------------------------
+    def open_memberships(self) -> list[dict[str, Any]]:
+        return (
+            self.client.table("index_membership")
+            .select("index_id,isin,valid_from")
+            .is_("valid_to", "null")
+            .execute()
+            .data
+            or []
+        )
+
+    def write_reference(
+        self, caps: list[dict[str, Any]], joins: list[dict[str, Any]], leaves: list[dict[str, Any]]
+    ) -> None:
+        if caps:
+            self.client.table("cap_classification").upsert(
+                caps,
+                on_conflict="isin,effective_date",
+                ignore_duplicates=True,
+                returning=ReturnMethod.minimal,
+            ).execute()
+        if joins:
+            self.client.table("index_membership").upsert(
+                joins,
+                on_conflict="index_id,isin,valid_from",
+                ignore_duplicates=True,
+                returning=ReturnMethod.minimal,
+            ).execute()
+        for leave in leaves:
+            (
+                self.client.table("index_membership")
+                .update({"valid_to": leave["valid_to"]})
+                .eq("index_id", leave["index_id"])
+                .eq("isin", leave["isin"])
+                .is_("valid_to", "null")
+                .execute()
+            )
+
     # -- holdings (restricted tables; service role only) -------------------------------------
     def statement_exists(self, file_sha256: str) -> bool:
         rows = (

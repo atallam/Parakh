@@ -2,13 +2,13 @@
 
 # Traceability: acceptance criteria → tests
 
-21 of 179 acceptance criteria have tests; 21 are due now (tools/traceability_due.txt).
+22 of 179 acceptance criteria have tests; 21 are due now (tools/traceability_due.txt).
 
 | AC | Feature | Due | Tests | Last result |
 |---|---|---|---|---|
 | AC-F01.1 | F01 |  | — | — |
 | AC-F01.2 | F01 |  | — | — |
-| AC-F01.3 | F01 |  | — | — |
+| AC-F01.3 | F01 |  | `tests/unit/test_reference.py::test_membership_history_opens_and_closes` | — |
 | AC-F01.4 | F01 |  | — | — |
 | AC-F02.1 | F02 |  | — | — |
 | AC-F02.2 | F02 |  | — | — |

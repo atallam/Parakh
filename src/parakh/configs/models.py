@@ -173,9 +173,15 @@ class FundamentalsDq(Strict):
     max_latest_quarter_age_days: int = Field(ge=30, le=400)
 
 
+class ReferenceDq(Strict):
+    index_size_tolerance: int = Field(ge=0, le=20)
+    amfi_max_age_days: int = Field(ge=30, le=400)
+
+
 class DataQualityConfig(Strict):
     prices: PriceDq
     fundamentals: FundamentalsDq
+    reference: ReferenceDq
 
 
 # -- backup.yaml -----------------------------------------------------------------------------
