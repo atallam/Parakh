@@ -146,3 +146,23 @@ def test_a_disagreement_with_the_exchange_summary_fails_and_is_audited() -> None
     stale = dt.date(2027, 3, 1)
     _, _, late = load_shareholding(BUNDLE, Fetcher(), ["M&M"], stale, MemoryWriter())
     assert late.status == "warn"
+
+
+def test_a_listing_day_pattern_is_keyed_by_the_exchange_date() -> None:
+    """T-SHP-08: the XBRL says 3 Jul, the exchange list 30 Jun: stored under 30 Jun; a quarter
+    apart is refused (first pilot load, 2 Oct 2026)."""
+
+    class Shifted(Fetcher):
+        def __init__(self, to: str) -> None:
+            super().__init__()
+            self.to = to
+
+        def shareholding_xbrl(self, url: str) -> str:
+            return super().shareholding_xbrl(url).replace("2026-06-30", self.to)
+
+    writer = MemoryWriter()
+    _, _, near = load_shareholding(BUNDLE, Shifted("2026-07-03"), ["M&M"], ASOF, writer)
+    assert near.status == "pass" and writer.rows[0]["period_end"] == "2026-06-30"
+    _, _, far = load_shareholding(BUNDLE, Shifted("2026-03-31"), ["M&M"], ASOF, MemoryWriter())
+    assert far.status == "fail"
+    assert parse_shp_master([{**MASTER[0], "revisedData": "Revised"}])[0].revised

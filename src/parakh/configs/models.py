@@ -182,6 +182,7 @@ class ReferenceDq(Strict):
 class ShareholdingDq(Strict):
     quarters: int = Field(ge=1, le=40)
     promoter_tolerance_pp: float = Field(gt=0, le=1)
+    period_slack_days: int = Field(ge=0, le=30)
     max_latest_age_days: int = Field(ge=30, le=400)
 
 

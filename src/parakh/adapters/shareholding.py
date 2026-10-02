@@ -18,6 +18,10 @@ Findings on the pilot (recorded 2 Oct 2026):
   them; the share counts are kept beside them.
 - A company with no promoter (HDFC Bank) has no promoter context at all: promoter is 0, not
   missing.
+- The pattern filed at listing is dated the listing day inside the XBRL but a few days earlier
+  in the exchange list (SHADOWFAX 23 Jan vs 28 Jan 2026, GROWW 11 vs 12 Nov 2025). The exchange
+  list's date is the key; the two may differ by a few days (config), never by a quarter.
+- The exchange marks a revised filing "Revised", not "Y".
 - The filing lists named holders above 1% with their PAN field. Only the category totals are
   read; names are never parsed, stored or logged, and the raw file is not archived (only its hash).
 """
@@ -218,7 +222,7 @@ def parse_shp_master(rows: list[dict[str, Any]]) -> list[ShpFiling]:
             _float(r.get("pr_and_prgrp")),
             _float(r.get("public_val")),
             r.get("xbrl") or None,
-            str(r.get("revisedData") or "N").upper() == "Y",
+            str(r.get("revisedData") or "N").strip().upper() not in ("N", "NO", "-", ""),
         )
         held = out.get(filing.period_end)
         if held is None or filing.reported_on > held.reported_on:

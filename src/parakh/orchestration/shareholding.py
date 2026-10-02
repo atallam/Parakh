@@ -75,7 +75,7 @@ def shareholding_row(
 ) -> dict[str, Any]:
     return {
         "isin": isin,
-        "period_end": shp.period_end.isoformat(),
+        "period_end": filing.period_end.isoformat(),  # the exchange list's date is the key
         "reported_on": filing.reported_on.isoformat(),
         "total_shares": shp.total_shares,
         "promoter_shares": shp.promoter_shares,
@@ -123,7 +123,7 @@ def _load_one(
         except ShareholdingFormatError:
             unreadable.append(filing.period_end.isoformat())
             continue
-        if shp.period_end != filing.period_end:
+        if abs((shp.period_end - filing.period_end).days) > cfg.period_slack_days:
             unreadable.append(filing.period_end.isoformat())
             continue
         if (

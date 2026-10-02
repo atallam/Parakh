@@ -403,6 +403,26 @@ def _prices_load(symbols: list[str] | None, store_kind: str, use_exchange: bool)
     ctx, outcome, loads = load_prices(
         bundle, store, YahooPrimary(), exchange, actions_for, securities=pilot
     )
+    if repo is not None:
+        source = {x.isin: x.source for x in loads}
+        repo.record_price_files(
+            [
+                {
+                    "isin": w.isin,
+                    "year": w.year,
+                    "storage_path": w.path,
+                    "sha256": w.sha256,
+                    "rows": w.rows,
+                    "first_date": w.first.isoformat(),
+                    "last_date": w.last.isoformat(),
+                    "source_id": "yfinance" if source.get(w.isin) == "yfinance" else "nse_archives",
+                    "adjusted": True,
+                    "run_id": ctx.run_id,
+                }
+                for w in store.written
+            ]
+        )
+        repo.record_dq(ctx.run_id, [r for x in loads for r in x.dq])
     print(f"run {ctx.run_id} · {outcome.status}")
     print(f"{'SYMBOL':11} {'ROWS':>6}  {'FROM':10}  {'TO':10}  {'SOURCE':18} DQ")
     for x in loads:

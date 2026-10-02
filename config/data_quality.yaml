@@ -47,3 +47,6 @@ shareholding:
   # why: SEBI LODR Reg. 31: the pattern is filed within 21 days of the quarter end, so the
   # newest one is at most 92 + 21 days old; beyond 120 a filing was missed
   max_latest_age_days: 120
+  # why: the pattern filed at listing is dated the listing day in the XBRL and up to 5 days
+  # earlier in the exchange list (SHADOWFAX, GROWW); 7 days allows that and nothing near a quarter
+  period_slack_days: 7
