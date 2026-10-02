@@ -25,23 +25,16 @@ TOL = ORACLE["tolerance"]
 SCORE_METRICS = ("pe_percentile_10y", "roce_trend_pp", "op_margin_trend_pp")
 
 # (symbol, metric) -> why it disagrees; the decision is recorded in docs/uat/UAT-0_*.md
-OPEN = {
-    (
-        "HDFCBANK",
-        "pe_discount_own_3y",
-    ): "share basis: price x FY26 adjusted shares vs export market cap (0.2%), amplified by the discount",
-    (
-        "HDFCBANK",
-        "ev_ebitda_discount_own",
-    ): "same share-basis effect; EV/EBITDA is not a bank metric",
-    ("INDIGO", "pb_discount_own_5y"): "same share-basis effect",
-    ("INDIGO", "dividend_yield"): "FY26 dividend is blank; the code falls back to FY25",
-    (
-        "INDIGO",
-        "roe_5y_avg",
-    ): "years with net worth <= 0 are skipped and the window stretches back to FY21",
-    ("INDIGO", "pb_justified_gap"): "inherits roe_5y_avg",
+OPEN: dict[tuple[str, str], str] = {}
+
+# Accepted definition difference (UAT-0 finding F3, owner decision 2026-10-03): the code prices at today's
+# price x FY26 adjusted shares, the oracle uses the export's market cap. "Discount to median" magnifies the 0.2% gap.
+ACCEPTED_SHARE_BASIS = {
+    ("HDFCBANK", "pe_discount_own_3y"),
+    ("HDFCBANK", "ev_ebitda_discount_own"),
+    ("INDIGO", "pb_discount_own_5y"),
 }
+SHARE_BASIS_REL = 0.04
 
 CASES = [
     (isin, sym, key.removeprefix("MET.value."), val)
@@ -69,20 +62,23 @@ def code() -> dict[str, dict[str, float | None]]:
     }
 
 
-def _agrees(metric: str, got: float | None, expected: float | None) -> bool:
+def _agrees(
+    metric: str, got: float | None, expected: float | None, rel: float | None = None
+) -> bool:
     if expected is None:
         return got is None
     if got is None:
         return False
     if metric in SCORE_METRICS:
         return got == pytest.approx(expected, abs=TOL["abs_score"])
-    return got == pytest.approx(expected, rel=TOL["rel"], abs=1e-9)
+    return got == pytest.approx(expected, rel=rel or TOL["rel"], abs=1e-9)
 
 
 @pytest.mark.parametrize(("isin", "symbol", "metric", "expected"), CASES, ids=lambda x: str(x)[:30])
 def test_code_matches_oracle(code, isin, symbol, metric, expected) -> None:
     got = code[symbol]["MET.value." + metric]
-    agrees = _agrees(metric, got, expected)
+    rel = SHARE_BASIS_REL if (symbol, metric) in ACCEPTED_SHARE_BASIS else None
+    agrees = _agrees(metric, got, expected, rel)
     if (symbol, metric) in OPEN:  # strict: fixing the code must also remove the entry
         assert not agrees, f"{symbol} {metric} now agrees with the oracle: remove it from OPEN"
         return

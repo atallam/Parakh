@@ -320,6 +320,8 @@ def dividend_yield(v: VCalc) -> Measure:
     d, mc = v.ann("annual_pl", "Dividend Amount"), v.mcap_cr
     if mc is None or not len(d):
         return _na("dividend or market cap unavailable")
+    if v.f.last_annual is not None and d.index[-1] != v.f.last_annual:
+        return _na(f"no dividend figure for FY{v.f.last_annual:%Y} (latest is {d.index[-1]:%Y})")
     return Measure(float(d.iloc[-1] / mc))
 
 
@@ -458,8 +460,12 @@ def sotp_value(v: VCalc, discount: float | None = None) -> Measure:
 
 # -- quality ---------------------------------------------------------------------------------
 def _avg_ratio(num: pd.Series, den: pd.Series, n: int) -> float | None:
-    d = pd.concat([num, den], axis=1, keys=["n", "d"]).dropna()
-    d = d[d["d"] > 0].iloc[-n:]
+    d = (
+        pd.concat([num, den], axis=1, keys=["n", "d"]).dropna().iloc[-n:]
+    )  # a fixed window of years,
+    d = d[
+        d["d"] > 0
+    ]  # then drop years whose denominator is not positive (never reach further back)
     if len(d) < min(n, 3):
         return None
     return float((d["n"] / d["d"]).mean())
@@ -528,7 +534,7 @@ def roe_5y_avg(v: VCalc) -> Measure:
 
     Formula:   mean(net profit ÷ (equity + reserves), last 5 years)
     Meaning:   Owner returns; high ROE driven by leverage is checked against debt/equity.
-    Pitfalls:  Year-end equity; buybacks and write-offs distort single years.
+    Pitfalls:  Year-end equity; years with non-positive equity are dropped, never replaced by older years.
     Source:    Screener export; plan 01 §2.2
     """
     r = _avg_ratio(v.ann("annual_pl", "Net profit"), v.net_worth(), 5)
