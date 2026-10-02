@@ -24,6 +24,7 @@ from parakh import __version__
 from parakh.analytics.fundamentals_view import Fundamentals
 from parakh.analytics.indicators import sma_series
 from parakh.analytics.momentum_build import momentum_context_parts, momentum_inputs
+from parakh.analytics.profile_rows import profile_inputs_from, stakes_from
 from parakh.analytics.regime import RegimeResult
 from parakh.analytics.value_build import (
     build_inputs,
@@ -233,15 +234,9 @@ def analyse_stock(req: StockRequest, bundle: ConfigBundle, meta: RunMeta) -> Sto
     )
 
     # -- value ---------------------------------------------------------------------------------
-    inputs = {i.key: i.value for i in bundle.profile_inputs.inputs if i.isin == sec.isin}
-    reasons_in = {
-        i.key: f"{i.key} not supplied (profile_inputs.yaml)" for i in bundle.profile_inputs.inputs
-        if i.isin == sec.isin and i.value is None
-    }  # fmt: skip
-    stakes = [
-        {"name": s.name, "isin": s.isin, "stake": s.stake, "mcap_cr": None}
-        for s in bundle.profile_inputs.listed_stakes.get(sec.isin, [])
-    ]
+    inputs, reasons_in = profile_inputs_from(fund_rows)
+    register = bundle.profile_inputs.listed_stakes.get(sec.isin)
+    stakes = stakes_from(fund_rows, register.investees) if register else []
     v_inp = build_inputs(
         sec.isin, sec.symbol, sec.cap, profile, asof, price, fund_rows, cfg_v, sh_rows,
         sec.listed_on, inputs, reasons_in, stakes, m_vals.get("MET.momentum.excess_return_12m"),

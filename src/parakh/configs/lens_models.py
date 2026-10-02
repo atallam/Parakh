@@ -390,29 +390,6 @@ class PortfolioConfig(Strict):
     tax: TaxRates
 
 
-# -- profile_inputs.yaml (analyst-supplied document inputs, plan 13 §8.0c) ---------------------
-class ProfileInput(Strict):
-    isin: str
-    key: str  # e.g. lease_liabilities_cr, order_book_cr
-    value: float | None = None
-    asof: dt.date | None = None
-    source: str | None = None
-    note: str = ""
-
-
-class Stake(Strict):
-    name: str
-    isin: str
-    stake: float  # fraction held
-    stake_asof: dt.date | None = None
-    source: str | None = None
-
-
-class ProfileInputs(Strict):
-    inputs: list[ProfileInput] = []
-    listed_stakes: dict[str, list[Stake]] = {}  # parent ISIN → stakes
-
-
 # -- indices.yaml ------------------------------------------------------------------------------
 class IndexSpec(Strict):
     name: str

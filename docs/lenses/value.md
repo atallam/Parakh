@@ -29,7 +29,7 @@
 ## Limitations
 
 - Peer and sector-relative context is not loaded yet (Phase 3), so 'vs sector' columns are N/A.
-- Profile inputs not in the Screener export (lease liabilities, order book, listed stakes) must be supplied in `profile_inputs.yaml`; until then those metrics are N/A.
+- Profile inputs the Screener export lacks (lease liabilities, customer advances, listed stakes) come from exchange filings via `parakh profile-inputs`; an order book and offer-document financials are Phase 2 document inputs, and until they are loaded those metrics are N/A.
 - Checks that need filings or event feeds (auditor changes, surveillance lists, related-party items) are ❔ UNKNOWN until Phase 3, and never counted as clean.
 - All thresholds and weights are starting assumptions; calibration is Phase 5.
 

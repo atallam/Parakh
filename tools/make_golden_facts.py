@@ -24,7 +24,11 @@ def main(isin: str, export: str) -> int:
     rows = fact_rows(parse_export(data), isin, digest, {})
     out = REPO / "tests" / "fixtures" / "golden" / isin / "facts.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"export_hash": digest, "rows": rows}, indent=0, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
+    out.write_text(
+        json.dumps({"export_hash": digest, "rows": rows}, indent=0, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
     print(f"{isin}: {len(rows)} facts, {digest}")
     return 0
 

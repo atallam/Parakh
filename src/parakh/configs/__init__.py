@@ -44,7 +44,7 @@ FILES: dict[str, type[BaseModel]] = {
     "momentum.yaml": MomentumConfig,
     "regime.yaml": RegimeConfig,
     "verdict_policy.yaml": VerdictPolicy,
-        "overrides.yaml": OverridesConfig,
+    "overrides.yaml": OverridesConfig,
     "portfolio.yaml": PortfolioConfig,
     "indices.yaml": IndicesConfig,
 }

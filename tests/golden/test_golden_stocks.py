@@ -24,12 +24,15 @@ EXPECTED = {
 }
 
 
-def test_golden_inputs_match_the_manifest() -> None:
+def _facts(isin: str) -> dict:
+    return json.loads((GOLD / isin / "facts.json").read_text(encoding="utf-8"))
+
+
+def test_golden_facts_name_the_export_they_came_from() -> None:
+    """The Screener exports are not committed (source terms); the manifest records each export's hash."""
     for line in (GOLD / "MANIFEST.sha256").read_text(encoding="utf-8").splitlines():
         digest, name = line.split(maxsplit=1)
-        assert (
-            hashlib.sha256((GOLD / name.strip().lstrip("*")).read_bytes()).hexdigest() == digest
-        ), name
+        assert _facts(name.split("/")[0])["export_hash"] == "sha256:" + digest, name
 
 
 @pytest.fixture(scope="module")
@@ -37,10 +40,7 @@ def snaps(tmp_path_factory):
     bundle = load_all()
     data = pilot_data(bundle)
     for isin, *_ in EXPECTED.values():
-        raw = (GOLD / isin / "screener.xlsx").read_bytes()
-        data.fundamental_rows[isin] = fact_rows(
-            parse_export(raw), isin, "sha256:" + hashlib.sha256(raw).hexdigest(), {}
-        )
+        data.fundamental_rows[isin] = _facts(isin)["rows"]
     res = run_monthly(bundle, data, END, out_root=tmp_path_factory.mktemp("golden"))
     assert not [s for s in res.stocks if getattr(s, "error", None)]
     return {s.symbol: s for s in res.snapshots}
