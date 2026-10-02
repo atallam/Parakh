@@ -269,6 +269,7 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 
 | Version | Date | Change |
 |---|---|---|
+| 1.21 | 2026-10-02 | **Phase 1 built and loaded (§8.0c).** Order book (MAZDOCK) and offer-document financials (young listings) move to the Phase 2 document work. Pilot cap mix by AMFI is 4 Large, 1 Mid, 2 Small. Golden folder keeps parsed facts and export hashes, not the Screener exports |
 | 1.20 | 2026-09-29 | All Phase 0.5 spikes closed: Telegram live send delivered; a real agent turn on the runner; BL-02, BL-03, BL-04 done. Version: 13 1.20 |
 | 1.19 | 2026-09-29 | **Phase 0.5 spikes done** (§8.0b, `docs/spikes/`): no self-hosted runner needed; `isin_history` added (plan 05 v0.13); NSE XBRL feed ends Dec 2024; backlog BL-02…BL-04 for keys. Versions: 05 0.13, 13 1.19 |
 | 1.18 | 2026-09-29 | **Phase 0 built** (§8.0): PR #1 with CI green, 34/34 checklist. `docs/plan/` in the repo becomes the canonical copy. Version: 13 1.18 |
@@ -291,4 +292,3 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 | 1.1 | 2026-09-24 | Docs restructured around `README.md` with one owner per fact (decisions → 13, dates → 09, tests → 14). **Plan 14: Test & UAT plan** added. Defaults **D17** (staging schema) and **D18** (golden stocks) added. Contradictions with D10/D11 fixed in 00, 03, 06 and 09 (audit tables and backups now in Phase 1). THESIS.md schema moved to 05 §2.4; plan 11 and 00 §2 archived. Versions: 00 1.1, 01 0.5, 02 0.4, 03 0.9, 04 0.9, 05 0.8, 06 0.6, 07 1.4, 08 1.4, 09 1.4, 10 0.9, 12 1.2, 13 1.1, 14 1.0, archive/11 1.3; new README |
 
 *Personal analytical framework; not investment advice.*
-| 1.21 | 2026-10-02 | **Phase 1 built and loaded (§8.0c).** Order book (MAZDOCK) and offer-document financials (young listings) move to the Phase 2 document work. Pilot cap mix by AMFI is 4 Large, 1 Mid, 2 Small. Golden folder keeps parsed facts and export hashes, not the Screener exports |
