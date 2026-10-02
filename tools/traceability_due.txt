@@ -22,3 +22,8 @@ AC-F03.4   # private holdings files and statements are refused at commit (pre-co
 AC-F03.2   # partial sale reduces the oldest lots first
 AC-F03.6   # a missing buy becomes one cost-pending prompt, never a guessed cost
 AC-F03.7   # no PAN, name, address or DP/client ID survives a CAS import (synthetic CAS)
+AC-F02.1   # primary price source fails → fallback used and recorded
+AC-F02.2   # a split or bonus makes no artificial drop in the return or DMA series
+AC-F02.3   # a score for date D sees only fundamentals reported on or before D
+AC-F02.4   # failed validation → confidence Low with a warning, never silently scored
+AC-F02.5   # a same-day re-run is served from the cache

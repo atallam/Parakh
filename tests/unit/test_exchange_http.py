@@ -6,6 +6,7 @@ import datetime as dt
 from pathlib import Path
 
 import httpx
+import pytest
 
 from parakh.adapters.exchange_http import ExchangeArchive
 
@@ -25,6 +26,7 @@ def _archive(tmp_path: Path, handler) -> tuple[ExchangeArchive, list[str]]:  # t
     return ExchangeArchive(tmp_path / "raw", client, min_interval_s=0), calls
 
 
+@pytest.mark.ac("AC-F02.5")
 def test_nse_first_then_cached(tmp_path: Path) -> None:
     """T-ADP-50: the second read comes from the raw archive, with its hash recorded once."""
     archive, calls = _archive(tmp_path, lambda r: httpx.Response(200, content=NSE_ZIP))

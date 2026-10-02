@@ -169,6 +169,8 @@ def test_cross_source_mismatch_is_a_conflict(store: ParquetPriceStore) -> None:
     assert any(e.event_type == AUD.DATA_CONFLICT for e in get_sink().events_for_run(ctx.run_id))
 
 
+@pytest.mark.ac("AC-F02.1")
+@pytest.mark.ac("AC-F02.2")
 def test_fallback_rebuilds_from_bhavcopies_across_a_split(store: ParquetPriceStore) -> None:
     """T-JOB-14: Yahoo fails; bhavcopies list the old ISIN before the split and are back-adjusted."""
     mazdock = BUNDLE.universe.by_isin("INE249Z01020")
@@ -197,6 +199,10 @@ def test_fallback_rebuilds_from_bhavcopies_across_a_split(store: ParquetPriceSto
         today=dt.date(2024, 12, 31),
         securities=[mazdock],
     )
-    assert load.source == "exchange_bhavcopy" and load.rows == 3
+    assert load.source == "exchange_bhavcopy" and load.rows == 3  # the load records the fallback
+    stored = store.query([mazdock.isin], dt.date(2024, 12, 1), dt.date(2024, 12, 31))
+    returns = stored["close"].pct_change().dropna()
+    assert returns.abs().max() < 0.01  # a 1:2 split is not a 50% fall in the return series
+    assert float(pd.Series(stored["close"]).tail(3).mean()) == pytest.approx(2003.67, abs=0.01)
     types = [e.event_type for e in get_sink().events_for_run(ctx.run_id)]
     assert AUD.DATA_FALLBACK_USED in types

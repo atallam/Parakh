@@ -31,3 +31,23 @@ class DqResult:
 def worst(results: list[DqResult]) -> Status:
     statuses = {r.status for r in results}
     return "fail" if "fail" in statuses else "warn" if "warn" in statuses else "pass"
+
+
+Confidence = Literal["high", "medium", "low"]
+
+
+@dataclass(frozen=True)
+class DataConfidence:
+    """What a stock's checks allow downstream (AC-F02.4): never scored silently on bad data."""
+
+    level: Confidence
+    reasons: tuple[str, ...]  # the check ids that pulled it down, for the report's warning line
+
+
+def confidence(results: list[DqResult]) -> DataConfidence:
+    """A failed check → low (verdict blocked or shown with a warning); a warning → medium."""
+    failed = tuple(sorted({r.check_id for r in results if r.status == "fail"}))
+    if failed:
+        return DataConfidence("low", failed)
+    warned = tuple(sorted({r.check_id for r in results if r.status == "warn"}))
+    return DataConfidence("medium", warned) if warned else DataConfidence("high", ())

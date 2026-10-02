@@ -192,6 +192,9 @@ class SupabaseRepository:
             ).execute()
         return len(rows)
 
+    def dq_rows(self) -> list[dict[str, Any]]:
+        return self._all("dq_results", "run_id,isin,check_id,status,detail")
+
     # -- reference data ---------------------------------------------------------------------
     def open_memberships(self) -> list[dict[str, Any]]:
         return (

@@ -2,7 +2,7 @@
 
 # Traceability: acceptance criteria → tests
 
-25 of 179 acceptance criteria have tests; 21 are due now (tools/traceability_due.txt).
+27 of 179 acceptance criteria have tests; 26 are due now (tools/traceability_due.txt).
 
 | AC | Feature | Due | Tests | Last result |
 |---|---|---|---|---|
@@ -10,11 +10,11 @@
 | AC-F01.2 | F01 |  | — | — |
 | AC-F01.3 | F01 |  | `tests/unit/test_reference.py::test_membership_history_opens_and_closes` | — |
 | AC-F01.4 | F01 |  | — | — |
-| AC-F02.1 | F02 |  | — | — |
-| AC-F02.2 | F02 |  | — | — |
-| AC-F02.3 | F02 |  | `tests/unit/test_shareholding.py::test_job_stores_the_filing_date_beside_every_quarter` | — |
-| AC-F02.4 | F02 |  | `tests/unit/test_shareholding.py::test_a_disagreement_with_the_exchange_summary_fails_and_is_audited` | — |
-| AC-F02.5 | F02 |  | `tests/unit/test_shareholding.py::test_a_second_load_downloads_nothing` | — |
+| AC-F02.1 | F02 | ✅ | `tests/unit/test_price_job.py::test_fallback_rebuilds_from_bhavcopies_across_a_split` | — |
+| AC-F02.2 | F02 | ✅ | `tests/unit/test_price_job.py::test_fallback_rebuilds_from_bhavcopies_across_a_split` | — |
+| AC-F02.3 | F02 | ✅ | `tests/unit/test_phase1_gate.py::test_a_score_for_date_d_sees_only_what_was_reported_by_d`<br>`tests/unit/test_phase1_gate.py::test_a_later_restatement_does_not_leak_into_an_earlier_date`<br>`tests/unit/test_phase1_gate.py::test_an_undated_figure_waits_for_the_latest_legal_filing_date`<br>`tests/unit/test_shareholding.py::test_job_stores_the_filing_date_beside_every_quarter` | — |
+| AC-F02.4 | F02 | ✅ | `tests/unit/test_phase1_gate.py::test_a_negative_price_or_a_stalled_feed_makes_confidence_low`<br>`tests/unit/test_shareholding.py::test_a_disagreement_with_the_exchange_summary_fails_and_is_audited` | — |
+| AC-F02.5 | F02 | ✅ | `tests/unit/test_exchange_http.py::test_nse_first_then_cached`<br>`tests/unit/test_shareholding.py::test_a_second_load_downloads_nothing` | — |
 | AC-F03.1 | F03 | ✅ | `tests/unit/test_holdings_import.py::test_first_import_seeds_lots_and_stores_positions`<br>`tests/unit/test_holdings_lots.py::test_seeded_lots_reconcile_with_the_cas_and_the_broker_average` | — |
 | AC-F03.2 | F03 | ✅ | `tests/unit/test_holdings_lots.py::test_a_partial_sale_reduces_the_oldest_lots_first` | — |
 | AC-F03.3 | F03 |  | — | — |

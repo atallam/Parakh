@@ -250,6 +250,30 @@ def _shareholding_load(store: str, symbols: list[str] | None) -> int:
     return 0 if report.status != "fail" else 1
 
 
+def _dq_scorecard() -> int:
+    """Latest data-quality result of every check, per stock (plan 10 §13)."""
+    from parakh.configs import load_all
+    from parakh.quality.scorecard import scorecard
+    from parakh.render.format import pct
+
+    repo = _supabase_repo()
+    if repo is None:
+        return 2
+    symbols = {s.isin: s.symbol for s in load_all().universe.pilot}
+    card = scorecard(repo.dq_rows(), symbols)
+    if not card.rows:
+        print("no data-quality results stored yet")
+        return 0
+    mark = {"pass": "ok", "warn": "WARN", "fail": "FAIL"}
+    print(f"{'SYMBOL':12} " + " ".join(f"{a:13}" for a in card.areas) + " CONFIDENCE")
+    for row in card.rows:
+        cells = " ".join(f"{mark.get(row.areas.get(a, ''), '-'):13}" for a in card.areas)
+        why = f"  ({', '.join(row.confidence.reasons)})" if row.confidence.reasons else ""
+        print(f"{row.symbol:12} {cells} {row.confidence.level}{why}")
+    print(f"DQ {pct(card.score_pct, decimals=1, signed=False)} over {card.checks} checks")
+    return 0 if all(r.failed == 0 for r in card.rows) else 1
+
+
 BACKUP_KEY_FILE = "parakh-backup-key.txt"  # beside the repo, in Stock Analysis (never committed)
 
 
@@ -556,6 +580,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_fund.add_argument("--no-xbrl", action="store_true", help="skip the exchange XBRL tie-out")
     p_fund.add_argument("--store", choices=["none", "supabase"], default="none")
 
+    p_dq = sub.add_parser("dq", help="data-quality scorecard (Phase 1)")
+    p_dq.add_argument("action", choices=["scorecard"])
+
     p_shp = sub.add_parser("shareholding", help="shareholding pattern and pledge (Phase 1)")
     p_shp.add_argument("action", choices=["load"])
     p_shp.add_argument("--symbol", action="append", help="pilot symbol(s); default: all")
@@ -603,6 +630,8 @@ def main(argv: list[str] | None = None) -> int:
             return _prices_load(args.symbol, args.store, not args.no_exchange)
         case "fundamentals":
             return _fundamentals_load(args.file, not args.no_xbrl, args.store)
+        case "dq":
+            return _dq_scorecard()
         case "shareholding":
             return _shareholding_load(args.store, args.symbol)
         case "reference":

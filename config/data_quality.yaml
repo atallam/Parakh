@@ -26,6 +26,10 @@ fundamentals:
   # why: SEBI LODR: quarterly results within 45 days, annual within 60; a quarter older than
   # 150 days at load time means the export is stale
   max_latest_quarter_age_days: 150
+  # why: SEBI LODR Reg. 33: annual results within 60 days of the year end, quarterly within 45.
+  # A figure with no filing date on record is treated as public only 60 days after its period
+  # end, so a past-date score can never see it early (AC-F02.3)
+  assumed_report_lag_days: 60
 
 reference:
   # why: an index briefly carries an extra row during a demerger or replacement (the Smallcap

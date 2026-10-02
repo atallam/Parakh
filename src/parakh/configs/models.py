@@ -171,6 +171,7 @@ class FundamentalsDq(Strict):
     xbrl_tolerance_pct: float = Field(gt=0, le=10)
     xbrl_quarters: int = Field(ge=1, le=20)
     max_latest_quarter_age_days: int = Field(ge=30, le=400)
+    assumed_report_lag_days: int = Field(ge=30, le=180)
 
 
 class ReferenceDq(Strict):
