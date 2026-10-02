@@ -10,13 +10,15 @@ divided by 1e7 to ₹ crore. The quarter itself is the context `OneD`; `FourD` i
 
 Definition map, verified to the paisa on M&M (Dec 2024, Jun 2026) and HDFC Bank (Jun 2026):
 - Ind AS companies: Sales = RevenueFromOperations; Interest = FinanceCosts; Depreciation;
-  Tax = TaxExpense; PBT = ProfitBeforeTax + share of associates/JVs (Screener adds it back);
-  Net profit = profit attributable to owners of the parent (consolidated).
-  Screener splits Expenses and Other Income differently from the filing (M&M Jun 2026: ₹262 Cr
-  moved between them), so only their difference, `Expenses − Other Income`, is compared.
+  Tax = TaxExpense; PBT with or without the share of associates/JVs (Screener adds it for M&M,
+  not for MAZDOCK; both accepted, the match recorded); Net profit = profit
+  attributable to owners of the parent (consolidated). Screener splits Expenses and Other
+  Income its own way (M&M Jun 2026: ₹262 Cr moved between them), so only their difference is
+  compared, as implied by Screener's identity (PBT = Sales − that − Depreciation − Interest).
 - Banks: Sales = InterestEarned; Interest = InterestExpended; Expenses = operating expenses +
-  provisions; PBT = profit from ordinary activities before tax; Net profit after minority
+  provisions; PBT before exceptional items (HDFC Bank Sep 2025); Net profit after minority
   interest and associates.
+Verified on the first full pilot load (2 Oct 2026): 7 pilots, the latest 4 quarters each.
 """
 
 from __future__ import annotations
@@ -29,6 +31,7 @@ from typing import Literal
 CRORE = 1e7
 _FACT = re.compile(r'<[a-z][a-z\-]*:([A-Za-z]+)\b[^>]*contextRef="([^"]+)"[^>]*>([^<]*)<')
 NET_COST = "Expenses less Other Income"  # the comparable form of Screener's two split lines
+ALT = " | alt"  # suffix for an accepted alternative definition of the same line
 
 
 @dataclass
@@ -89,7 +92,9 @@ def screener_lines(x: XbrlResult) -> dict[str, float]:
         opex, prov = x.get("OperatingExpenses"), x.get("ProvisionsOtherThanTaxAndContingencies")
         if opex is not None:
             put("Expenses", opex + (prov or 0.0))
-        put("Profit before tax", x.get("ProfitLossFromOrdinaryActivitiesBeforeTax"))
+        pbt = x.get("ProfitLossFromOrdinaryActivitiesBeforeTax")
+        # Screener's bank PBT is before exceptional items (HDFC Bank Sep 2025: −₹753.10 Cr)
+        put("Profit before tax", None if pbt is None else pbt - (x.get("ExceptionalItems") or 0.0))
         put("Tax", x.get("TaxExpense"))
         put(
             "Net profit",
@@ -105,19 +110,37 @@ def screener_lines(x: XbrlResult) -> dict[str, float]:
     )
     fin = x.get("FinanceCosts")
     dep = x.get("DepreciationDepletionAndAmortisationExpense")
-    put("Sales", x.get("RevenueFromOperations"))
+    sales = x.get("RevenueFromOperations")
+    put("Sales", sales)
     put("Interest", fin)
     put("Depreciation", dep)
     put("Tax", x.get("TaxExpense"))
     pbt = x.get("ProfitBeforeTax")
-    put("Profit before tax", None if pbt is None else pbt + assoc)
+    if pbt is not None:
+        # The associates' share sits after PBT in most filings (M&M, MAZDOCK) and inside it in
+        # some; Income − Expenses (+ exceptional) tells which. Screener is not consistent across
+        # companies either: it adds the share into PBT for M&M but not for MAZDOCK (first pilot
+        # load, 2 Oct 2026). So PBT with the share is the primary value and PBT without it the
+        # alternative; the tie-out accepts either and records which matched.
+        income, expenses = x.get("Income"), x.get("Expenses")
+        exceptional = x.get("ExceptionalItemsBeforeTax") or 0.0
+        inside = False
+        if income is not None and expenses is not None and assoc:
+            base = income - expenses + exceptional
+            inside = abs(base + assoc - pbt) < abs(base - pbt)
+        with_share, without = (pbt, pbt - assoc) if inside else (pbt + assoc, pbt)
+        put("Profit before tax", with_share)
+        if assoc:
+            put("Profit before tax" + ALT, without)
     net = x.get("ProfitOrLossAttributableToOwnersOfParent") if x.consolidated else None
     put("Net profit", net if net is not None else x.get("ProfitLossForPeriod"))
-    expenses, other = x.get("Expenses"), x.get("OtherIncome")
-    if expenses is not None and other is not None:
-        exceptional = x.get("ExceptionalItemsBeforeTax") or 0.0
-        operating = expenses - (fin or 0.0) - (dep or 0.0)
-        put(NET_COST, operating - (other + assoc + exceptional))
+    if sales is not None and "Profit before tax" in out:
+        # Screener splits Expenses and Other Income its own way, so compare their difference,
+        # implied by Screener's identity: PBT = Sales − (Expenses − Other Income) − Dep − Int.
+        base_cost = sales - (dep or 0.0) - (fin or 0.0)
+        put(NET_COST, base_cost - out["Profit before tax"])
+        if "Profit before tax" + ALT in out:
+            put(NET_COST + ALT, base_cost - out["Profit before tax" + ALT])
     return out
 
 
@@ -141,8 +164,16 @@ class Filing:
     revised: bool = False
 
 
-def _ts(text: str) -> dt.datetime:
-    return dt.datetime.strptime(text.strip(), "%d-%b-%Y %H:%M:%S")
+def _ts(*candidates: object) -> dt.datetime | None:
+    """First parseable timestamp. Some integrated-filing rows have no broadcast date (seen on
+    the Phase 1 pilot load, 2 Oct 2026); their creation date is the fallback."""
+    for value in candidates:
+        if isinstance(value, str) and value.strip() and value.strip() not in ("-", "None"):
+            try:
+                return dt.datetime.strptime(value.strip(), "%d-%b-%Y %H:%M:%S")
+            except ValueError:
+                continue
+    return None
 
 
 def parse_financial_results(rows: list[dict[str, object]]) -> list[Filing]:
@@ -152,14 +183,15 @@ def parse_financial_results(rows: list[dict[str, object]]) -> list[Filing]:
         if r.get("period") != "Quarterly" or r.get("cumulative") == "Cumulative":
             continue
         url = str(r.get("xbrl") or "")
-        if not url.endswith(".xml"):
+        when = _ts(r.get("broadCastDate"), r.get("exchdisstime"), r.get("filingDate"))
+        if not url.endswith(".xml") or when is None:
             continue
         out.append(
             Filing(
                 symbol=str(r["symbol"]),
                 period_end=dt.datetime.strptime(str(r["toDate"]), "%d-%b-%Y").date(),
                 consolidated=str(r.get("consolidated", "")).startswith("Consolidated"),
-                broadcast_at=_ts(str(r["broadCastDate"])),
+                broadcast_at=when,
                 xbrl_url=url,
                 source="nse_results",
             )
@@ -173,14 +205,15 @@ def parse_integrated_filings(payload: dict[str, object]) -> list[Filing]:
     out = []
     for r in rows if isinstance(rows, list) else []:
         url = str(r.get("xbrl") or "")
-        if not url.endswith(".xml"):
+        when = _ts(r.get("broadcast_Date"), r.get("creation_Date"))
+        if not url.endswith(".xml") or when is None:
             continue
         out.append(
             Filing(
                 symbol=str(r["symbol"]),
                 period_end=dt.datetime.strptime(str(r["qe_Date"]), "%d-%b-%Y").date(),
                 consolidated=str(r.get("consolidated", "")).startswith("Consolidated"),
-                broadcast_at=_ts(str(r["broadcast_Date"])),
+                broadcast_at=when,
                 xbrl_url=url,
                 source="nse_integrated",
                 revised=str(r.get("type_Sub", "Original")) != "Original",

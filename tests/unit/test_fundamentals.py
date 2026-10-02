@@ -13,6 +13,7 @@ import pytest
 from parakh.adapters.xbrl import (
     NET_COST,
     Filing,
+    XbrlResult,
     first_reported,
     parse_financial_results,
     parse_integrated_filings,
@@ -184,3 +185,55 @@ def test_versioning_skips_unchanged_and_appends_restatements() -> None:
     assert plan_fundamental_inserts([row], {key: (1, 100.0)}, "R2") == ([], 0)
     new, restated = plan_fundamental_inserts([{**row, "value": 101.0}], {key: (1, 100.0)}, "R3")
     assert restated == 1 and new[0]["version"] == 2 and new[0]["run_id"] == "R3"
+
+
+def test_a_filing_without_a_broadcast_date_uses_its_creation_date() -> None:
+    """T-FUN-09: seen on the first real load (2 Oct 2026)."""
+    row = {"symbol": "X", "qe_Date": "30-JUN-2026", "consolidated": "Consolidated",
+           "broadcast_Date": None, "creation_Date": "01-Aug-2026 10:00:00", "xbrl": "https://a/b.xml"}  # fmt: skip
+    (f,) = parse_integrated_filings({"data": [row]})
+    assert f.broadcast_at == dt.datetime(2026, 8, 1, 10, 0)
+    assert parse_integrated_filings({"data": [{**row, "creation_Date": None}]}) == []
+
+
+def _synthetic(values: dict[str, float], banking: bool = False) -> XbrlResult:
+    return XbrlResult(None, dt.date(2025, 9, 30), True, "banking" if banking else "indas", values)
+
+
+def test_associates_inside_pbt_are_not_added_twice() -> None:
+    """T-FUN-10: MAZDOCK reports its associates' share inside PBT (first pilot load)."""
+    inside = _synthetic(
+        {"RevenueFromOperations": 3000.0, "Income": 3200.0, "Expenses": 2306.06, "FinanceCosts": 5.0,
+         "DepreciationDepletionAndAmortisationExpense": 30.0, "ProfitBeforeTax": 933.55,
+         "ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod": 39.61}
+    )  # fmt: skip
+    assert screener_lines(inside)["Profit before tax"] == 933.55
+    outside = _synthetic({**inside.values_cr, "ProfitBeforeTax": 893.94})
+    assert screener_lines(outside)["Profit before tax"] == 933.55
+    assert screener_lines(inside)[NET_COST] == pytest.approx(3000 - 30 - 5 - 933.55)
+
+
+def test_screener_pbt_with_or_without_associates_both_tie() -> None:
+    """T-FUN-12: Screener adds the associates' share for M&M but not for MAZDOCK."""
+    filed = _synthetic(
+        {"RevenueFromOperations": 2929.24, "Income": 3199.87, "Expenses": 2265.93,
+         "FinanceCosts": 7.82, "DepreciationDepletionAndAmortisationExpense": 23.53,
+         "ProfitBeforeTax": 933.94, "TaxExpense": 224.07,
+         "ShareOfProfitLossOfAssociatesAndJointVenturesAccountedForUsingEquityMethod": 39.61}
+    )  # fmt: skip
+    lines = screener_lines(filed)
+    mazdock = screener_quarter(
+        {"Sales": 2929.24, "Expenses": 1963.95 + 270.63, "Other Income": 270.63,
+         "Depreciation": 23.53, "Interest": 7.82, "Profit before tax": 933.94, "Tax": 224.07}
+    )  # fmt: skip
+    compared, bad = tieout(mazdock, lines, CFG)
+    assert bad == [] and "Profit before tax | alt" in compared
+    _, bad = tieout({**mazdock, "Profit before tax": 950.0}, lines, CFG)
+    assert [b["line"] for b in bad] == ["Profit before tax"]
+
+
+def test_bank_pbt_is_before_exceptional_items() -> None:
+    """T-FUN-11: HDFC Bank Sep 2025, exceptional −753.10."""
+    x = _synthetic({"InterestEarned": 86993.84, "ProfitLossFromOrdinaryActivitiesBeforeTax": 25905.79,
+                    "ExceptionalItems": -753.10}, banking=True)  # fmt: skip
+    assert screener_lines(x)["Profit before tax"] == 26658.89

@@ -71,6 +71,8 @@ class Settings(BaseSettings):
 
     # Project-specific
     cas_password: SecretStr | None = None
+    # plan 13 P6: key behind account_ref hashes; must stay stable once lots are stored
+    parakh_account_key: SecretStr | None = None
     telegram_bot_token: SecretStr | None = None
     telegram_chat_id: SecretStr | None = None
     supabase_db_password: SecretStr | None = None

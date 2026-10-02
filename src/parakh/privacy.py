@@ -35,21 +35,31 @@ def contains_pii(text: str) -> bool:
 ACCOUNT_KEY_ENV = "PARAKH_ACCOUNT_KEY"
 
 
-def account_key() -> bytes:
-    """The local key behind `account_ref` hashes (plan 13 P6).
+class AccountKeyMissing(RuntimeError):
+    pass
 
-    Read from PARAKH_ACCOUNT_KEY (hex) if set; otherwise created once as 32 random bytes in
-    state/secrets/account_key, which git ignores. Losing it only changes the references on the
-    next import (lots are re-keyed from the same CAS); it never exposes an account ID.
+
+def account_key(require_stable: bool = False) -> bytes:
+    """The key behind `account_ref` hashes (plan 13 P6).
+
+    Read from PARAKH_ACCOUNT_KEY (hex, in your .env). Without it, a throwaway key is created in
+    state/secrets/account_key for local checks only; storing lots needs the stable .env key
+    (`require_stable=True`), because a new key gives every account a new reference and would
+    orphan the stored lots. The key never exposes an account ID either way.
     """
     import os
     import secrets
 
-    from parakh.config import state_dir
+    from parakh.config import get_settings, state_dir
 
-    value = os.environ.get(ACCOUNT_KEY_ENV)
+    configured = get_settings().parakh_account_key
+    value = configured.get_secret_value() if configured else os.environ.get(ACCOUNT_KEY_ENV)
     if value:
         return bytes.fromhex(value)
+    if require_stable:
+        raise AccountKeyMissing(
+            "PARAKH_ACCOUNT_KEY is not set in .env; run `parakh holdings keygen` first"
+        )
     path = state_dir() / "secrets" / "account_key"
     if not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
