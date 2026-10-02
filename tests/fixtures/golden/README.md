@@ -4,6 +4,7 @@ Parsed facts (`facts.json`) from the Screener exports of HDFCBANK, INDIGO (Inter
 `tests/golden/test_golden_stocks.py` runs the real Phase 2 pipeline on the real fundamentals with deterministic
 synthetic prices (so the run is repeatable offline) and pins the verdict and score bands.
 
-These are **regression baselines**, not accuracy checks: the UAT-0 analyst oracle is not available yet, and the synthetic
-price level is not the real market price. Replace the expected values with the analyst oracle when UAT-0 lands.
+The verdict and score bands are **regression baselines** on synthetic prices, not accuracy checks. Accuracy is checked against
+the analyst oracle: `tests/golden/test_oracle.py` compares the value metrics with `tests/oracles/golden_expected.json`
+(built by `tools/compare_oracle.py`; sign-off in `docs/uat/UAT-0_*.md`).
 The manifest ties the facts to their export; change a fixture and update the manifest and the expectations together.
