@@ -17,9 +17,10 @@ from tests.helpers.pilot import END, pilot_data
 GOLD = Path(__file__).resolve().parents[1] / "fixtures" / "golden"
 
 # symbol -> (isin, verdict, value score, momentum score, rule id)
+# INDIGO value 71.7 -> 80.0 after the UAT-0 ROE-window fix (F2); verdict and rule unchanged.
 EXPECTED = {
     "HDFCBANK": ("INE040A01034", "WATCH", 89.7, 25.1, "VP.matrix.high_value×weak_momentum"),
-    "INDIGO": ("INE646L01027", "BUY", 71.7, 48.7, "VP.matrix.high_value×neutral_momentum"),
+    "INDIGO": ("INE646L01027", "BUY", 80.0, 48.7, "VP.matrix.high_value×neutral_momentum"),
     "M&M": ("INE101A01026", "BUY", 82.2, 70.5, "VP.matrix.fair_value×strong_momentum"),
 }
 
