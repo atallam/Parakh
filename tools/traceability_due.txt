@@ -27,3 +27,39 @@ AC-F02.2   # a split or bonus makes no artificial drop in the return or DMA seri
 AC-F02.3   # a score for date D sees only fundamentals reported on or before D
 AC-F02.4   # failed validation → confidence Low with a warning, never silently scored
 AC-F02.5   # a same-day re-run is served from the cache
+# Phase 3:
+AC-F11.1
+AC-F11.2
+AC-F11.3
+AC-F11.4
+AC-F11.5
+AC-F11.6
+AC-F11.7
+AC-F11.8
+AC-F11.9
+AC-F11.10
+AC-F11.11
+AC-F11.12
+AC-F12.1
+AC-F12.2
+AC-F12.3
+AC-F12.4
+AC-F12.5
+AC-F12.6
+AC-F12.7
+AC-F13.1
+AC-F13.2
+AC-F13.3
+AC-F13.4
+AC-F19.1
+AC-F19.2
+AC-F19.3
+AC-F19.5
+AC-F19.7
+AC-F23.4
+AC-F24.8
+AC-F25.2
+AC-F25.3
+AC-F25.4
+AC-F25.7
+# AC-F24.4 (portfolio.positions) waits for the Phase 4 portfolio toolset

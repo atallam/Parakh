@@ -57,6 +57,7 @@ def test_holiday_or_weekend_exits_quietly(tmp_path) -> None:  # type: ignore[no-
     assert deps.notifier.sent == [] and res.run_id is None  # type: ignore[union-attr]
 
 
+@pytest.mark.ac("AC-F12.1")
 def test_first_run_seeds_then_a_change_alerts_once(tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     deps = _deps(tmp_path)
     _force_signal(monkeypatch, status="not_fired")
@@ -69,6 +70,7 @@ def test_first_run_seeds_then_a_change_alerts_once(tmp_path, monkeypatch) -> Non
     assert again.alerts == 0, "an active signal does not alert again"
 
 
+@pytest.mark.ac("AC-F12.6")
 def test_shadow_mode_sends_nothing_but_logs(tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     deps = _deps(tmp_path, dry_run=True)
     _force_signal(monkeypatch, status="not_fired")
@@ -81,6 +83,7 @@ def test_shadow_mode_sends_nothing_but_logs(tmp_path, monkeypatch) -> None:  # t
     assert "[ ] noise" in (tmp_path / "logs" / "alerts_shadow.md").read_text(encoding="utf-8")
 
 
+@pytest.mark.ac("AC-F11.3")
 def test_failure_sends_one_red_message_and_reraises(tmp_path) -> None:  # type: ignore[no-untyped-def]
     deps = _deps(tmp_path)
 
@@ -95,6 +98,8 @@ def test_failure_sends_one_red_message_and_reraises(tmp_path) -> None:  # type: 
     assert "price store down" in sent[0]["text"]
 
 
+@pytest.mark.ac("AC-F13.1")
+@pytest.mark.ac("AC-F13.2")
 def test_events_job_alerts_once_and_queues_refresh(tmp_path) -> None:  # type: ignore[no-untyped-def]
     deps = _deps(tmp_path, feeds=FixtureSource())
     day = dt.date(2026, 7, 30)  # a Thursday with a transcript filing for INDIGO
@@ -104,7 +109,7 @@ def test_events_job_alerts_once_and_queues_refresh(tmp_path) -> None:  # type: i
     assert q[day.isoformat()]
     events = [
         e
-        for e in get_sink().events_for_run(res.run_id)
+        for e in get_sink().events_for_run(res.run_id or "")
         if e.event_type == AUD.JOB_REFRESH_REQUESTED
     ]
     assert events
@@ -120,6 +125,8 @@ def test_digest_job_sends_the_queued_items(tmp_path) -> None:  # type: ignore[no
     assert res.status == "ok"
 
 
+@pytest.mark.ac("AC-F19.2")
+@pytest.mark.ac("AC-F11.10")
 def test_heartbeat_is_silent_and_counts_week(tmp_path) -> None:  # type: ignore[no-untyped-def]
     deps = _deps(tmp_path)
     daily_watch(deps, MON)
@@ -128,6 +135,7 @@ def test_heartbeat_is_silent_and_counts_week(tmp_path) -> None:  # type: ignore[
     assert msg["silent"] and "alive" in msg["text"] and res.status == "ok"
 
 
+@pytest.mark.ac("AC-F25.4")
 def test_events_job_runs_triage_and_keeps_alerts_when_it_fails(tmp_path) -> None:  # type: ignore[no-untyped-def]
     import dataclasses
 

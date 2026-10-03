@@ -757,12 +757,14 @@ def build_parser() -> argparse.ArgumentParser:
     p_rp.add_argument("--store", choices=["local", "supabase"], default="supabase")
 
     p_nf = sub.add_parser(
-        "notify-failure", help="send a ❌ for a workflow that broke outside a job"
+        "notify-failure", help="send a failure alert for a workflow that broke outside a job"
     )
     p_nf.add_argument("--job", required=True)
     p_nf.add_argument("--run-url")
 
     sub.add_parser("integrity", help="verify the audit hash chain; alert if it is broken")
+    p_find = sub.add_parser("find", help="every alert for a signal or rule code (e.g. M03)")
+    p_find.add_argument("code")
 
     p_sum = sub.add_parser("summarize", help="scaffold sample agent: summarise a text file")
     p_sum.add_argument("path")
@@ -869,6 +871,10 @@ def main(argv: list[str] | None = None) -> int:
             from parakh.cli_watch import notify_failure
 
             return notify_failure(args.job, args.run_url)
+        case "find":
+            from parakh.cli_watch import find_code
+
+            return find_code(args.code)
         case "integrity":
             from parakh.cli_watch import integrity
 

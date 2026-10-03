@@ -6,6 +6,7 @@ import datetime as dt
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from parakh.analytics.signals.momentum import SignalState
 from parakh.orchestration.analysis_data import InMemoryData
@@ -47,6 +48,7 @@ def test_validation_reasons() -> None:
     assert validate_prices(nan, D3) is not None
 
 
+@pytest.mark.ac("AC-F12.1")
 def test_first_scan_seeds_silently_then_transition_alerts_once(tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     w, sec = _watcher(tmp_path, {})
     _script(
@@ -76,6 +78,7 @@ def test_new_signal_alerts_with_ownership_and_direction(tmp_path, monkeypatch) -
     assert a.code == "M21" and a.direction == "exit" and a.owned and a.weight_pct == 12.0
 
 
+@pytest.mark.ac("AC-F12.2")
 def test_unconfirmed_waits_unless_leading(tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     w, sec = _watcher(tmp_path)
     w.scan(D3)
@@ -112,6 +115,7 @@ def test_stale_stock_reported_and_state_untouched(tmp_path) -> None:  # type: ig
     assert sec.symbol in r.errors and "stale" in r.errors[sec.symbol] and r.scanned == 0
 
 
+@pytest.mark.ac("AC-F12.7")
 def test_replay_never_saves_state(tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     from parakh.calendar import default_calendar
 

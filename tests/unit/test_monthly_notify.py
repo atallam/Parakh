@@ -38,6 +38,7 @@ def _deps(b, data, tmp_path, notifier=None, mailer=None):  # type: ignore[no-unt
     )
 
 
+@pytest.mark.ac("AC-F11.2")
 def test_summary_is_one_short_message_without_amounts(tmp_path) -> None:  # type: ignore[no-untyped-def]
     b, data, res, snaps = _result(tmp_path)
     n, m = FakeNotifier(), FakeMailer()
@@ -56,6 +57,7 @@ def test_summary_is_one_short_message_without_amounts(tmp_path) -> None:  # type
     assert "₹" not in text and "Rs" not in text
 
 
+@pytest.mark.ac("AC-F11.11")
 def test_email_has_html_text_and_ics_attachment(tmp_path) -> None:  # type: ignore[no-untyped-def]
     b, data, res, snaps = _result(tmp_path)
     m = FakeMailer()
@@ -76,7 +78,7 @@ def test_email_has_html_text_and_ics_attachment(tmp_path) -> None:  # type: igno
         {},
         10.0,
         asof=ASOF,
-        calendar_source=Cal(),
+        calendar_source=Cal(),  # type: ignore[arg-type]
         today=ASOF,
     )
     assert notice.email_ok and notice.calendar_entries == 2 * len(b.universe.pilot)
@@ -85,6 +87,7 @@ def test_email_has_html_text_and_ics_attachment(tmp_path) -> None:  # type: igno
     assert "Monthly analysis" in sent["html"] and sent["text"]
 
 
+@pytest.mark.ac("AC-F11.11")
 def test_calendar_window_and_errors() -> None:
     b = bundle()
     secs = b.universe.pilot[:2]
@@ -105,7 +108,7 @@ def test_calendar_window_and_errors() -> None:
         def corporate_actions(self, s):  # type: ignore[no-untyped-def]
             return []
 
-    entries, errs = calendar_entries(Cal(), secs, today)
+    entries, errs = calendar_entries(Cal(), secs, today)  # type: ignore[arg-type]
     assert len(entries) == 1 and entries[0].kind == "results" and secs[1].symbol in errs
 
 
@@ -156,6 +159,7 @@ def _fake_review_deps(b, data, tmp_path, notifier, mailer, final, dry_run_agents
     return dataclasses.replace(deps, bundle=b)
 
 
+@pytest.mark.ac("AC-F25.3")
 def test_review_live_sends_second_message_and_email_section(tmp_path) -> None:  # type: ignore[no-untyped-def]
     b, data, res, snaps = _result(tmp_path)
     sym = snaps[0]["symbol"]
@@ -171,6 +175,7 @@ def test_review_live_sends_second_message_and_email_section(tmp_path) -> None:  
     assert f"{sym} lost momentum." in m.sent[0]["html"]
 
 
+@pytest.mark.ac("AC-F25.3")
 def test_review_in_shadow_goes_to_the_log_only(tmp_path) -> None:  # type: ignore[no-untyped-def]
     b, data, res, snaps = _result(tmp_path)
     sym = snaps[0]["symbol"]
@@ -187,6 +192,7 @@ def test_review_in_shadow_goes_to_the_log_only(tmp_path) -> None:  # type: ignor
     assert f"{sym} steady." not in m.sent[0]["html"]
 
 
+@pytest.mark.ac("AC-F25.3")
 def test_failed_review_leaves_the_summary_and_marks_pending(tmp_path) -> None:  # type: ignore[no-untyped-def]
     b, data, res, snaps = _result(tmp_path)
     sym = snaps[0]["symbol"]

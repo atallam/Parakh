@@ -10,4 +10,11 @@ Every lens and the verdict policy. Status is `active`, `informational` or `retir
 | `momentum` | 1.0.0 | active | Avinash Tallam | `151445aa` | pending (UAT-1) | pending (Phase 5) | [card](lenses/momentum.md) |
 | `verdict_policy` | 1.0.0 | active | Avinash Tallam | `72397dae` | pending (UAT-1) | pending (Phase 5) | [card](lenses/verdict_policy.md) |
 
-Agents (qualitative analyst, devil's advocate, monthly reviewer, event triage, watchlist curator) join this table when they ship in Phase 4; prompts are versioned separately (`prompts/`).
+## Agents
+
+| ID | Prompt | Model | Status | Owner | Last validation | Card |
+|---|---|---|---|---|---|---|
+| `AGENT.monthly_reviewer` | `monthly_reviewer.v1` | `claude-sonnet-5` | shadow | Avinash Tallam | pending (UAT-2) | [card](agents/monthly_reviewer.md) |
+| `AGENT.event_triage` | `event_triage.v1` | `claude-sonnet-5` | shadow | Avinash Tallam | pending (UAT-2) | [card](agents/event_triage.md) |
+
+The qualitative analyst, devil's advocate and watchlist curator join this table when they ship in Phase 4; prompts are versioned separately (`prompts/`).

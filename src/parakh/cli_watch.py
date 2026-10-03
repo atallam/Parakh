@@ -161,6 +161,20 @@ def replay(days: int, asof: str | None, store: str) -> int:
     return 0
 
 
+def find_code(code: str) -> int:
+    """List every alert decision for a signal or rule code, with run_id and ISIN (AC-F19.3)."""
+    from parakh.notify.log import AlertsLog
+
+    rows = AlertsLog().search(code)
+    for r in rows:
+        print(
+            f"{r.get('asof')}  {r.get('code')}  {r.get('symbol') or '-'}  {r.get('isin') or '-'}  "
+            f"{r.get('decision')}  run={r.get('run_id')}"
+        )
+    print(f"{len(rows)} occurrence(s) of {code.upper()}")
+    return 0
+
+
 def integrity() -> int:
     """The daily audit-chain check (AC-F21.4): one `AUD.INTEGRITY.CHECK`, and a ❌ if it fails."""
     from parakh.audit.context import RunContext

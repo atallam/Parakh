@@ -5,12 +5,14 @@ from __future__ import annotations
 import datetime as dt
 
 import httpx
+import pytest
 
 from parakh.notify.email import build_message
 from parakh.notify.ics import CalEntry, build_ics
 from parakh.notify.ntfy import NtfyClient
 
 
+@pytest.mark.ac("AC-F11.11")
 def test_ics_is_valid_crlf_and_escaped() -> None:
     data = build_ics(
         [CalEntry(dt.date(2026, 11, 5), "M&M, board; meeting", "board", "Results, with; commas")],
@@ -29,6 +31,7 @@ def test_ics_folds_long_lines_and_uid_is_stable() -> None:
     assert e.uid == CalEntry(dt.date(2026, 11, 5), "x" * 200).uid
 
 
+@pytest.mark.ac("AC-F11.11")
 def test_email_has_html_text_and_ics() -> None:
     msg = build_message(
         "a@x", "b@x", "Subj", "<b>hi</b>", "hi", [("r.ics", b"BEGIN", "text/calendar")]
@@ -38,6 +41,7 @@ def test_email_has_html_text_and_ics() -> None:
     assert msg["Subject"] == "Subj"
 
 
+@pytest.mark.ac("AC-F11.10")
 def test_ntfy_ok_and_failure() -> None:
     seen = {}
 

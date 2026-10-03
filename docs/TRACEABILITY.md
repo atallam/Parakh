@@ -2,7 +2,7 @@
 
 # Traceability: acceptance criteria → tests
 
-75 of 179 acceptance criteria have tests; 26 are due now (tools/traceability_due.txt).
+110 of 179 acceptance criteria have tests; 60 are due now (tools/traceability_due.txt).
 
 | AC | Feature | Due | Tests | Last result |
 |---|---|---|---|---|
@@ -77,29 +77,29 @@
 | AC-F10.4 | F10 |  | — | — |
 | AC-F10.5 | F10 |  | — | — |
 | AC-F10.6 | F10 |  | `tests/unit/test_reports.py::test_segment_summary` | — |
-| AC-F11.1 | F11 |  | — | — |
-| AC-F11.2 | F11 |  | — | — |
-| AC-F11.3 | F11 |  | — | — |
-| AC-F11.4 | F11 |  | — | — |
-| AC-F11.5 | F11 |  | — | — |
-| AC-F11.6 | F11 |  | — | — |
-| AC-F11.7 | F11 |  | — | — |
-| AC-F11.8 | F11 |  | — | — |
-| AC-F11.9 | F11 |  | — | — |
-| AC-F11.10 | F11 |  | — | — |
-| AC-F11.11 | F11 |  | — | — |
-| AC-F11.12 | F11 |  | — | — |
-| AC-F12.1 | F12 |  | — | — |
-| AC-F12.2 | F12 |  | — | — |
-| AC-F12.3 | F12 |  | — | — |
-| AC-F12.4 | F12 |  | — | — |
-| AC-F12.5 | F12 |  | — | — |
-| AC-F12.6 | F12 |  | — | — |
-| AC-F12.7 | F12 |  | — | — |
-| AC-F13.1 | F13 |  | — | — |
-| AC-F13.2 | F13 |  | — | — |
-| AC-F13.3 | F13 |  | — | — |
-| AC-F13.4 | F13 |  | — | — |
+| AC-F11.1 | F11 | ✅ | `tests/unit/test_calendar.py::test_monthly_asof_is_the_last_trading_day_of_the_previous_month` | — |
+| AC-F11.2 | F11 | ✅ | `tests/unit/test_monthly_notify.py::test_summary_is_one_short_message_without_amounts` | — |
+| AC-F11.3 | F11 | ✅ | `tests/unit/test_watch_jobs.py::test_failure_sends_one_red_message_and_reraises` | — |
+| AC-F11.4 | F11 | ✅ | `tests/unit/test_phase3_governance.py::test_manual_rerun_for_the_same_date_gives_the_same_messages` | — |
+| AC-F11.5 | F11 | ✅ | `tests/unit/test_phase3_governance.py::test_reports_land_in_the_cap_folders_of_the_repo_tree` | — |
+| AC-F11.6 | F11 | ✅ | `tests/unit/test_notify_templates.py::test_every_template_is_at_most_ten_lines_and_ends_items_with_open` | — |
+| AC-F11.7 | F11 | ✅ | `tests/unit/test_notify_templates.py::test_no_amount_or_quantity_in_any_default_message` | — |
+| AC-F11.8 | F11 | ✅ | `tests/unit/test_notify_bot.py::test_button_feedback_and_mute` | — |
+| AC-F11.9 | F11 | ✅ | `tests/unit/test_button_tokens.py::test_expired_tampered_and_malformed_tokens_are_rejected` | — |
+| AC-F11.10 | F11 | ✅ | `tests/unit/test_notify_channels.py::test_ntfy_ok_and_failure`<br>`tests/unit/test_notify_templates.py::test_low_only_digest_is_silent_and_a_high_item_makes_it_loud`<br>`tests/unit/test_notify_templates.py::test_heartbeat_is_silent`<br>`tests/unit/test_watch_jobs.py::test_heartbeat_is_silent_and_counts_week` | — |
+| AC-F11.11 | F11 | ✅ | `tests/unit/test_monthly_notify.py::test_email_has_html_text_and_ics_attachment`<br>`tests/unit/test_monthly_notify.py::test_calendar_window_and_errors`<br>`tests/unit/test_notify_channels.py::test_ics_is_valid_crlf_and_escaped`<br>`tests/unit/test_notify_channels.py::test_email_has_html_text_and_ics` | — |
+| AC-F11.12 | F11 | ✅ | `tests/unit/test_notify_bot.py::test_stranger_is_dropped_and_audited`<br>`tests/unit/test_notify_bot.py::test_owner_commands_are_answered_and_audited`<br>`tests/unit/test_notify_bot.py::test_mute_command_sets_mute` | — |
+| AC-F12.1 | F12 | ✅ | `tests/unit/test_momentum_watcher.py::test_first_scan_seeds_silently_then_transition_alerts_once`<br>`tests/unit/test_watch_jobs.py::test_first_run_seeds_then_a_change_alerts_once` | — |
+| AC-F12.2 | F12 | ✅ | `tests/unit/test_momentum_watcher.py::test_unconfirmed_waits_unless_leading` | — |
+| AC-F12.3 | F12 | ✅ | `tests/unit/test_notify_routing.py::test_same_signal_is_suppressed_inside_the_cooldown_and_rearms_on_reversal` | — |
+| AC-F12.4 | F12 | ✅ | `tests/unit/test_notify_routing.py::test_signal_routing_matrix` | — |
+| AC-F12.5 | F12 | ✅ | `tests/unit/test_calendar.py::test_holidays_and_weekends_are_not_trading_days` | — |
+| AC-F12.6 | F12 | ✅ | `tests/unit/test_notify_dispatch.py::test_shadow_mode_sends_nothing_and_writes_shadow_log`<br>`tests/unit/test_watch_jobs.py::test_shadow_mode_sends_nothing_but_logs` | — |
+| AC-F12.7 | F12 | ✅ | `tests/unit/test_momentum_watcher.py::test_replay_never_saves_state`<br>`tests/unit/test_phase3_governance.py::test_replay_lists_dated_alerts_and_sends_nothing` | — |
+| AC-F13.1 | F13 | ✅ | `tests/unit/test_event_watcher.py::test_each_filing_alerts_exactly_once`<br>`tests/unit/test_watch_jobs.py::test_events_job_alerts_once_and_queues_refresh` | — |
+| AC-F13.2 | F13 | ✅ | `tests/unit/test_event_watcher.py::test_results_once_per_period_and_refresh`<br>`tests/unit/test_event_watcher.py::test_transcript_triggers_refresh`<br>`tests/unit/test_watch_jobs.py::test_events_job_alerts_once_and_queues_refresh` | — |
+| AC-F13.3 | F13 | ✅ | `tests/unit/test_event_watcher.py::test_auditor_exit_vs_appointment` | — |
+| AC-F13.4 | F13 | ✅ | `tests/unit/test_phase3_governance.py::test_events_are_appended_once_to_the_signal_log` | — |
 | AC-F14.1 | F14 |  | — | — |
 | AC-F14.2 | F14 |  | — | — |
 | AC-F14.3 | F14 |  | — | — |
@@ -133,15 +133,15 @@
 | AC-F18.2 | F18 | ✅ | `tests/contract/test_lens_contract.py::test_every_lens_honours_the_contract` | — |
 | AC-F18.3 | F18 |  | — | — |
 | AC-F18.4 | F18 | ✅ | `tests/static/test_repo_rules.py::test_generated_catalogues_are_fresh` | — |
-| AC-F19.1 | F19 |  | — | — |
-| AC-F19.2 | F19 |  | — | — |
-| AC-F19.3 | F19 |  | — | — |
+| AC-F19.1 | F19 | ✅ | `tests/unit/test_phase3_governance.py::test_run_manifest_carries_timings_counts_and_tokens` | — |
+| AC-F19.2 | F19 | ✅ | `tests/unit/test_watch_jobs.py::test_heartbeat_is_silent_and_counts_week` | — |
+| AC-F19.3 | F19 | ✅ | `tests/unit/test_phase3_governance.py::test_search_by_rule_code_returns_run_and_isin` | — |
 | AC-F19.4 | F19 |  | — | — |
-| AC-F19.5 | F19 |  | — | — |
+| AC-F19.5 | F19 | ✅ | `tests/unit/test_phase3_governance.py::test_service_level_breaches_are_measured_and_reported_in_the_heartbeat` | — |
 | AC-F19.6 | F19 |  | — | — |
-| AC-F19.7 | F19 |  | — | — |
+| AC-F19.7 | F19 | ✅ | `tests/unit/test_phase3_governance.py::test_failure_modes_entries_are_complete` | — |
 | AC-F19.8 | F19 |  | — | — |
-| AC-F21.1 | F21 | ✅ | `tests/unit/test_audit_core.py::test_successful_run_has_one_start_and_one_end`<br>`tests/unit/test_audit_core.py::test_failed_run_has_one_start_and_one_abort_and_still_writes_a_manifest` | — |
+| AC-F21.1 | F21 | ✅ | `tests/unit/test_audit_core.py::test_successful_run_has_one_start_and_one_end`<br>`tests/unit/test_audit_core.py::test_failed_run_has_one_start_and_one_abort_and_still_writes_a_manifest`<br>`tests/unit/test_phase3_governance.py::test_every_alert_decision_has_a_log_row_and_an_audit_event` | — |
 | AC-F21.2 | F21 |  | — | — |
 | AC-F21.3 | F21 |  | — | — |
 | AC-F21.4 | F21 | ✅ | `tests/unit/test_audit_core.py::test_chain_detects_tampering_with_any_record`<br>`tests/unit/test_audit_core.py::test_chain_detects_a_deleted_record` | — |
@@ -164,7 +164,7 @@
 | AC-F23.1 | F23 |  | `tests/unit/test_thesis.py::test_a_met_metric_breaker_sets_broken_with_evidence`<br>`tests/unit/test_verdict_policy.py::test_a_broken_thesis_leads_to_an_exit_for_an_owned_stock_only` | — |
 | AC-F23.2 | F23 |  | `tests/unit/test_thesis.py::test_an_llm_flag_never_breaks_a_thesis_on_its_own` | — |
 | AC-F23.3 | F23 |  | `tests/unit/test_thesis.py::test_a_status_change_writes_one_event_and_a_timeline_entry` | — |
-| AC-F23.4 | F23 |  | — | — |
+| AC-F23.4 | F23 | ✅ | `tests/unit/test_monthly_notify.py::test_thesis_change_sends_alert_and_inbox_item`<br>`tests/unit/test_monthly_notify.py::test_thesis_alert_only_for_watch_or_broken` | — |
 | AC-F23.5 | F23 |  | `tests/unit/test_thesis.py::test_no_thesis_means_not_set_and_still_a_verdict` | — |
 | AC-F23.6 | F23 |  | — | — |
 | AC-F23.7 | F23 |  | `tests/unit/test_thesis.py::test_a_thesis_past_review_by_is_flagged_due` | — |
@@ -174,14 +174,14 @@
 | AC-F24.4 | F24 |  | — | — |
 | AC-F24.5 | F24 | ✅ | `tests/mcp_server/test_gateway.py::test_each_call_writes_exactly_one_tool_call_event`<br>`tests/mcp_server/test_gateway.py::test_invalid_input_is_logged_once_as_a_failed_call` | — |
 | AC-F24.6 | F24 | ✅ | `tests/mcp_server/test_server.py::test_server_never_listens_on_a_socket`<br>`tests/mcp_server/test_server.py::test_stdio_end_to_end_with_a_real_client` | — |
-| AC-F24.7 | F24 |  | — | — |
-| AC-F24.8 | F24 |  | — | — |
+| AC-F24.7 | F24 |  | `tests/agents/test_phase3_agents.py::test_get_document_wraps_text_as_untrusted_with_hash` | — |
+| AC-F24.8 | F24 | ✅ | `tests/agents/test_phase3_agents.py::test_queue_twice_sends_one_message_and_logs_one_suppression`<br>`tests/agents/test_phase3_agents.py::test_requested_severity_is_capped_at_the_rule_table`<br>`tests/unit/test_notify_routing.py::test_the_same_event_queued_twice_is_a_duplicate` | — |
 | AC-F24.9 | F24 |  | — | — |
 | AC-F24.10 | F24 |  | — | — |
 | AC-F25.1 | F25 | ✅ | `tests/agents/test_claude_sdk_options.py::test_options_allow_only_parakh_tools_and_no_built_ins`<br>`tests/agents/test_claude_sdk_options.py::test_mcp_server_is_stdio_with_the_agent_identity`<br>`tests/agents/test_runtime_contract.py::test_every_configured_agent_passes_the_runtime_contract` | — |
-| AC-F25.2 | F25 |  | — | — |
-| AC-F25.3 | F25 |  | — | — |
-| AC-F25.4 | F25 |  | — | — |
+| AC-F25.2 | F25 | ✅ | `tests/agents/test_phase3_agents.py::test_reviewer_turn_limit_is_pending_with_audit_event`<br>`tests/agents/test_phase3_agents.py::test_reviewer_token_budget_stop_is_audited` | — |
+| AC-F25.3 | F25 | ✅ | `tests/agents/test_phase3_agents.py::test_reviewer_ok_names_only_listed_stocks`<br>`tests/unit/test_monthly_notify.py::test_review_live_sends_second_message_and_email_section`<br>`tests/unit/test_monthly_notify.py::test_review_in_shadow_goes_to_the_log_only`<br>`tests/unit/test_monthly_notify.py::test_failed_review_leaves_the_summary_and_marks_pending` | — |
+| AC-F25.4 | F25 | ✅ | `tests/agents/test_phase3_agents.py::test_triage_live_attaches_note_and_never_changes_severity`<br>`tests/agents/test_phase3_agents.py::test_triage_failure_keeps_the_rule_alert`<br>`tests/agents/test_phase3_agents.py::test_triage_is_bounded_per_run`<br>`tests/agents/test_phase3_agents.py::test_requested_severity_is_capped_at_the_rule_table`<br>`tests/unit/test_watch_jobs.py::test_events_job_runs_triage_and_keeps_alerts_when_it_fails` | — |
 | AC-F25.5 | F25 |  | — | — |
 | AC-F25.6 | F25 | ✅ | `tests/agents/test_runtime_contract.py::test_fake_runner_replays_a_trajectory_through_the_real_gateway` | — |
-| AC-F25.7 | F25 |  | — | — |
+| AC-F25.7 | F25 | ✅ | `tests/agents/test_phase3_agents.py::test_reviewer_ok_names_only_listed_stocks`<br>`tests/unit/test_phase3_governance.py::test_every_shipped_agent_has_a_card_and_an_inventory_row` | — |

@@ -7,6 +7,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+import pytest
+
 from parakh.watch.events import EventWatcher, match_announcement, match_insider, parse_nse_date
 from parakh.watch.momentum import Held
 from parakh.watch.state import StateStore
@@ -70,6 +72,7 @@ def test_generic_resignation_fails_loud_as_high(tmp_path) -> None:  # type: igno
     assert by_desc["Change in Management"] == "Medium"
 
 
+@pytest.mark.ac("AC-F13.2")
 def test_results_once_per_period_and_refresh(tmp_path) -> None:  # type: ignore[no-untyped-def]
     w, indigo, _ = _setup(tmp_path)
     res = w.scan(dt.date(2026, 7, 24), [indigo], FixtureSource())
@@ -77,12 +80,14 @@ def test_results_once_per_period_and_refresh(tmp_path) -> None:  # type: ignore[
     assert res.refresh_isins == [indigo.isin]
 
 
+@pytest.mark.ac("AC-F13.2")
 def test_transcript_triggers_refresh(tmp_path) -> None:  # type: ignore[no-untyped-def]
     w, indigo, _ = _setup(tmp_path)
     res = w.scan(dt.date(2026, 7, 30), [indigo], FixtureSource())
     assert "E02" in _codes(res) and indigo.isin in res.refresh_isins
 
 
+@pytest.mark.ac("AC-F13.1")
 def test_each_filing_alerts_exactly_once(tmp_path) -> None:  # type: ignore[no-untyped-def]
     w, indigo, _ = _setup(tmp_path)
     first = w.scan(dt.date(2026, 9, 26), [indigo], FixtureSource())
@@ -128,6 +133,7 @@ def test_promoter_trade_and_pledge_rules() -> None:
     assert match_insider(rules, other) is None
 
 
+@pytest.mark.ac("AC-F13.3")
 def test_auditor_exit_vs_appointment() -> None:
     rules = bundle().events.rules
     gen = {

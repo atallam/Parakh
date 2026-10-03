@@ -56,6 +56,11 @@ class AlertsLog:
     def find(self, alert_id: str) -> dict[str, Any] | None:
         return next((r for r in self.rows() if r.get("alert_id") == alert_id), None)
 
+    def search(self, code: str) -> list[dict[str, Any]]:
+        """Every row for a signal or rule code (e.g. `M03`), with run_id and ISIN (AC-F19.3)."""
+        want = code.strip().upper()
+        return [r for r in self.rows() if str(r.get("code", "")).upper() == want]
+
     def count(self, since: dt.datetime, decision: str | None = None) -> int:
         n = 0
         for r in self.rows():

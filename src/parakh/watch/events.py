@@ -26,6 +26,8 @@ from parakh.configs.models import Security
 from parakh.configs.notify_models import EventRule
 from parakh.notify.model import Alert, Severity
 from parakh.watch.docs import DocStore
+from parakh.watch.history import SignalLog
+from parakh.watch.history import entry as history_entry
 from parakh.watch.momentum import Held
 from parakh.watch.state import StateStore
 
@@ -211,6 +213,20 @@ class EventWatcher:
                 out.refresh_isins.append(alert.isin)
 
         if persist:
+            SignalLog(self.store).append(
+                [
+                    history_entry(
+                        key=a.dedupe_key,
+                        isin=a.isin,
+                        symbol=a.symbol,
+                        code=a.code,
+                        headline=a.headline,
+                        asof=asof,
+                        kind=a.kind,
+                    )
+                    for a in out.alerts
+                ]
+            )
             DocStore(self.store).put_many(
                 {
                     a.dedupe_key: {

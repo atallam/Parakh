@@ -48,6 +48,8 @@ GOOD = {
 }
 
 
+@pytest.mark.ac("AC-F25.3")
+@pytest.mark.ac("AC-F25.7")
 def test_reviewer_ok_names_only_listed_stocks() -> None:
     ctx = _ctx()
     r = _runner(
@@ -86,6 +88,7 @@ def test_reviewer_rejects_unlisted_stocks_and_amounts(mutate, why) -> None:  # t
     assert problem and items == [] and narrative is None
 
 
+@pytest.mark.ac("AC-F25.2")
 def test_reviewer_turn_limit_is_pending_with_audit_event() -> None:
     ctx = _ctx()
     many = [Turn("mcp__parakh__reports_what_changed")] * 30
@@ -95,6 +98,7 @@ def test_reviewer_turn_limit_is_pending_with_audit_event() -> None:
     assert AUD.AGENT_TURN_LIMIT in _types(ctx) and AUD.AGENT_END in _types(ctx)
 
 
+@pytest.mark.ac("AC-F25.2")
 def test_reviewer_token_budget_stop_is_audited() -> None:
     ctx = _ctx()
     heavy = [Turn("mcp__parakh__reports_what_changed", tokens_in=30000, tokens_out=20000)]
@@ -155,12 +159,14 @@ def test_triage_in_shadow_leaves_alerts_untouched_and_logs_the_line() -> None:
     assert res.alerts == al and len(res.shadow) == 2 and res.triaged == 2
 
 
+@pytest.mark.ac("AC-F25.4")
 def test_triage_live_attaches_note_and_never_changes_severity() -> None:
     ctx, al = _ctx(), _alerts(1)
     res = triage(_triage_runner(ctx, al, NOTE), bundle(dry_run_agents=False), ctx, get_sink(), al)
     assert res.alerts[0].note == NOTE["note"] and res.alerts[0].severity == al[0].severity
 
 
+@pytest.mark.ac("AC-F25.4")
 def test_triage_failure_keeps_the_rule_alert() -> None:
     ctx, al = _ctx(), _alerts(1)
     bad = _triage_runner(ctx, al, {"note": "x", "material": "maybe-not-a-bool-list"})
@@ -176,6 +182,7 @@ def test_triage_note_with_amount_is_dropped_but_alert_stays() -> None:
     assert res.alerts == al and res.alerts[0].note is None
 
 
+@pytest.mark.ac("AC-F25.4")
 def test_triage_is_bounded_per_run() -> None:
     ctx, al = _ctx(), _alerts(MAX_TRIAGE_PER_RUN + 4)
     res = triage(_triage_runner(ctx, al, NOTE), bundle(dry_run_agents=True), ctx, get_sink(), al)
@@ -224,6 +231,7 @@ def test_queue_twice_sends_one_message_and_logs_one_suppression(tmp_path, monkey
 
 
 @pytest.mark.ac("AC-F24.8")
+@pytest.mark.ac("AC-F25.4")
 def test_requested_severity_is_capped_at_the_rule_table(tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     monkeypatch.setenv("PARAKH_WATCH_STATE_DIR", str(tmp_path / "watch"))
     out = _gw().invoke(

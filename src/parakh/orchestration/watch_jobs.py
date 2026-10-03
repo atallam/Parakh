@@ -347,20 +347,33 @@ def week_runs(today: dt.date, root: Path | None = None) -> list[RunManifest]:
             m = RunManifest.model_validate(json.loads(path.read_text(encoding="utf-8")))
         except (ValueError, OSError):
             continue
-        if cutoff <= m.asof <= today and m.mode in ("watch", "events", "digest", "monthly"):
+        if cutoff <= m.asof <= today and m.mode in (
+            "watch",
+            "events",
+            "digest",
+            "monthly",
+            "monthly-notify",
+        ):
             out.append(m)
     return out
 
 
 def service_level_breaches(deps: WatchDeps, runs: list[RunManifest]) -> list[str]:
-    """NFR-14: watcher message by 19:30 IST; a run that ended later is flagged (AC-F19.5)."""
-    limit = deps.bundle.notify.service_levels.watcher_by_ist
-    hh, mm = (int(x) for x in limit.split(":"))
+    """NFR-14: monthly summary by 12:00 IST, watcher by 19:30 IST; a later finish is flagged (AC-F19.5)."""
+    sl = deps.bundle.notify.service_levels
+    limits = {
+        "watch": sl.watcher_by_ist,
+        "events": sl.watcher_by_ist,
+        "monthly": sl.monthly_summary_by_ist,
+        "monthly-notify": sl.monthly_summary_by_ist,
+    }
     ist = dt.timezone(dt.timedelta(hours=5, minutes=30))
     late = []
     for m in runs:
-        if m.mode not in ("watch", "events"):
+        limit = limits.get(m.mode)
+        if limit is None:
             continue
+        hh, mm = (int(x) for x in limit.split(":"))
         end = m.finished_at.astimezone(ist)
         if (end.hour, end.minute) > (hh, mm):
             late.append(f"{m.mode} {m.asof:%d %b} finished {end:%H:%M} IST (limit {limit})")

@@ -117,6 +117,7 @@ def test_buttons_are_one_row_per_item_up_to_five() -> None:
     assert [b.action for b in msg.buttons[0]] == ["u", "n", "m"]
 
 
+@pytest.mark.ac("AC-F11.10")
 def test_low_only_digest_is_silent_and_a_high_item_makes_it_loud() -> None:
     low = render_digest([alert("M24", severity=Severity.LOW, owned=False)], ["a"], day=DAY)
     assert low.silent
@@ -124,6 +125,7 @@ def test_low_only_digest_is_silent_and_a_high_item_makes_it_loud() -> None:
     assert not mixed.silent
 
 
+@pytest.mark.ac("AC-F11.10")
 def test_heartbeat_is_silent() -> None:
     assert render_heartbeat(5, 5, 0, [], DAY).silent
 

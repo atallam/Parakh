@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import datetime as dt
 
+import pytest
+
 from parakh.audit.emit import get_sink
 from parakh.audit.events import AUD
 from parakh.notify.bot import Bot
@@ -45,7 +47,7 @@ def _bot(tmp_path):  # type: ignore[no-untyped-def]
         n,
         owner_chat_id="1",
         key=KEY,
-        providers=P(),
+        providers=P(),  # type: ignore[arg-type]
         today=DAY,
     )
     return bot, d, n, state, log, ctx
@@ -66,6 +68,7 @@ def _types(ctx):  # type: ignore[no-untyped-def]
     return [e.event_type for e in get_sink().events_for_run(ctx.run_id)]
 
 
+@pytest.mark.ac("AC-F11.12")
 def test_stranger_is_dropped_and_audited(tmp_path) -> None:  # type: ignore[no-untyped-def]
     bot, _, n, _, _, ctx = _bot(tmp_path)
     n.updates = [_msg(1, 999, "/today")]
@@ -74,6 +77,7 @@ def test_stranger_is_dropped_and_audited(tmp_path) -> None:  # type: ignore[no-u
     assert AUD.ACCESS_BOT_REJECTED in _types(ctx)
 
 
+@pytest.mark.ac("AC-F11.12")
 def test_owner_commands_are_answered_and_audited(tmp_path) -> None:  # type: ignore[no-untyped-def]
     bot, _, n, _, _, ctx = _bot(tmp_path)
     n.updates = [_msg(1, 1, "/today"), _msg(2, 1, "/stock indigo"), _msg(3, 1, "/privacy")]
@@ -87,6 +91,7 @@ def test_owner_commands_are_answered_and_audited(tmp_path) -> None:  # type: ign
     assert r.next_offset == 4
 
 
+@pytest.mark.ac("AC-F11.12")
 def test_mute_command_sets_mute(tmp_path) -> None:  # type: ignore[no-untyped-def]
     bot, d, n, state, _, _ = _bot(tmp_path)
     n.updates = [_msg(1, 1, "/mute INDIGO 5")]
@@ -95,6 +100,7 @@ def test_mute_command_sets_mute(tmp_path) -> None:  # type: ignore[no-untyped-de
     assert len(res.suppressed) == 1
 
 
+@pytest.mark.ac("AC-F11.8")
 def test_button_feedback_and_mute(tmp_path) -> None:  # type: ignore[no-untyped-def]
     bot, d, n, _, log, ctx = _bot(tmp_path)
     d.submit([alert()])

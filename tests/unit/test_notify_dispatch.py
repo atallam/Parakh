@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import datetime as dt
 
+import pytest
+
 from parakh.audit.emit import get_sink
 from parakh.audit.events import AUD
 from tests.helpers.notify import FakeMailer, FakeNotifier, alert, dispatcher
@@ -22,6 +24,7 @@ def test_live_send_logs_row_and_audit(tmp_path) -> None:  # type: ignore[no-unty
     assert len(_events(ctx, AUD.ALERT_SENT)) == 1
 
 
+@pytest.mark.ac("AC-F12.6")
 def test_shadow_mode_sends_nothing_and_writes_shadow_log(tmp_path) -> None:  # type: ignore[no-untyped-def]
     d, n, _, log, ctx = dispatcher(tmp_path, dry_run_alerts=True)
     res = d.submit([alert()])
