@@ -45,7 +45,6 @@ def test_summary_is_one_short_message_without_amounts(tmp_path) -> None:  # type
         {c: r.regime for c, r in res.regimes.items()},
         312.0,
         asof=ASOF,
-        review_pending=True,
     )
     assert notice.telegram_ok and len(n.sent) == 1
     text = n.sent[0]["text"]
