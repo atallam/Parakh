@@ -95,7 +95,7 @@ def breadth_pct(
     for f in frames.values():
         if f is None or f.empty:
             continue
-        g = f[f["trade_date"] <= asof].sort_values("trade_date")
+        g = pd.DataFrame(f[f["trade_date"] <= asof]).sort_values(by="trade_date")
         close = g["close"].astype(float).to_numpy()
         close = close[np.isfinite(close)]
         if len(close) < ma or pd.Timestamp(g["trade_date"].iloc[-1]).date() != asof:

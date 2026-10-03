@@ -44,14 +44,26 @@ def _config_validate() -> int:
 
 
 def _run(
-    mode: str, asof: str | None, symbols: list[str] | None = None, store: str = "supabase"
+    mode: str,
+    asof: str | None,
+    symbols: list[str] | None = None,
+    store: str = "supabase",
+    notify: bool = False,
 ) -> int:
     from parakh.orchestration.jobs import run_dummy
 
     if mode == "monthly":
         from parakh.cli_analysis import monthly
 
-        return monthly(asof, symbols, store)
+        return monthly(asof, symbols, store, notify)
+    if mode == "watch":
+        from parakh.cli_watch import watch
+
+        return watch(asof, store, symbols)
+    if mode == "events":
+        from parakh.cli_watch import events
+
+        return events(asof, store)
     if mode != "dummy":
         print(
             f"mode '{mode}' arrives in a later phase (plan 09); 'dummy' and 'monthly' exist so far"
@@ -620,6 +632,9 @@ def build_parser() -> argparse.ArgumentParser:
         default="supabase",
         help="where prices are read from",
     )
+    p_run.add_argument(
+        "--notify", action="store_true", help="monthly mode: send the Telegram summary and email"
+    )
 
     p_audit = sub.add_parser("audit", help="audit trail tools")
     p_audit.add_argument("action", choices=["verify"])
@@ -711,6 +726,38 @@ def build_parser() -> argparse.ArgumentParser:
     p_mod = sub.add_parser("models", help="regenerate docs/MODELS.md and the lens cards")
     p_mod.add_argument("--check", action="store_true", help="fail if they are stale")
 
+    p_w = sub.add_parser("watch", help="daily momentum watcher (Phase 3)")
+    p_w.add_argument("--asof")
+    p_w.add_argument("--symbol", action="append")
+    p_w.add_argument("--store", choices=["local", "supabase"], default="supabase")
+
+    p_e = sub.add_parser(
+        "events", help="daily event watcher: filings, insider trades, surveillance"
+    )
+    p_e.add_argument("--asof")
+    p_e.add_argument("--store", choices=["local", "supabase"], default="supabase")
+
+    p_d = sub.add_parser("digest", help="send the evening digest of queued alerts")
+    p_d.add_argument("--asof")
+    p_d.add_argument("--store", choices=["local", "supabase"], default="supabase")
+
+    p_hb = sub.add_parser("heartbeat", help="Sunday heartbeat: jobs healthy, service levels")
+    p_hb.add_argument("--asof")
+
+    p_bot = sub.add_parser("bot", help="Telegram bot: answer new messages and button taps once")
+    p_bot.add_argument("action", choices=["poll"])
+
+    sub.add_parser("notify-test", help="send one test message to Telegram (and email)")
+
+    p_rp = sub.add_parser(
+        "replay", help="replay the watcher over the last N trading days (sends nothing)"
+    )
+    p_rp.add_argument("--days", type=int, default=60)
+    p_rp.add_argument("--asof")
+    p_rp.add_argument("--store", choices=["local", "supabase"], default="supabase")
+
+    sub.add_parser("integrity", help="verify the audit hash chain; alert if it is broken")
+
     p_sum = sub.add_parser("summarize", help="scaffold sample agent: summarise a text file")
     p_sum.add_argument("path")
     return parser
@@ -726,7 +773,7 @@ def main(argv: list[str] | None = None) -> int:
         case "config":
             return _config_validate()
         case "run":
-            return _run(args.mode, args.asof, args.symbol, args.store)
+            return _run(args.mode, args.asof, args.symbol, args.store, args.notify)
         case "audit":
             return _audit_verify()
         case "catalogue":
@@ -784,6 +831,38 @@ def main(argv: list[str] | None = None) -> int:
             from parakh.cli_analysis import models
 
             return models(args.check)
+        case "watch":
+            from parakh.cli_watch import watch
+
+            return watch(args.asof, args.store, args.symbol)
+        case "events":
+            from parakh.cli_watch import events
+
+            return events(args.asof, args.store)
+        case "digest":
+            from parakh.cli_watch import digest
+
+            return digest(args.asof, args.store)
+        case "heartbeat":
+            from parakh.cli_watch import heartbeat
+
+            return heartbeat(args.asof)
+        case "bot":
+            from parakh.cli_watch import bot
+
+            return bot(args.action)
+        case "notify-test":
+            from parakh.cli_watch import notify_test
+
+            return notify_test()
+        case "replay":
+            from parakh.cli_watch import replay
+
+            return replay(args.days, args.asof, args.store)
+        case "integrity":
+            from parakh.cli_watch import integrity
+
+            return integrity()
         case "summarize":
             return _summarize(args.path)
     parser.print_help(sys.stdout)

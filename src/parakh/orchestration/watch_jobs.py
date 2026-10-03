@@ -379,3 +379,49 @@ def heartbeat(deps: WatchDeps, today: dt.date, runs_root: Path | None = None) ->
         res.status, res.reason = "failed", f"{type(exc).__name__}: {exc}"
         raise
     return res
+
+
+# -- bot ---------------------------------------------------------------------------------------
+def bot_poll(
+    deps: WatchDeps, owner_chat_id: str, providers: Any, asof: dt.date | None = None
+) -> JobResult:
+    """Read new Telegram updates once and answer them; the offset persists between runs."""
+    from parakh.notify.bot import Bot
+
+    day = asof or dt.datetime.now(dt.timezone(dt.timedelta(hours=5, minutes=30))).date()
+    ctx = RunContext.create(
+        mode="bot", asof=day, actor_type="scheduler", actor_id="bot-poll", trigger=deps.trigger
+    )
+    res = JobResult("bot", "ok", run_id=ctx.run_id)
+    if deps.notifier is None or deps.button_key is None:
+        res.status, res.reason = "skipped", "no Telegram credentials"
+        return res
+    try:
+        with run_lifecycle(ctx, deps.audit()) as outcome:
+            with audited_step(ctx, "poll") as step:
+                d = _dispatcher(deps, ctx)
+                offset = d.state.data.get("bot_offset")
+                bot = Bot(
+                    deps.bundle,
+                    ctx,
+                    deps.audit(),
+                    d.state,
+                    d.log,
+                    deps.notifier,
+                    owner_chat_id=owner_chat_id,
+                    key=deps.button_key,
+                    providers=providers,
+                    today=day,
+                )
+                out = bot.poll(offset)
+                if out.next_offset is not None:
+                    d.state.data["bot_offset"] = out.next_offset
+                    d.state.save()
+                step.record_output(handled=out.handled, rejected=out.rejected)
+            outcome.summary = {"handled": out.handled, "rejected": out.rejected}
+            res.alerts = out.handled
+    except Exception as exc:
+        _send_failure(deps, ctx, "Telegram bot poll", exc)
+        res.status, res.reason = "failed", f"{type(exc).__name__}: {exc}"
+        raise
+    return res

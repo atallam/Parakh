@@ -32,7 +32,12 @@ def month_end(today: dt.date | None = None) -> dt.date:
     return t if tomorrow.day == 1 else t.replace(day=1) - dt.timedelta(days=1)
 
 
-def monthly(asof: str | None, symbols: list[str] | None, store_kind: str = "supabase") -> int:
+def monthly(
+    asof: str | None,
+    symbols: list[str] | None,
+    store_kind: str = "supabase",
+    notify: bool = False,
+) -> int:
     from parakh.configs import load_all
     from parakh.orchestration.analysis import run_monthly
     from parakh.orchestration.render_outputs import render_month
@@ -46,7 +51,30 @@ def monthly(asof: str | None, symbols: list[str] | None, store_kind: str = "supa
     data = _data(store_kind, bundle)
     if data is None:
         return 2
-    res = run_monthly(bundle, data, when, securities=secs)
+    import time
+
+    t0 = time.monotonic()
+    deps = None
+    if notify:
+        from parakh.cli_watch import build_deps
+
+        deps = build_deps(store_kind, need_feeds=True)
+    try:
+        res = run_monthly(bundle, data, when, securities=secs)
+    except Exception as exc:
+        if deps is not None:
+            from parakh.audit.context import RunContext
+            from parakh.notify.templates import render_failure
+            from parakh.orchestration.watch_jobs import _dispatcher
+
+            ctx = RunContext.create(
+                mode="monthly", asof=when, actor_type="scheduler", actor_id="monthly"
+            )
+            _dispatcher(deps, ctx).send_message(
+                render_failure("Monthly analysis", "run", f"{type(exc).__name__}: {exc}", None),
+                code="SYS.FAILURE",
+            )
+        raise
     snaps = [s.snapshot.model_dump(mode="json") for s in res.stocks if s.snapshot]
     files = render_month(bundle, snaps)
     print(f"run {res.ctx.run_id} · {res.outcome.status} · as of {when}")
@@ -66,6 +94,22 @@ def monthly(asof: str | None, symbols: list[str] | None, store_kind: str = "supa
         mom = "N/A" if sn.momentum["score"] is None else f"{sn.momentum['score']:.0f}"
         print(f"{s.symbol:11} {chip(v)[:28]:28} {v['confidence']:5} {val:>5} {mom:>5}  {note}")
     print(f"{len(files)} files written under {res.output_root or 'the output folder'}")
+    if deps is not None:
+        from parakh.orchestration.monthly_notify import notify_monthly
+
+        failed = [s.symbol for s in res.stocks if s.snapshot is None]
+        notice = notify_monthly(
+            deps,
+            snaps,
+            {c: r.regime for c, r in res.regimes.items()},
+            time.monotonic() - t0,
+            asof=when,
+            failed=failed,
+            calendar_source=deps.feeds,  # type: ignore[arg-type]
+        )
+        print(
+            f"notified: telegram {'ok' if notice.telegram_ok else 'FAILED'} · email {notice.email_ok} · {notice.calendar_entries} calendar entries"
+        )
     return 0 if not any(s.error for s in res.stocks) else 1
 
 
