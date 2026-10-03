@@ -1,0 +1,31 @@
+name: bot_poll
+
+# Every 30 minutes, 08:30-22:00 IST. Applies button taps and answers commands (AC-F11.8 until the Phase 4 listener).
+on:
+  schedule:
+    - cron: "*/30 3-16 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  id-token: write
+
+# one writer of the state branch at a time
+concurrency:
+  group: parakh-state
+  cancel-in-progress: false
+
+env:
+  AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/parakh-job
+        with:
+          job-name: "Telegram bot poll"
+          command: "bot poll"

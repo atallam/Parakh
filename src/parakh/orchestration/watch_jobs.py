@@ -22,6 +22,7 @@ from typing import Any
 
 import structlog
 
+from parakh.agents.runtime.base import AgentRunner
 from parakh.audit.context import RunContext
 from parakh.audit.emit import AuditSink, get_sink
 from parakh.audit.events import AUD
@@ -57,6 +58,7 @@ class WatchDeps:
     button_key: bytes | None = None
     logs_root: Path | None = None
     ntfy: Ntfy | None = None
+    runner: AgentRunner | None = None
     calendar: Calendar | None = None
     trigger: str = "cron"
     extra: dict[str, Any] = field(default_factory=dict)
@@ -232,12 +234,38 @@ def daily_events(deps: WatchDeps, asof: dt.date) -> JobResult:
                     refresh=len(scan.refresh_isins),
                 )
             res.errors = dict(scan.errors)
+            alerts = scan.alerts
+            refresh = list(scan.refresh_isins)
+            if deps.runner is not None and alerts:
+                with audited_step(ctx, "triage", filings=len(alerts)) as step:
+                    from parakh.agents.event_triage import triage
+
+                    t = triage(deps.runner, deps.bundle, ctx, deps.audit(), alerts)
+                    alerts = t.alerts
+                    refresh += [i for i in t.refresh_suggested if i not in refresh]
+                    shadow = ShadowLog("agents_shadow.md", deps.logs_root)
+                    for alert, note in t.shadow:
+                        shadow.append(
+                            when=dt.datetime.now(dt.UTC),
+                            heading=f"event_triage {alert.symbol} {alert.code}, would add this line",
+                            lines=[f"🤖 {note}"],
+                            alert_ids=[alert.dedupe_key],
+                        )
+                    step.record_output(triaged=t.triaged, pending=t.pending, shadowed=len(t.shadow))
             with audited_step(ctx, "queue_refresh") as step:
-                queued = queue_refresh(deps, ctx, asof, scan.refresh_isins)
+                queued = queue_refresh(deps, ctx, asof, refresh)
                 step.record_output(queued=queued)
             with audited_step(ctx, "notify") as step:
-                out = _dispatcher(deps, ctx).submit(scan.alerts, title="Filings and events")
+                d = _dispatcher(deps, ctx)
+                out = d.submit(alerts, title="Filings and events")
                 _tally(res, out)
+                from parakh.notify.queue import NotifyQueue, drain
+
+                drained = drain(NotifyQueue(deps.store), d, deps.bundle, asof)
+                if drained is not None:
+                    res.suppressed += len(drained.suppressed)
+                    res.shadowed += len(drained.shadowed)
+                    res.sent += len(drained.sent)
                 step.record_output(sent=res.sent, shadowed=res.shadowed, suppressed=res.suppressed)
             res.alerts = len(scan.alerts)
             outcome.summary = _summary(

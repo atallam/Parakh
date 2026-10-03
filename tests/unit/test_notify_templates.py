@@ -51,9 +51,17 @@ def test_vocabulary_is_emoji_plus_word_and_owned_shows_percentages_only() -> Non
 @pytest.mark.ac("AC-F11.7")
 def test_no_amount_or_quantity_in_any_default_message() -> None:
     summary = MonthlySummaryVars(
-        period="Oct 2026", stocks=7, seconds=492, regimes={"large": "Risk-On"},
-        owned_attention=["INDIGO ⚪ HOLD→🟡 TRIM"], upgrades=["GROWW HOLD→BUY"], downgrades=[],
-        red_flags=["MAZDOCK pledge"], inbox_items=4, data_warnings=1, unknown_checks=2,
+        period="Oct 2026",
+        stocks=7,
+        seconds=492,
+        regimes={"large": "Risk-On"},
+        owned_attention=["INDIGO ⚪ HOLD→🟡 TRIM"],
+        upgrades=["GROWW HOLD→BUY"],
+        downgrades=[],
+        red_flags=["MAZDOCK pledge"],
+        inbox_items=4,
+        data_warnings=1,
+        unknown_checks=2,
         governance="🛡 Integrity ✅ · DQ 96%",
     )
     texts = [
@@ -66,7 +74,9 @@ def test_no_amount_or_quantity_in_any_default_message() -> None:
 
 
 def test_html_in_data_is_escaped_so_m_and_m_cannot_break_a_message() -> None:
-    msg = render_alerts([alert("M21", symbol="M&M", headline="a <b>bad</b> & worse")], ["a"], day=DAY)
+    msg = render_alerts(
+        [alert("M21", symbol="M&M", headline="a <b>bad</b> & worse")], ["a"], day=DAY
+    )
     assert "M&amp;M" in msg.text and "<b>bad</b>" not in msg.text and "&amp; worse" in msg.text
 
 
@@ -98,7 +108,11 @@ def test_agent_notes_are_clipped_and_marked_as_agent_written() -> None:
 
 
 def test_buttons_are_one_row_per_item_up_to_five() -> None:
-    msg = render_alerts([alert("M21", symbol=f"S{i}", isin=f"X{i}") for i in range(7)], [f"i{i}" for i in range(7)], day=DAY)
+    msg = render_alerts(
+        [alert("M21", symbol=f"S{i}", isin=f"X{i}") for i in range(7)],
+        [f"i{i}" for i in range(7)],
+        day=DAY,
+    )
     assert len(msg.buttons) == 5
     assert [b.action for b in msg.buttons[0]] == ["u", "n", "m"]
 
@@ -115,7 +129,10 @@ def test_heartbeat_is_silent() -> None:
 
 
 def test_monthly_review_drops_unsafe_notes_and_returns_none_when_nothing_is_left() -> None:
-    items = [ReviewItem("INDIGO", "act", "Lease liabilities up; check thesis 2."), ReviewItem("M&M", "watch", "Worth ₹5 Cr")]
+    items = [
+        ReviewItem("INDIGO", "act", "Lease liabilities up; check thesis 2."),
+        ReviewItem("M&M", "watch", "Worth ₹5 Cr"),
+    ]
     msg = render_monthly_review(items, period="Oct 2026")
     assert msg is not None and "INDIGO" in msg.text and "M&amp;M" not in msg.text
     assert render_monthly_review([ReviewItem("X", "info", "₹5 Cr")], period="Oct 2026") is None
@@ -124,4 +141,9 @@ def test_monthly_review_drops_unsafe_notes_and_returns_none_when_nothing_is_left
 def test_fit_lines_keeps_header_and_footer() -> None:
     lines = [f"l{i}" for i in range(15)]
     out = fit_lines(lines, keep_tail=2)
-    assert len(out) == MAX_LINES and out[0] == "l0" and out[-2:] == ["l13", "l14"] and "more" in out[-3]
+    assert (
+        len(out) == MAX_LINES
+        and out[0] == "l0"
+        and out[-2:] == ["l13", "l14"]
+        and "more" in out[-3]
+    )

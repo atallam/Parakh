@@ -44,10 +44,20 @@ def test_signal_routing_matrix(router, kwargs, action) -> None:
 
 
 def test_events_thesis_and_system_routing(router) -> None:
-    assert router.decide(alert("E04", kind="event", severity=Severity.HIGH, owned=False), TODAY).action == "send_now"
-    assert router.decide(alert("E01", kind="event", severity=Severity.MEDIUM), TODAY).action == "digest"
-    assert router.decide(alert("THESIS.BROKEN", kind="thesis", owned=True), TODAY).action == "send_now"
-    assert router.decide(alert("THESIS.WATCH", kind="thesis", owned=False), TODAY).action == "digest"
+    assert (
+        router.decide(alert("E04", kind="event", severity=Severity.HIGH, owned=False), TODAY).action
+        == "send_now"
+    )
+    assert (
+        router.decide(alert("E01", kind="event", severity=Severity.MEDIUM), TODAY).action
+        == "digest"
+    )
+    assert (
+        router.decide(alert("THESIS.BROKEN", kind="thesis", owned=True), TODAY).action == "send_now"
+    )
+    assert (
+        router.decide(alert("THESIS.WATCH", kind="thesis", owned=False), TODAY).action == "digest"
+    )
     assert router.decide(alert("SYS.X", kind="system"), TODAY).action == "send_now"
 
 
@@ -96,10 +106,14 @@ def test_mute_applies_to_one_signal_on_one_stock_until_it_expires(router) -> Non
 def test_agent_daily_cap(router) -> None:
     cap = router.config.routing.agent_daily_cap
     for i in range(cap):
-        a = alert("E13", kind="event", source="agent:event_triage", group=str(i), severity=Severity.HIGH)
+        a = alert(
+            "E13", kind="event", source="agent:event_triage", group=str(i), severity=Severity.HIGH
+        )
         d = router.decide(a, TODAY)
         assert d.action == "send_now"
         router.commit(a, d, TODAY)
-    over = alert("E13", kind="event", source="agent:event_triage", group="over", severity=Severity.HIGH)
+    over = alert(
+        "E13", kind="event", source="agent:event_triage", group="over", severity=Severity.HIGH
+    )
     s = router.decide(over, TODAY)
     assert s.action == "suppress" and "daily cap" in s.reason

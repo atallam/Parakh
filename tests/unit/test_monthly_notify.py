@@ -49,7 +49,9 @@ def test_summary_is_one_short_message_without_amounts(tmp_path) -> None:  # type
     )
     assert notice.telegram_ok and len(n.sent) == 1
     text = n.sent[0]["text"]
-    assert len(text.splitlines()) <= 10 and "Review pending" in text and "Monthly Analysis" in text
+    assert (
+        len(text.splitlines()) <= 10 and "Monthly Analysis" in text and "Review pending" not in text
+    )
     assert "₹" not in text and "Rs" not in text
 
 
@@ -131,3 +133,65 @@ def test_vars_classify_upgrades_and_downgrades() -> None:
         and v.red_flags == ["B: pledge"]
         and v.period == "Sep 2026"
     )
+
+
+def _fake_review_deps(b, data, tmp_path, notifier, mailer, final, dry_run_agents):  # type: ignore[no-untyped-def]
+    import dataclasses
+
+    from parakh.mcp.middleware import Gateway
+    from tests.fakes.agent_runner import FakeRunner, Trajectory, Turn
+
+    b = bundle(dry_run_agents=dry_run_agents)
+    deps = _deps(b, data, tmp_path, notifier, mailer)
+
+    class R(FakeRunner):
+        async def run(self, spec, task, ctx):  # type: ignore[no-untyped-def]
+            self.trajectories = {
+                task.task_id: Trajectory([Turn("mcp__parakh__reports_what_changed")], final)
+            }
+            return await super().run(spec, task, ctx)
+
+    deps.runner = R(Gateway.for_client("agent:monthly_reviewer"), {})
+    return dataclasses.replace(deps, bundle=b)
+
+
+def test_review_live_sends_second_message_and_email_section(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    b, data, res, snaps = _result(tmp_path)
+    sym = snaps[0]["symbol"]
+    final = {
+        "items": [{"symbol": sym, "tag": "watch", "note": "Momentum faded this month"}],
+        "narrative": f"{sym} lost momentum.",
+    }
+    n, m = FakeNotifier(), FakeMailer()
+    deps = _fake_review_deps(b, data, tmp_path, n, m, final, dry_run_agents=False)
+    notice = notify_monthly(deps, snaps, {}, 5.0, asof=ASOF, allowed_symbols={sym})
+    assert notice.review_status == "ok" and len(n.sent) == 2
+    assert "Review pending" in n.sent[0]["text"] and "Monthly review" in n.sent[1]["text"]
+    assert f"{sym} lost momentum." in m.sent[0]["html"]
+
+
+def test_review_in_shadow_goes_to_the_log_only(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    b, data, res, snaps = _result(tmp_path)
+    sym = snaps[0]["symbol"]
+    final = {
+        "items": [{"symbol": sym, "tag": "info", "note": "Steady"}],
+        "narrative": f"{sym} steady.",
+    }
+    n, m = FakeNotifier(), FakeMailer()
+    deps = _fake_review_deps(b, data, tmp_path, n, m, final, dry_run_agents=True)
+    notify_monthly(deps, snaps, {}, 5.0, asof=ASOF, allowed_symbols={sym})
+    assert len(n.sent) == 1, "only the summary; the review stays in the shadow log"
+    shadow = (tmp_path / "logs" / "agents_shadow.md").read_text(encoding="utf-8")
+    assert "monthly_reviewer" in shadow and "noise" in shadow
+    assert f"{sym} steady." not in m.sent[0]["html"]
+
+
+def test_failed_review_leaves_the_summary_and_marks_pending(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    b, data, res, snaps = _result(tmp_path)
+    sym = snaps[0]["symbol"]
+    final = {"items": [{"symbol": "NOTLISTED", "tag": "info", "note": "x"}], "narrative": "x"}
+    n, m = FakeNotifier(), FakeMailer()
+    deps = _fake_review_deps(b, data, tmp_path, n, m, final, dry_run_agents=False)
+    notice = notify_monthly(deps, snaps, {}, 5.0, asof=ASOF, allowed_symbols={sym})
+    assert notice.review_status == "pending" and len(n.sent) == 1
+    assert "Review pending" in n.sent[0]["text"] and "Review pending" in m.sent[0]["html"]

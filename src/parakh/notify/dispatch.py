@@ -347,3 +347,42 @@ class Dispatcher:
             details={"code": code, "template_id": msg.template_id, "silent": msg.silent},
         )
         return delivery
+
+    # -- agent messages ----------------------------------------------------------------------
+    def send_agent_message(self, msg: Message, *, agent: str, code: str) -> Delivery:
+        """An agent-written message (the monthly review). Shadow mode keeps it in the log only."""
+        if self.bundle.agents.dry_run:
+            alert_id = new_ulid()
+            self.agents_shadow.append(
+                when=dt.datetime.now(dt.UTC),
+                heading=f"{agent} {code}, would be sent",
+                lines=msg.lines[1:],
+                alert_ids=[alert_id],
+            )
+            self.log.record(
+                {
+                    "alert_id": alert_id,
+                    "run_id": self.ctx.run_id,
+                    "asof": self.ctx.asof.isoformat(),
+                    "isin": None,
+                    "symbol": None,
+                    "code": code,
+                    "kind": "review",
+                    "severity": "Low",
+                    "source": f"agent:{agent}",
+                    "decision": "shadow",
+                    "reason": "agents.dry_run",
+                    "payload_hash": "sha256:" + new_ulid(),
+                    "channel": "shadow",
+                }
+            )
+            self.sink.emit(
+                self.ctx,
+                AUD.ALERT_SENT,
+                channel="telegram",
+                entity_type="alert",
+                entity_id=alert_id,
+                details={"code": code, "source": f"agent:{agent}", "dry_run": True},
+            )
+            return Delivery(True, provider_msg_id="shadow")
+        return self.send_message(msg, code=code, severity="Low")

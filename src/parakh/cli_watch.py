@@ -209,3 +209,21 @@ def integrity() -> int:
         return 1
     print(f"audit chain OK · {check.events} events")
     return 0
+
+
+def notify_failure(job: str, run_url: str | None) -> int:
+    """A workflow broke outside the job's own alerting (install, state pull); say so once."""
+    from parakh.notify.templates import render_failure
+
+    deps = build_deps(need_data=False)
+    if deps is None or deps.notifier is None:
+        print("no Telegram credentials; cannot send the failure alert", file=sys.stderr)
+        return 2
+    msg = render_failure(
+        job,
+        "workflow",
+        f"the workflow failed before or outside the job; see {run_url or 'the run log'}",
+        None,
+    )
+    d = deps.notifier.send(msg.text)
+    return 0 if d.ok else 1

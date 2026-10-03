@@ -60,7 +60,11 @@ def test_walking_the_calendar(cal) -> None:
     assert cal.next_trading_day(D(2026, 11, 9)) == D(2026, 11, 11)
     assert cal.trading_days_between(D(2026, 10, 1), D(2026, 10, 5)) == 1
     assert cal.add_trading_days(D(2026, 10, 1), 10) == D(2026, 10, 16)  # 20 Oct is Dussehra
-    assert cal.last_n_trading_days(D(2026, 10, 7), 3) == [D(2026, 10, 5), D(2026, 10, 6), D(2026, 10, 7)]
+    assert cal.last_n_trading_days(D(2026, 10, 7), 3) == [
+        D(2026, 10, 5),
+        D(2026, 10, 6),
+        D(2026, 10, 7),
+    ]
 
 
 def test_unlisted_year_is_weekends_only_and_reported_as_a_gap(cal) -> None:

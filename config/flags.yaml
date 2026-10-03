@@ -15,12 +15,12 @@ ui:
   # why: Streamlit pages land in Phase 4 (ADR-006).
   enabled: false
 mcp:
-  # Toolsets exposed by parakh-mcp (plan 15 §4.2). Only R-tier tools before M1.
+  # Toolsets exposed by parakh-mcp (plan 15 §4.2). R-tier only before Phase 3; Phase 3 adds notify.queue (N) and data.get_document (R).
   toolsets:
     audit: true
     reports: true
     analytics: true
-    data: false
+    data: true
     portfolio: false
-    notify: false
+    notify: true
     jobs: false

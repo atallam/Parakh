@@ -90,7 +90,9 @@ def bundle(dry_run_alerts: bool = False, dry_run_agents: bool = False) -> Config
     from dataclasses import replace
 
     b = load_all()
-    flags = b.flags.model_copy(update={"alerts": b.flags.alerts.model_copy(update={"dry_run": dry_run_alerts})})
+    flags = b.flags.model_copy(
+        update={"alerts": b.flags.alerts.model_copy(update={"dry_run": dry_run_alerts})}
+    )
     agents = b.agents.model_copy(update={"dry_run": dry_run_agents})
     return replace(b, flags=flags, agents=agents)
 

@@ -1,0 +1,31 @@
+name: daily_watch
+
+# Mon-Fri 18:30 IST (13:00 UTC), after the NSE close and the bhavcopy. Exits quietly on a holiday (AC-F12.5).
+on:
+  schedule:
+    - cron: "0 13 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  id-token: write
+
+# one writer of the state branch at a time
+concurrency:
+  group: parakh-state
+  cancel-in-progress: false
+
+env:
+  AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/parakh-job
+        with:
+          job-name: "Daily momentum watch"
+          command: "watch"

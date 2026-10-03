@@ -28,7 +28,7 @@ def test_expired_tampered_and_malformed_tokens_are_rejected() -> None:
         verify(KEY, token, TODAY + dt.timedelta(days=31))
     assert e.value.reason == "expired"
     action, rest = token.split(".", 1)
-    swapped = ("n." + rest)  # a different action with the old signature
+    swapped = "n." + rest  # a different action with the old signature
     with pytest.raises(TokenError) as e2:
         verify(KEY, swapped, TODAY)
     assert e2.value.reason == "tampered" and action == "u"

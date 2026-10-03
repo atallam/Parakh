@@ -25,6 +25,7 @@ from parakh.configs import ConfigBundle
 from parakh.configs.models import Security
 from parakh.configs.notify_models import EventRule
 from parakh.notify.model import Alert, Severity
+from parakh.watch.docs import DocStore
 from parakh.watch.momentum import Held
 from parakh.watch.state import StateStore
 
@@ -209,6 +210,19 @@ class EventWatcher:
             if alert.extra.get("refresh") and alert.isin and alert.isin not in out.refresh_isins:
                 out.refresh_isins.append(alert.isin)
 
+        if persist:
+            DocStore(self.store).put_many(
+                {
+                    a.dedupe_key: {
+                        "text": a.extra.get("text") or a.headline,
+                        "filing_url": a.extra.get("filing_url"),
+                        "filed": a.extra.get("filed") or asof.isoformat(),
+                        "rule": a.code,
+                    }
+                    for a in out.alerts
+                },
+                asof,
+            )
         cutoff = (asof - dt.timedelta(days=SEEN_KEEP_DAYS)).isoformat()
         seen = {k: v for k, v in seen.items() if v >= cutoff}
         if persist:

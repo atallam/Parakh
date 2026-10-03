@@ -13,11 +13,30 @@ agents:
   AGENT.monthly_reviewer:
     description: Reads what changed after the monthly run and writes the narrative review
     first_phase: 3
-    allowed_tools: []
+    enabled: true
+    prompt_id: monthly_reviewer.v1
+    # why: the plan 15 §5 list, minus the portfolio and data.quality tools that arrive in Phase 4;
+    # positions reach the agent only as the masked weight and P&L the reports already carry
+    max_turns: 10
+    allowed_tools:
+      - mcp__parakh__reports_what_changed
+      - mcp__parakh__reports_get_stock
+      - mcp__parakh__reports_segment_summary
+      - mcp__parakh__reports_get_history
+      - mcp__parakh__analytics_explain_verdict
+      - mcp__parakh__notify_queue
   AGENT.event_triage:
     description: Triages new corporate events into severity and a queued notification
     first_phase: 3
-    allowed_tools: []
+    enabled: true
+    prompt_id: event_triage.v1
+    # why: jobs.request_refresh is a Phase 4 tool; until then the rules queue the refresh (cap 5 a day)
+    max_turns: 6
+    token_budget: 20000
+    allowed_tools:
+      - mcp__parakh__data_get_document
+      - mcp__parakh__reports_get_stock
+      - mcp__parakh__notify_queue
   AGENT.qualitative:
     description: Reads concall transcripts against the thesis; flags only (D13)
     first_phase: 4

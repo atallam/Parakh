@@ -126,3 +126,20 @@ def test_heartbeat_is_silent_and_counts_week(tmp_path) -> None:  # type: ignore[
     res = heartbeat(deps, dt.date(2026, 10, 11))
     msg = deps.notifier.sent[-1]  # type: ignore[union-attr]
     assert msg["silent"] and "alive" in msg["text"] and res.status == "ok"
+
+
+def test_events_job_runs_triage_and_keeps_alerts_when_it_fails(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    import dataclasses
+
+    from parakh.agents.runtime.base import AgentResult
+
+    class Broken:
+        async def run(self, spec, task, ctx):  # type: ignore[no-untyped-def]
+            return AgentResult(
+                agent_run_id="x", agent_id=spec.agent_id, status="pending", reason="turn limit"
+            )
+
+    deps = _deps(tmp_path, feeds=FixtureSource())
+    deps = dataclasses.replace(deps, runner=Broken())
+    res = daily_events(deps, dt.date(2026, 7, 30))
+    assert res.status == "ok" and res.alerts >= 1, "a broken agent never removes a rule alert"

@@ -9,6 +9,7 @@ if that fails the Telegram message still stands and the failure is logged, not h
 
 from __future__ import annotations
 
+import dataclasses
 import datetime as dt
 from dataclasses import dataclass, field
 from typing import Any
@@ -36,6 +37,7 @@ class MonthlyNotice:
     email_ok: bool | None = None  # None: email not configured
     calendar_entries: int = 0
     errors: dict[str, str] = field(default_factory=dict)
+    review_status: str | None = None
     run_id: str | None = None
 
 
@@ -58,11 +60,17 @@ def notify_monthly(
     asof: dt.date,
     failed: list[str] | None = None,
     inbox_items: int = 0,
-    review_pending: bool = False,
-    review_html: str | None = None,
+    allowed_symbols: set[str] | None = None,
     calendar_source: CalendarSource | None = None,
     today: dt.date | None = None,
 ) -> MonthlyNotice:
+    from parakh.agents.monthly_reviewer import AGENT_ID, review_message, run_review
+    from parakh.agents.roster import agent_enabled
+
+    review_expected = (
+        deps.runner is not None and agent_enabled(deps.bundle, AGENT_ID) and bool(snapshots)
+    )
+    review_html: str | None = None
     ctx = RunContext.create(
         mode="monthly-notify",
         asof=asof,
@@ -83,7 +91,7 @@ def notify_monthly(
                     failed=failed,
                     inbox_items=inbox_items,
                     governance=governance_line(deps, snapshots),
-                    review_pending=review_pending,
+                    review_pending=review_expected,
                     link=link,
                 )
                 d = _dispatcher(deps, ctx)
@@ -94,6 +102,42 @@ def notify_monthly(
                 step.record_output(
                     delivered=delivery.ok, upgrades=len(v.upgrades), downgrades=len(v.downgrades)
                 )
+            review_failed = False
+            if review_expected:
+                with audited_step(ctx, "review") as step:
+                    period = snapshots[0]["period"]
+                    allowed = allowed_symbols or {
+                        s["symbol"] for s in snapshots if s["verdict"].get("changed")
+                    }
+                    assert deps.runner is not None
+                    outcome_r = run_review(
+                        deps.runner,
+                        deps.bundle,
+                        ctx,
+                        deps.audit(),
+                        period=period,
+                        allowed_symbols=allowed,
+                    )
+                    notice.review_status = outcome_r.status
+                    if outcome_r.pending:
+                        review_failed = True
+                        notice.errors["review"] = outcome_r.reason
+                    else:
+                        msg = review_message(outcome_r, v.period, deps.bundle)
+                        if msg is not None:
+                            d.send_agent_message(msg, agent="monthly_reviewer", code="REVIEW")
+                        if deps.bundle.agents.dry_run:
+                            from parakh.notify.log import ShadowLog
+
+                            ShadowLog("agents_shadow.md", deps.logs_root).append(
+                                when=dt.datetime.now(dt.UTC),
+                                heading="monthly_reviewer email section, would be included",
+                                lines=[outcome_r.narrative_html or ""],
+                                alert_ids=[ctx.run_id],
+                            )
+                        else:
+                            review_html = outcome_r.narrative_html
+                    step.record_output(status=outcome_r.status, reason=outcome_r.reason)
             if deps.mailer is not None and deps.bundle.notify.channels.email.enabled:
                 with audited_step(ctx, "email") as step:
                     attachments: list[tuple[str, bytes, str]] = []
@@ -105,6 +149,8 @@ def notify_monthly(
                         attachments.append(
                             ("parakh-next-30-days.ics", build_ics(entries), "text/calendar")
                         )
+                    if review_failed:
+                        v = dataclasses.replace(v, review_pending=True)
                     subject, html, text = build_monthly_email(
                         deps.bundle, snapshots, v, link, review_html
                     )

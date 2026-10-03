@@ -43,7 +43,13 @@ def monthly(
     from parakh.orchestration.render_outputs import render_month
 
     bundle = load_all()
-    when = dt.date.fromisoformat(asof) if asof else month_end()
+    if asof:
+        when = dt.date.fromisoformat(asof)
+    else:
+        from parakh.calendar import Calendar
+
+        # the last *trading* day of the month just ended (NSE holidays and weekends skipped)
+        when = Calendar.from_config(bundle.holidays).monthly_asof(dt.date.today())
     secs = [s for s in bundle.universe.pilot if not symbols or s.symbol in symbols]
     if not secs:
         print(f"no pilot stock matches {symbols}", file=sys.stderr)

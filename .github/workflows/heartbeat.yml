@@ -1,0 +1,31 @@
+name: heartbeat
+
+# Sunday 10:00 IST (04:30 UTC): all jobs healthy, service levels (AC-F19.2, F19.5). Silence never means broken.
+on:
+  schedule:
+    - cron: "30 4 * * 0"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  id-token: write
+
+# one writer of the state branch at a time
+concurrency:
+  group: parakh-state
+  cancel-in-progress: false
+
+env:
+  AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/parakh-job
+        with:
+          job-name: "Sunday heartbeat"
+          command: "heartbeat"
