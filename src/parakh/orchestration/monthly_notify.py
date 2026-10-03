@@ -19,11 +19,13 @@ import structlog
 from parakh.audit.context import RunContext
 from parakh.audit.steps import audited_step, run_lifecycle
 from parakh.notify.ics import build_ics
+from parakh.notify.inbox import Inbox
 from parakh.notify.monthly import (
     CalendarSource,
     build_monthly_email,
     build_monthly_vars,
     calendar_entries,
+    thesis_alerts,
 )
 from parakh.notify.templates import render_monthly_summary
 from parakh.orchestration.watch_jobs import WatchDeps, _dispatcher, _send_failure
@@ -38,6 +40,7 @@ class MonthlyNotice:
     calendar_entries: int = 0
     errors: dict[str, str] = field(default_factory=dict)
     review_status: str | None = None
+    thesis_alerts: int = 0
     run_id: str | None = None
 
 
@@ -102,6 +105,22 @@ def notify_monthly(
                 step.record_output(
                     delivered=delivery.ok, upgrades=len(v.upgrades), downgrades=len(v.downgrades)
                 )
+            with audited_step(ctx, "thesis_changes") as step:
+                alerts = thesis_alerts(snapshots, asof)
+                inbox = Inbox(deps.store)
+                for a in alerts:
+                    inbox.add(
+                        kind="thesis",
+                        isin=a.isin,
+                        symbol=a.symbol,
+                        title=f"{a.symbol} thesis {a.extra['old']} to {a.extra['new']}",
+                        detail=str(a.extra["evidence"]),
+                        key=a.dedupe_key,
+                        asof=asof,
+                    )
+                sent = d.submit(alerts, title="Thesis status") if alerts else None
+                notice.thesis_alerts = len(alerts)
+                step.record_output(alerts=len(alerts), sent=len(sent.sent) if sent else 0)
             review_failed = False
             if review_expected:
                 with audited_step(ctx, "review") as step:

@@ -5,6 +5,8 @@ from __future__ import annotations
 import datetime as dt
 from pathlib import Path
 
+import pytest
+
 from parakh.notify.monthly import build_monthly_vars, calendar_entries
 from parakh.orchestration.analysis import run_monthly
 from parakh.orchestration.monthly_notify import notify_monthly
@@ -194,3 +196,41 @@ def test_failed_review_leaves_the_summary_and_marks_pending(tmp_path) -> None:  
     notice = notify_monthly(deps, snaps, {}, 5.0, asof=ASOF, allowed_symbols={sym})
     assert notice.review_status == "pending" and len(n.sent) == 1
     assert "Review pending" in n.sent[0]["text"] and "Review pending" in m.sent[0]["html"]
+
+
+def _with_thesis(snaps, old, new, owned):  # type: ignore[no-untyped-def]
+    import copy
+
+    out = copy.deepcopy(snaps)
+    out[0]["thesis"] = {"changed_from": old, "status": new, "status_source": "ROCE below floor"}
+    out[0]["verdict"]["owned"] = owned
+    return out
+
+
+@pytest.mark.ac("AC-F23.4")
+def test_thesis_change_sends_alert_and_inbox_item(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from parakh.notify.inbox import Inbox
+
+    b, data, res, snaps = _result(tmp_path)
+    snaps = _with_thesis(snaps, "INTACT", "WATCH", True)
+    n, m = FakeNotifier(), FakeMailer()
+    deps = _deps(b, data, tmp_path, n, m)
+    notice = notify_monthly(deps, snaps, {}, 5.0, asof=ASOF)
+    assert notice.thesis_alerts == 1
+    assert any("INTACT" in s["text"] and "WATCH" in s["text"] for s in n.sent)
+    inbox = Inbox(deps.store)
+    assert len(inbox.unseen()) == 1 and inbox.unseen()[0]["symbol"] == snaps[0]["symbol"]
+    # a re-run never duplicates the inbox item
+    notify_monthly(deps, snaps, {}, 5.0, asof=ASOF)
+    assert len(inbox.items()) == 1
+
+
+@pytest.mark.ac("AC-F23.4")
+def test_thesis_alert_only_for_watch_or_broken() -> None:
+    from parakh.notify.monthly import thesis_alerts
+
+    base = {"isin": "INE000A01010", "symbol": "A", "period": "2026-09", "verdict": {"owned": True}}
+    mk = lambda old, new: {**base, "thesis": {"changed_from": old, "status": new}}  # noqa: E731
+    assert thesis_alerts([mk("WATCH", "INTACT"), mk(None, "WATCH")], ASOF) == []
+    broken = thesis_alerts([mk("WATCH", "BROKEN")], ASOF)
+    assert broken[0].severity.name == "HIGH" and broken[0].code == "THESIS.BROKEN"

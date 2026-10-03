@@ -30,7 +30,7 @@ from parakh.notify.log import AlertsLog, ShadowLog, plain
 from parakh.notify.model import Alert, Decision, alert_from_dict, alert_to_dict
 from parakh.notify.routing import AlertState, Router
 from parakh.notify.telegram import Delivery, Notifier
-from parakh.notify.templates import Message, render_alerts, render_digest
+from parakh.notify.templates import Message, render_alerts, render_digest, render_thesis_change
 from parakh.notify.tokens import mint
 
 log = structlog.get_logger(__name__)
@@ -216,15 +216,31 @@ class Dispatcher:
             self._row(alert, alert_id, "shadow", decision.reason, channel="shadow")
             self._audit(AUD.ALERT_SENT, alert, alert_id, decision.reason, dry_run=True)
 
-        for i in range(0, len(live_batch), IMMEDIATE_BATCH):
-            chunk = live_batch[i : i + IMMEDIATE_BATCH]
-            msg = render_alerts(
-                [a for a, _, _ in chunk],
-                [aid for _, aid, _ in chunk],
-                day=self.today,
-                title=title,
-                include_amounts=self.include_amounts,
-            )
+        thesis_batch = [(a, i, d) for a, i, d in live_batch if a.kind == "thesis"]
+        live_batch = [(a, i, d) for a, i, d in live_batch if a.kind != "thesis"]
+        chunks: list[list[tuple[Alert, str, Decision]]] = [[t] for t in thesis_batch]
+        chunks += [
+            live_batch[i : i + IMMEDIATE_BATCH] for i in range(0, len(live_batch), IMMEDIATE_BATCH)
+        ]
+        for chunk in chunks:
+            if chunk[0][0].kind == "thesis":
+                a0, id0, _ = chunk[0]
+                msg = render_thesis_change(
+                    a0.symbol or "",
+                    str(a0.extra.get("old", "")),
+                    str(a0.extra.get("new", "")),
+                    str(a0.extra.get("evidence", a0.headline)),
+                    a0.link,
+                    id0,
+                )
+            else:
+                msg = render_alerts(
+                    [a for a, _, _ in chunk],
+                    [aid for _, aid, _ in chunk],
+                    day=self.today,
+                    title=title,
+                    include_amounts=self.include_amounts,
+                )
             loud = [a for a, _, d in chunk if d.ntfy]
             delivery = self._deliver(msg, loud_for=loud or None)
             out.messages += 1

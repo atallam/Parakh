@@ -18,6 +18,7 @@ from typing import Any, Protocol
 from parakh.configs import ConfigBundle
 from parakh.configs.models import Security
 from parakh.notify.ics import CalEntry
+from parakh.notify.model import Alert, Severity
 from parakh.notify.templates import MonthlySummaryVars
 from parakh.watch.events import parse_nse_date
 
@@ -207,3 +208,35 @@ def calendar_entries(
         except Exception as exc:
             errors[sec.symbol] = f"{type(exc).__name__}: {exc}"
     return sorted(out.values(), key=lambda e: (e.day, e.title)), errors
+
+
+def thesis_alerts(snapshots: list[dict[str, Any]], asof: dt.date) -> list[Alert]:
+    """One alert per thesis status change to WATCH or BROKEN (AC-F23.4)."""
+    out: list[Alert] = []
+    for s in snapshots:
+        th = s.get("thesis") or {}
+        old, new = th.get("changed_from"), th.get("status")
+        if not old or new not in ("WATCH", "BROKEN"):
+            continue
+        pos = s.get("position") or {}
+        evidence = str(th.get("status_source") or "see the report's Thesis check")
+        out.append(
+            Alert(
+                kind="thesis",
+                code=f"THESIS.{new}",
+                severity=Severity.HIGH if new == "BROKEN" else Severity.MEDIUM,
+                headline=f"thesis {old} to {new}: {evidence}"[:140],
+                asof=asof,
+                isin=s["isin"],
+                symbol=s["symbol"],
+                direction="warning",
+                valence="negative",
+                owned=bool(s["verdict"].get("owned")),
+                weight_pct=pos.get("weight_pct"),
+                pnl_pct=pos.get("pnl_pct"),
+                group=f"{s['period']}-{new}",
+                source="monthly",
+                extra={"old": old, "new": new, "evidence": evidence},
+            )
+        )
+    return out
