@@ -106,6 +106,19 @@ class NseFeeds:
             rows += list(data.get("BLOCK_DEALS_DATA") or [])
         return rows  # the API serves the latest session only; the watcher dedupes by deal
 
+    # -- calendar (monthly email .ics) -------------------------------------------------------
+    def event_calendar(self, symbol: str) -> list[dict[str, Any]]:
+        data = self._json("event-calendar", {"index": "equities", "symbol": symbol})
+        return data if isinstance(data, list) else []
+
+    def board_meetings(self, symbol: str) -> list[dict[str, Any]]:
+        data = self._json("corporate-board-meetings", {"index": "equities", "symbol": symbol})
+        return data if isinstance(data, list) else []
+
+    def corporate_actions(self, symbol: str) -> list[dict[str, Any]]:
+        data = self._json("corporates-corporateActions", {"index": "equities", "symbol": symbol})
+        return data if isinstance(data, list) else []
+
     # -- market context ----------------------------------------------------------------------
     def fii_dii(self) -> list[dict[str, Any]]:
         data = self._json("fiidiiTradeReact")
