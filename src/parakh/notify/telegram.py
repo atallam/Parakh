@@ -28,7 +28,13 @@ class Delivery:
 
 
 class Notifier(Protocol):
-    def send(self, text: str, *, silent: bool = False) -> Delivery: ...
+    def send(
+        self,
+        text: str,
+        *,
+        silent: bool = False,
+        buttons: list[list[tuple[str, str]]] | None = None,
+    ) -> Delivery: ...
 
 
 def escape(text: str) -> str:
@@ -45,16 +51,30 @@ class TelegramNotifier:
     def _scrub(self, text: str) -> str:
         return text.replace(self._token, "[TOKEN]")
 
-    def send(self, text: str, *, silent: bool = False) -> Delivery:
+    def send(
+        self,
+        text: str,
+        *,
+        silent: bool = False,
+        buttons: list[list[tuple[str, str]]] | None = None,
+    ) -> Delivery:
+        """Send one message. `buttons` is rows of (label, callback_data) for an inline keyboard."""
         if len(text) > MAX_LEN:
             return Delivery(False, error=f"message is {len(text)} chars (> {MAX_LEN})")
-        payload = {
+        payload: dict[str, object] = {
             "chat_id": self.chat_id,
             "text": text,
             "parse_mode": "HTML",
             "disable_notification": silent,
             "link_preview_options": {"is_disabled": True},
         }
+        if buttons:
+            payload["reply_markup"] = {
+                "inline_keyboard": [
+                    [{"text": label, "callback_data": data} for label, data in row]
+                    for row in buttons
+                ]
+            }
         url = f"{API}/bot{self._token}/sendMessage"
         for attempt in range(2):
             try:
@@ -75,3 +95,36 @@ class TelegramNotifier:
                 False, error=self._scrub(f"HTTP {resp.status_code}: {body.get('description', '')}")
             )
         return Delivery(False, error="rate limited twice")
+
+    # -- receiving (Phase 3: each scheduled job first applies pending taps; plan 03 §4.3) -------
+    def get_updates(self, offset: int | None = None, limit: int = 100) -> list[dict[str, object]]:
+        """Pending updates (messages and button taps). Telegram keeps them 24 hours."""
+        params: dict[str, int] = {"limit": limit, "timeout": 0}
+        if offset is not None:
+            params["offset"] = offset
+        try:
+            resp = self.client.get(f"{API}/bot{self._token}/getUpdates", params=params)
+            body = resp.json()
+        except (httpx.HTTPError, ValueError) as exc:
+            raise TelegramError(self._scrub(f"{type(exc).__name__}: {exc}")) from exc
+        if resp.status_code != 200 or not body.get("ok"):
+            raise TelegramError(
+                self._scrub(f"HTTP {resp.status_code}: {body.get('description', '')}")
+            )
+        result = body.get("result", [])
+        return result if isinstance(result, list) else []
+
+    def answer_callback(self, callback_id: str, text: str = "") -> bool:
+        """Stop the spinner on a tapped button; best effort."""
+        try:
+            resp = self.client.post(
+                f"{API}/bot{self._token}/answerCallbackQuery",
+                json={"callback_query_id": callback_id, "text": text[:180]},
+            )
+        except httpx.HTTPError:
+            return False
+        return resp.status_code == 200
+
+
+class TelegramError(RuntimeError):
+    """A receive-side failure; the message never contains the token."""

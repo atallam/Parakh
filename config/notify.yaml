@@ -1,0 +1,75 @@
+# Notification routing, cool-downs and channels (plan 03 §0, §4; plan 12 §6; ADR-008).
+# Secrets (bot token, SMTP password, ntfy topic) are never here: they come from .env or AWS SSM.
+
+# why: Telegram and email are not end-to-end encrypted, so amounts are masked by default
+# (plan 12 §8, AC-F11.7). Weight % and P&L % are always shown.
+include_amounts: false
+
+channels:
+  telegram_enabled: true
+  email:
+    # why: the monthly archive and the full narrative review go to email (ADR-008 as amended).
+    enabled: true
+    smtp_host: smtp.gmail.com
+    smtp_port: 465
+  ntfy:
+    # why: optional loud lane for High alerts on owned stocks; not enabled at baseline (plan 13 D5).
+    enabled: false
+    server: https://ntfy.sh
+
+routing:
+  # why: plan 03 §5 step 5, the same signal for the same stock cannot re-alert within 10 trading days
+  cooldown_trading_days: 10
+  # why: plan 03 ownership-aware routing, "top 10% of its cap" = RS percentile at or above 90
+  top_decile_rs_percentile: 90
+  # why: the evening digest stays one short message (≤ 10 lines with headers, plan 12 §6)
+  digest_max_items: 7
+  # why: AG-05, a per-agent daily cap on queued messages so an agent cannot spam
+  agent_daily_cap: 6
+  # why: plan 03 §5 step 4, N = 2 closes by default; leading signals may fire on day 1
+  # (momentum.yaml signals.confirm_closes is the default; list an exception here)
+  confirm_closes:
+    M03: 1  # why: plan 02, a volume-backed 52-week-high breakout is a leading signal
+    M08: 1  # why: an earnings gap is a one-day event; the 5-day hold is inside the signal
+    M26: 1  # why: a climax run is a one-day warning
+  # entry = a reason to buy or add; exit = a reason to sell; warning = a reason to look
+  signal_direction:
+    M01: entry
+    M02: entry
+    M03: entry
+    M04: entry
+    M05: entry
+    M06: entry
+    M07: entry
+    M08: entry
+    M10: entry
+    M12: entry
+    M11: exit
+    M20: warning
+    M21: exit
+    M22: warning
+    M23: warning
+    M24: warning
+    M26: warning
+
+bot:
+  # why: plan 03 §4.3, button payloads expire with the suggestion (30 days)
+  button_token_ttl_days: 30
+  mute_days: 10  # why: the 🔕 Mute 10d button
+  max_updates_per_poll: 100
+  owner_commands: [today, stock, pending, status, mute, privacy]
+
+retry:
+  # why: plan 03 §7, "data not yet published" detection retries after 60 minutes, at most 3 times
+  wait_minutes: 60
+  max_attempts: 3
+
+service_levels:
+  # why: PRD NFR-14 (the numbers live there; this file only carries what the code checks)
+  monthly_summary_by_ist: "12:00"
+  watcher_by_ist: "19:30"
+  failure_alert_minutes: 5
+
+links:
+  # why: until the Streamlit app is hosted (Phase 6) the "Open ▸" link is the report path
+  report_base: "Stock Analysis"

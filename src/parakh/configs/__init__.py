@@ -29,6 +29,7 @@ from parakh.configs.models import (
     UiTokens,
     UniverseConfig,
 )
+from parakh.configs.notify_models import EventsConfig, HolidaysConfig, NotifyConfig
 
 FILES: dict[str, type[BaseModel]] = {
     "universe.yaml": UniverseConfig,
@@ -47,6 +48,9 @@ FILES: dict[str, type[BaseModel]] = {
     "overrides.yaml": OverridesConfig,
     "portfolio.yaml": PortfolioConfig,
     "indices.yaml": IndicesConfig,
+    "holidays.yaml": HolidaysConfig,
+    "notify.yaml": NotifyConfig,
+    "events.yaml": EventsConfig,
 }
 
 
@@ -94,6 +98,9 @@ class ConfigBundle:
     overrides: OverridesConfig
     portfolio: PortfolioConfig
     indices: IndicesConfig
+    holidays: HolidaysConfig
+    notify: NotifyConfig
+    events: EventsConfig
     sources: list[str] = field(default_factory=list)
 
 
@@ -125,6 +132,15 @@ def _cross_checks(loaded: dict[str, BaseModel], universe: UniverseConfig) -> lis
             out.append(
                 f"overrides.yaml: {o.id} thesis_status {o.value!r} must be INTACT, WATCH or BROKEN"
             )
+    notify = loaded["notify.yaml"]
+    assert isinstance(notify, NotifyConfig)
+    from parakh.analytics.signals.momentum import SIGNAL_DEFS
+
+    for sig in [*notify.routing.signal_direction, *notify.routing.confirm_closes]:
+        if sig not in SIGNAL_DEFS:
+            out.append(f"notify.yaml: {sig} is not a signal in the momentum catalogue")
+    for ident in sorted(set(SIGNAL_DEFS) - set(notify.routing.signal_direction)):
+        out.append(f"notify.yaml: signal {ident} has no direction (entry, exit, warning or info)")
     known = {i.name for i in idx.indices}
     for cap, spec in momentum.cap_settings.items():
         for bench in (spec.benchmark, spec.secondary_benchmark):
@@ -181,5 +197,8 @@ def load_all(root: Path | None = None) -> ConfigBundle:
         overrides=loaded["overrides.yaml"],  # type: ignore[arg-type]
         portfolio=loaded["portfolio.yaml"],  # type: ignore[arg-type]
         indices=loaded["indices.yaml"],  # type: ignore[arg-type]
+        holidays=loaded["holidays.yaml"],  # type: ignore[arg-type]
+        notify=loaded["notify.yaml"],  # type: ignore[arg-type]
+        events=loaded["events.yaml"],  # type: ignore[arg-type]
         sources=list(FILES),
     )
