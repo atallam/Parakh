@@ -1,6 +1,6 @@
 ---
 title: Parakh — Plan Baseline v1.0 (locked)
-version: 1.22 (UAT-0 and UAT-1 added to the prep backlog as BL-05 and BL-06; v1.21: Phase 1 built and loaded, §8.0c; order book and offer-document financials move to the Phase 2 document work; pilot is 4 Large, 1 Mid, 2 Small by AMFI; v1.20: all Phase 0.5 spikes closed; BL-02/03/04 done; v1.19: Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
+version: 1.23 (Phase 3 built, §8.0d; v1.22: UAT-0 and UAT-1 added to the prep backlog as BL-05 and BL-06; v1.21: Phase 1 built and loaded, §8.0c; order book and offer-document financials move to the Phase 2 document work; pilot is 4 Large, 1 Mid, 2 Small by AMFI; v1.20: all Phase 0.5 spikes closed; BL-02/03/04 done; v1.19: Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
 date: 2026-09-24
 owner: Avinash Tallam
 status: LOCKED. This is the plan of record; changes follow §6
@@ -252,6 +252,28 @@ Built on branch `phase-1` (pull request #4) and loaded into Supabase for the 7 p
 - **MAZDOCK order book and the offer-document financials of GROWW, ATHERENERG and SHADOWFAX move from Phase 1 to the Phase 2 document work** (decided 2 Oct 2026). Neither is in any exchange feed; both are PDFs, read with the concall and filing documents.
 - **Pilot cap mix by AMFI (list to 30 Jun 2026): 4 Large (HDFCBANK, M&M, INDIGO, GROWW), 1 Mid (MAZDOCK), 2 Small (ATHERENERG, SHADOWFAX).** ATHERENERG is rank 260 (Small), not Mid; SHADOWFAX (rank 589) is outside the Nifty Smallcap 250.
 
+### 8.0d Phase 3 status *(4 Oct 2026)*
+
+Built on branch `phase-3`. **Not closed:** shadow mode has not started; it begins when you add the workflow secrets, apply the `alerts_log` migration and switch the workflows on.
+
+| Exit-gate item | Status |
+|---|---|
+| Workflows: monthly, daily watch, daily events, digest, heartbeat, bot poll, integrity | ✅ Written and validated; not yet run on GitHub |
+| Notifications: Telegram, email with `.ics`, ntfy, owner-only bot, signed buttons | ✅ Tests green on recorded responses and doubles |
+| Momentum watcher, event watcher, shadow and replay modes | ✅ Real NSE responses in fixtures; replay sends nothing |
+| Market context (flows, breadth), thesis alerts, `notify.queue`, `data.get_document` | ✅ Flows and breadth show N/A until enough history exists |
+| Monthly Reviewer and Event Triage agents, cards, inventory | ✅ Shadow mode on |
+| Failure modes, run counts, SLO breach flag in the heartbeat | ✅ |
+| AC-F11, F12, F13, F19 (1, 2, 3, 5, 7), F23.4, F24.8, F25 (2, 3, 4, 7) | ✅ Tests marked and traceability check clean |
+| AC-F24.4 | ⏳ Phase 4, with the portfolio toolset |
+| Shadow weeks, UAT-2, UAT-3, M2 | ⏳ After the workflows are on |
+
+**Changes to the plan (within scope, no new features):**
+- **`jobs.request_refresh` stays in Phase 4.** In Phase 3 the event rules queue the refresh (at most 5 a day) and Event Triage only suggests one.
+- **`data.get_document` serves only filings the event watcher has saved**, not arbitrary documents.
+- **Reviewer and Triage tool lists exclude the portfolio and data-quality tools** until those exist; positions reach agents only as the masked weight and P&L.
+- **Thesis status changes to WATCH or BROKEN** send their own alert (High for BROKEN, Medium for WATCH) and a Home inbox item.
+
 ### 8.1 Prep backlog
 
 Setup tasks that are pending but don't block the current phase. Feature ideas still go to F20+ (D25).
@@ -271,6 +293,7 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 
 | Version | Date | Change |
 |---|---|---|
+| 1.23 | 2026-10-04 | **Phase 3 built (§8.0d).** Shadow mode waits for the workflow secrets and the `alerts_log` migration. `jobs.request_refresh` stays in Phase 4; F24.4 moves with the portfolio toolset. Version: 13 1.23 |
 | 1.22 | 2026-10-04 | UAT-0 (oracle sign-off) and UAT-1 (pilot report review) added to the prep backlog as BL-05 and BL-06, with a daily reminder until both are signed. Version: 13 1.22 |
 | 1.21 | 2026-10-02 | **Phase 1 built and loaded (§8.0c).** Order book (MAZDOCK) and offer-document financials (young listings) move to the Phase 2 document work. Pilot cap mix by AMFI is 4 Large, 1 Mid, 2 Small. Golden folder keeps parsed facts and export hashes, not the Screener exports |
 | 1.20 | 2026-09-29 | All Phase 0.5 spikes closed: Telegram live send delivered; a real agent turn on the runner; BL-02, BL-03, BL-04 done. Version: 13 1.20 |

@@ -2,7 +2,23 @@
 
 All notable changes. Framework and lens versions follow SemVer; tool schemas are versioned per toolset (plan 15 §4.4).
 
-## [Unreleased] – Phase 0.5 (infrastructure spikes), 2026-09-29
+## [Unreleased] – Phase 3 (automation and shadow mode), 2026-10-04
+
+### Added
+- Seven workflows (monthly, daily watch, daily events, evening digest, Sunday heartbeat, bot poll, daily integrity) on a shared `parakh-job` action; run state lives on the `parakh-data` branch.
+- Notifications: routing, cool-downs, severity and ownership rules, message templates, Telegram, email with a 30-day `.ics`, optional ntfy, owner-only bot with signed buttons, shadow logs with a `noise` box.
+- Momentum watcher (shadow and 60-day replay), event watcher on NSE feeds, market context (FII/DII, breadth), NSE trading calendar.
+- Thesis status-change alerts and a Home inbox; `parakh find <CODE>` searches the alert log by signal or rule code.
+- MCP tools `notify.queue` and `data.get_document`; Monthly Reviewer and Event Triage agents, prompts, cards and inventory rows.
+- `alerts_log` migration, `docs/FAILURE_MODES.md` with impact column (19 rows), per-stock `signal_log`.
+
+### Changed
+- Run manifests now carry alert, suppressed, agent-run, failed-step and token counts; the heartbeat checks the monthly 12:00 IST and watcher 19:30 IST service levels.
+
+### Not yet
+- `portfolio.positions` (AC-F24.4) and `jobs.request_refresh` arrive in Phase 4.
+
+## Phase 0.5 (infrastructure spikes), 2026-09-29
 
 ### Added
 - Spike scripts (`spikes/`), the `spikes` workflow and outcome notes (`docs/spikes/S1…S8`).
