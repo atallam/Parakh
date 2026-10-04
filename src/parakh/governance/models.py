@@ -89,6 +89,92 @@ CARDS = {
 }
 
 
+AGENT_CARDS = {
+    "monthly_reviewer": {
+        "key": "AGENT.monthly_reviewer",
+        "title": "Monthly Reviewer",
+        "job": "Reads what changed after the monthly run and writes a short narrative review: one Telegram message and one section of the monthly email.",
+        "inputs": [
+            "`reports.what_changed`, `reports.get_stock`, `reports.segment_summary`, `reports.get_history` and `analytics.explain_verdict` (read tools over the latest snapshot).",
+            "Positions reach it only as the masked weight and P&L the reports already carry; it never sees quantities, costs or amounts.",
+        ],
+        "outputs": [
+            "Up to a handful of items, each a listed stock, a tag (info, watch, act) and a short note, plus a narrative of a few lines.",
+            "Optionally queues a notification through `notify.queue`, where routing, cool-down and severity caps are enforced in the tool.",
+        ],
+        "guardrails": [
+            "Proposes only: no tool approves, edits holdings or theses, deletes or changes config (AG-03).",
+            "Mentions only stocks returned by `reports.what_changed`; an unlisted stock or any rupee amount rejects the whole review.",
+            "A failure, turn limit or token budget stop leaves the monthly summary intact and marks the review 'pending'.",
+            "Runs in shadow mode (`agents.dry_run`) until UAT-2: output goes to `logs/agents_shadow.md` for you to mark useful or noise.",
+        ],
+        "limitations": [
+            "Writes from the report data only; it has no portfolio or data-quality tools until Phase 4.",
+            "Not evaluated against outcomes yet; the L7 trajectory eval is the gate for prompt changes.",
+        ],
+    },
+    "event_triage": {
+        "key": "AGENT.event_triage",
+        "title": "Event Triage",
+        "job": "Writes one line on why a rule-flagged exchange filing matters to this investor, and says whether it looks routine.",
+        "inputs": [
+            "`data.get_document`: the filing text the watcher saw, returned inside `untrusted_content` with its source URL and SHA-256.",
+            "`reports.get_stock`: the stock's latest verdict and thesis status.",
+        ],
+        "outputs": [
+            "A note of at most 140 characters, a material flag and a refresh suggestion.",
+            "Optionally one `notify.queue` call; the rules queue the refresh itself (at most 5 a day) because `jobs.request_refresh` arrives in Phase 4.",
+        ],
+        "guardrails": [
+            "Never raises a severity above the event rule's, and never suppresses or delays a rule-based alert.",
+            "Filing text is data, not instructions; prompt-injection text in a filing is ignored.",
+            "At most 8 triage calls a run; a note with an amount is dropped and the alert goes out unchanged.",
+            "Shadow mode keeps the note in `logs/agents_shadow.md`; live mode attaches it to the alert.",
+        ],
+        "limitations": [
+            "Reads only filings the watcher has saved, not arbitrary URLs.",
+            "A one-line note cannot replace reading the filing; the link is always in the alert.",
+        ],
+    },
+}
+
+
+def _agent_facts(aid: str) -> dict[str, object]:
+    b = load_all()
+    spec = b.agents.agents[AGENT_CARDS[aid]["key"]]
+    d = b.agents.defaults
+    return {
+        "model": spec.model_id or d.model_id,
+        "prompt": spec.prompt_id,
+        "turns": spec.max_turns or d.max_turns,
+        "budget": spec.token_budget or d.token_budget,
+        "tools": list(spec.allowed_tools),
+    }
+
+
+def agent_card_md(aid: str) -> str:
+    c, f = AGENT_CARDS[aid], _agent_facts(aid)
+
+    def bullets(xs: list[str]) -> str:
+        return "\n".join(f"- {x}" for x in xs)
+
+    tools = [f"`{str(t).removeprefix('mcp__parakh__')}`" for t in f["tools"]]  # type: ignore[attr-defined]
+    return (
+        HEADER
+        + f"# Agent card: {c['title']}\n\n"
+        + f"`{c['key']}` · prompt `{f['prompt']}` · model `{f['model']}` · owner {OWNER} · "
+        + f"max {f['turns']} turns · {f['budget']} tokens\n\n"
+        + f"## Job\n\n{c['job']}\n\n"
+        + f"## Inputs\n\n{bullets(c['inputs'])}\n\n"
+        + f"## Allowed tools\n\n{bullets(tools)}\n\n"
+        + f"## Outputs\n\n{bullets(c['outputs'])}\n\n"
+        + f"## Guardrails\n\n{bullets(c['guardrails'])}\n\n"
+        + f"## Limitations\n\n{bullets(c['limitations'])}\n\n"
+        + "## Audit\n\nEvery run writes `AUD.AGENT.START` and `AUD.AGENT.END`; every tool call writes `AUD.MCP.TOOL_CALL` (see [AUDIT_EVENTS.md](../AUDIT_EVENTS.md), [TOOLS.md](../TOOLS.md)).\n\n"
+        + "## Validation\n\nPending: shadow-mode review (UAT-2) and the L7 trajectory evals in `tests/agents/`.\n"
+    )
+
+
 def _hash(name: str) -> str:
     return hashlib.sha256((config_dir() / name).read_bytes().replace(b"\r\n", b"\n")).hexdigest()[
         :8
@@ -120,7 +206,19 @@ def inventory_md() -> str:
         )
     rows += [
         "",
-        "Agents (qualitative analyst, devil's advocate, monthly reviewer, event triage, watchlist curator) join this table when they ship in Phase 4; prompts are versioned separately (`prompts/`).",
+        "## Agents",
+        "",
+        "| ID | Prompt | Model | Status | Owner | Last validation | Card |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    for aid, card in AGENT_CARDS.items():
+        f = _agent_facts(aid)
+        rows.append(
+            f"| `{card['key']}` | `{f['prompt']}` | `{f['model']}` | shadow | {OWNER} | pending (UAT-2) | [card](agents/{aid}.md) |"
+        )
+    rows += [
+        "",
+        "The qualitative analyst, devil's advocate and watchlist curator join this table when they ship in Phase 4; prompts are versioned separately (`prompts/`).",
     ]
     return "\n".join(rows) + "\n"
 
@@ -160,6 +258,8 @@ def model_docs() -> dict[str, str]:
     docs = {"MODELS.md": inventory_md()}
     for mid in CARDS:
         docs[f"lenses/{mid}.md"] = card_md(mid)
+    for aid in AGENT_CARDS:
+        docs[f"agents/{aid}.md"] = agent_card_md(aid)
     return docs
 
 

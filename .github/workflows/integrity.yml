@@ -1,0 +1,31 @@
+name: integrity
+
+# Daily 02:00 IST (20:30 UTC): verify the audit hash chain; a break sends a ❌ (AC-F21.4).
+on:
+  schedule:
+    - cron: "30 20 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  id-token: write
+
+# one writer of the state branch at a time
+concurrency:
+  group: parakh-state
+  cancel-in-progress: false
+
+env:
+  AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/parakh-job
+        with:
+          job-name: "Audit integrity check"
+          command: "integrity"

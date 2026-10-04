@@ -58,6 +58,8 @@ class RunManifest(BaseModel):
     llm_tokens: int = 0
     alerts_sent: int = 0
     alerts_suppressed: int = 0
+    agent_runs: int = 0
+    failed_steps: int = 0
 
 
 def runs_dir() -> Path:
@@ -68,8 +70,30 @@ def manifest_path(run_id: str) -> Path:
     return runs_dir() / run_id / "manifest.json"
 
 
+def _counts(events: list[Any]) -> tuple[int, int, int, int]:
+    """(alerts_sent, alerts_suppressed, agent_runs, llm_tokens)."""
+    """Run-summary counts from the run's own audit events (AC-F19.1)."""
+    from parakh.audit.events import AUD
+
+    sent = [e for e in events if e.event_type == AUD.ALERT_SENT]
+    agent_end = [e for e in events if e.event_type == AUD.AGENT_END]
+    tokens = sum(
+        int(e.details.get("tokens_in") or 0) + int(e.details.get("tokens_out") or 0)
+        for e in agent_end
+    )
+    suppressed = sum(1 for e in events if e.event_type == AUD.ALERT_SUPPRESSED)
+    return len(sent), suppressed, len(agent_end), tokens
+
+
 def write_manifest(ctx: RunContext, status: str, sink: AuditSink, pending: int) -> RunManifest:
+    events = sink.events_for_run(ctx.run_id)
+    sent, suppressed, agent_runs, tokens = _counts(events)
     manifest = RunManifest(
+        alerts_sent=sent,
+        alerts_suppressed=suppressed,
+        agent_runs=agent_runs,
+        llm_tokens=tokens,
+        failed_steps=sum(1 for s in ctx.steps if s.status not in ("ok", "SUCCESS")),
         run_id=ctx.run_id,
         mode=ctx.mode,
         env=ctx.env,
@@ -99,7 +123,7 @@ def write_manifest(ctx: RunContext, status: str, sink: AuditSink, pending: int) 
             )
             for s in ctx.steps
         ],
-        audit_events=len(sink.events_for_run(ctx.run_id)),
+        audit_events=len(events),
         audit_pending=pending,
         audit_chain_head=sink.head(),
         audit_sink=getattr(sink.syncer, "name", type(sink.syncer).__name__),

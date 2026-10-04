@@ -1,0 +1,192 @@
+{
+ "as_on_date": "01-Oct-2026",
+ "BULK_DEALS_DATA": [
+  {
+   "buySell": "BUY",
+   "clientName": "WEALTH 4 U HOSPITALITY CONSULTANCY PRIVATE LIMITED",
+   "date": "01-Oct-2026",
+   "name": "Swastika Infra Limited",
+   "qty": "364467",
+   "remarks": "-",
+   "symbol": "SWASTIKAIN",
+   "watp": "210.72"
+  },
+  {
+   "buySell": "BUY",
+   "clientName": "ALPHAGREP SECURITIES PRIVATE LIMITED",
+   "date": "01-Oct-2026",
+   "name": "Transformers And Rectifie",
+   "qty": "1730595",
+   "remarks": "-",
+   "symbol": "TARIL",
+   "watp": "289.61"
+  },
+  {
+   "buySell": "BUY",
+   "clientName": "JUMP TRADING FINANCIAL INDIA PRIVATE LIMITED",
+   "date": "01-Oct-2026",
+   "name": "Transformers And Rectifie",
+   "qty": "1644556",
+   "remarks": "-",
+   "symbol": "TARIL",
+   "watp": "289.76"
+  },
+  {
+   "buySell": "BUY",
+   "clientName": "MICROCURVES TRADING PRIVATE LIMITED",
+   "date": "01-Oct-2026",
+   "name": "Transformers And Rectifie",
+   "qty": "3166656",
+   "remarks": "-",
+   "symbol": "TARIL",
+   "watp": "288.61"
+  },
+  {
+   "buySell": "SELL",
+   "clientName": "NK SECURITIES RESEARCH PRIVATE LIMITED",
+   "date": "01-Oct-2026",
+   "name": "Moneyview Limited",
+   "qty": "13640653",
+   "remarks": "-",
+   "symbol": "MONEYVIEW",
+   "watp": "56.83"
+  },
+  {
+   "buySell": "SELL",
+   "clientName": "MICROCURVES TRADING PRIVATE LIMITED",
+   "date": "01-Oct-2026",
+   "name": "Moneyview Limited",
+   "qty": "12610032",
+   "remarks": "-",
+   "symbol": "MONEYVIEW",
+   "watp": "55.98"
+  }
+ ],
+ "BULK_DEALS": "157",
+ "SHORT_DEALS": "180",
+ "BLOCK_DEALS": "6",
+ "SHORT_DEALS_DATA": [
+  {
+   "buySell": null,
+   "clientName": null,
+   "date": "30-Sep-2026",
+   "name": "360 ONE WAM LIMITED",
+   "qty": "1603",
+   "remarks": null,
+   "symbol": "360ONE",
+   "watp": null
+  },
+  {
+   "buySell": null,
+   "clientName": null,
+   "date": "30-Sep-2026",
+   "name": "ABB LTD.",
+   "qty": "79",
+   "remarks": null,
+   "symbol": "ABB",
+   "watp": null
+  },
+  {
+   "buySell": null,
+   "clientName": null,
+   "date": "30-Sep-2026",
+   "name": "ADITYA BIRLA CAPITAL LIMITED",
+   "qty": "4742",
+   "remarks": null,
+   "symbol": "ABCAPITAL",
+   "watp": null
+  },
+  {
+   "buySell": null,
+   "clientName": null,
+   "date": "30-Sep-2026",
+   "name": "ADANI ENTERPRISES LIMITED",
+   "qty": "5",
+   "remarks": null,
+   "symbol": "ADANIENT",
+   "watp": null
+  },
+  {
+   "buySell": null,
+   "clientName": null,
+   "date": "30-Sep-2026",
+   "name": "ADANI GREEN ENERGY LTD",
+   "qty": "1298",
+   "remarks": null,
+   "symbol": "ADANIGREEN",
+   "watp": null
+  },
+  {
+   "buySell": null,
+   "clientName": null,
+   "date": "30-Sep-2026",
+   "name": "ADANI PORT & SEZ LTD",
+   "qty": "2537",
+   "remarks": null,
+   "symbol": "ADANIPORTS",
+   "watp": null
+  }
+ ],
+ "BLOCK_DEALS_DATA": [
+  {
+   "buySell": "BUY",
+   "clientName": "PABRAI WAGONS ETF",
+   "date": "01-Oct-2026",
+   "name": "Edelweiss Fin Serv Ltd",
+   "qty": "14572000",
+   "remarks": null,
+   "symbol": "EDELWEISS",
+   "watp": "142.73"
+  },
+  {
+   "buySell": "BUY",
+   "clientName": "INRE FUND II",
+   "date": "01-Oct-2026",
+   "name": "Nirlon Ltd.",
+   "qty": "2325000",
+   "remarks": null,
+   "symbol": "NIRLON",
+   "watp": "615"
+  },
+  {
+   "buySell": "BUY",
+   "clientName": "PABRAI WAGONS ETF",
+   "date": "01-Oct-2026",
+   "name": "Nuvama Wealth Manage Ltd",
+   "qty": "520420",
+   "remarks": null,
+   "symbol": "NUVAMA",
+   "watp": "1652.5"
+  },
+  {
+   "buySell": "SELL",
+   "clientName": "PABRAI WAGONS FUND",
+   "date": "01-Oct-2026",
+   "name": "Edelweiss Fin Serv Ltd",
+   "qty": "14572000",
+   "remarks": null,
+   "symbol": "EDELWEISS",
+   "watp": "142.73"
+  },
+  {
+   "buySell": "SELL",
+   "clientName": "NIHAR NANDAN NILEKANI",
+   "date": "01-Oct-2026",
+   "name": "Nirlon Ltd.",
+   "qty": "2325000",
+   "remarks": null,
+   "symbol": "NIRLON",
+   "watp": "615"
+  },
+  {
+   "buySell": "SELL",
+   "clientName": "PABRAI WAGONS FUND",
+   "date": "01-Oct-2026",
+   "name": "Nuvama Wealth Manage Ltd",
+   "qty": "520420",
+   "remarks": null,
+   "symbol": "NUVAMA",
+   "watp": "1652.5"
+  }
+ ]
+}

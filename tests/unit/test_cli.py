@@ -46,7 +46,9 @@ def test_config_validate_and_dummy_run_and_verify(capsys: pytest.CaptureFixture[
     assert "chain OK" in capsys.readouterr().out
 
 
-def test_later_modes_say_when_they_arrive(capsys: pytest.CaptureFixture[str]) -> None:
-    """T-CLI-03"""
+def test_watch_modes_need_a_data_store(capsys: pytest.CaptureFixture[str]) -> None:
+    """T-CLI-03 (Phase 3: watch and events exist; without Supabase they stop with a clear message)."""
     assert main(["run", "--mode", "watch"]) == 2
-    assert "later phase" in capsys.readouterr().out
+    assert "SUPABASE_URL" in capsys.readouterr().err
+    assert main(["events"]) == 2
+    assert "SUPABASE_URL" in capsys.readouterr().err

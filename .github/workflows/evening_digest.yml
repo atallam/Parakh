@@ -1,0 +1,31 @@
+name: evening_digest
+
+# Mon-Fri 19:20 IST (13:50 UTC), after both watchers, so NFR-14's 19:30 limit holds.
+on:
+  schedule:
+    - cron: "50 13 * * 1-5"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  id-token: write
+
+# one writer of the state branch at a time
+concurrency:
+  group: parakh-state
+  cancel-in-progress: false
+
+env:
+  AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/parakh-job
+        with:
+          job-name: "Evening digest"
+          command: "digest"

@@ -1,0 +1,76 @@
+name: parakh-job
+description: >
+  Run one Parakh command on a runner with its state. Secrets come from AWS SSM through GitHub OIDC
+  (ADR-009; only the role ARN is stored in GitHub). State (watch state, audit outbox, run manifests,
+  shadow logs) lives on the `parakh-data` branch and is pulled before and pushed after the job, so a
+  run on a fresh runner sees yesterday's state (plan 03 §5, §8).
+
+inputs:
+  command:
+    description: the parakh command line, e.g. "watch" or "run --mode monthly --notify"
+    required: true
+  job-name:
+    description: name shown in the failure message
+    required: true
+  commit-reports:
+    description: "also commit the cap folders to the code branch (monthly only)"
+    default: "false"
+
+runs:
+  using: composite
+  steps:
+    - uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
+    - run: uv sync --locked --all-extras
+      shell: bash
+    - name: secrets from AWS SSM (OIDC)
+      if: env.AWS_ROLE_ARN != ''
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ env.AWS_ROLE_ARN }}
+        aws-region: ${{ env.AWS_REGION || 'ap-south-1' }}
+    - name: pull state from the parakh-data branch
+      shell: bash
+      run: |
+        set -euo pipefail
+        git config user.name "parakh-bot"
+        git config user.email "parakh-bot@users.noreply.github.com"
+        if git ls-remote --exit-code --heads origin parakh-data >/dev/null 2>&1; then
+          git fetch --depth=1 origin parakh-data
+          git worktree add "$RUNNER_TEMP/state" FETCH_HEAD
+        else
+          git worktree add --orphan -b parakh-data "$RUNNER_TEMP/state"
+        fi
+        echo "PARAKH_STATE_DIR=$RUNNER_TEMP/state/state" >> "$GITHUB_ENV"
+        echo "PARAKH_LOGS_DIR=$RUNNER_TEMP/state/logs" >> "$GITHUB_ENV"
+        mkdir -p "$RUNNER_TEMP/state/state" "$RUNNER_TEMP/state/logs"
+    - name: run
+      shell: bash
+      env:
+        APP_ENV: prod
+      run: uv run parakh ${{ inputs.command }}
+    - name: push state
+      if: always()
+      shell: bash
+      run: |
+        set -euo pipefail
+        cd "$RUNNER_TEMP/state"
+        git add -A
+        if git diff --cached --quiet; then echo "no state change"; exit 0; fi
+        git commit -m "state: ${{ inputs.job-name }} $(date -u +%Y-%m-%dT%H:%MZ)"
+        for i in 1 2 3; do
+          git push origin HEAD:parakh-data && exit 0
+          git fetch origin parakh-data && git rebase FETCH_HEAD || true
+        done
+        echo "state push failed" >&2; exit 1
+    - name: commit reports to the code branch
+      if: inputs.commit-reports == 'true' && success()
+      shell: bash
+      run: |
+        git add large_cap mid_cap small_cap || true
+        git diff --cached --quiet || { git commit -m "Monthly analysis $(date +%Y-%m)"; git push; }
+    - name: failure alert (a break before or outside the job's own alerting)
+      if: failure()
+      shell: bash
+      run: uv run parakh notify-failure --job "${{ inputs.job-name }}" --run-url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" || true

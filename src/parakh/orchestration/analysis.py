@@ -34,6 +34,7 @@ from parakh.policy.overrides import expired_since
 from parakh.snapshots.models import Snapshot, period_of
 from parakh.snapshots.store import load_previous, stock_dir, write_snapshot
 from parakh.thesis.model import read_thesis
+from parakh.watch.context import MarketContext, regime_kwargs
 
 HISTORY_YEARS = 11
 VALUE_LENS_VERSION = ValueLens.lens_version
@@ -62,7 +63,9 @@ class MonthlyResult:
         return [s.snapshot for s in self.stocks if s.snapshot is not None]
 
 
-def _regimes(bundle: ConfigBundle, data: AnalysisData, asof: dt.date) -> tuple[dict, dict]:
+def _regimes(
+    bundle: ConfigBundle, data: AnalysisData, asof: dt.date, context: MarketContext | None = None
+) -> tuple[dict, dict]:
     vix = data.index_close("INDIA VIX", asof)
     out: dict[str, RegimeResult] = {}
     benches = {}
@@ -70,7 +73,9 @@ def _regimes(bundle: ConfigBundle, data: AnalysisData, asof: dt.date) -> tuple[d
         name = settings.benchmark
         bench = data.index_close(name, asof)
         benches[cap] = bench
-        out[cap] = segment_regime(bench, bundle.regime, vix=vix)
+        out[cap] = segment_regime(
+            bench, bundle.regime, vix=vix, **regime_kwargs(context, cap, bundle.regime)
+        )
     return out, benches
 
 
@@ -103,6 +108,7 @@ def run_monthly(
     securities: list[Security] | None = None,
     sink: AuditSink | None = None,
     trigger: str = "manual",
+    context: MarketContext | None = None,
 ) -> MonthlyResult:
     sink = sink or get_sink()
     ctx = RunContext.create(mode="monthly", asof=asof, trigger=trigger)
@@ -120,7 +126,7 @@ def run_monthly(
     with run_lifecycle(ctx, sink) as outcome:
         result.outcome = outcome
         with audited_step(ctx, "regime") as step:
-            regimes, benches = _regimes(bundle, data, asof)
+            regimes, benches = _regimes(bundle, data, asof, context)
             result.regimes = regimes
             step.record_output(**{cap: r.regime for cap, r in regimes.items()})
 

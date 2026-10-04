@@ -1,0 +1,134 @@
+# Event Watcher rules (plan 03 §5b, plan 08 F13). First matching rule wins, so the specific rule
+# goes before the general one. A rule decides *whether* a filing matters and its maximum severity;
+# the Event Triage agent (plan 15 §5) may add a "why it matters" line and may never exceed
+# `max_severity` or suppress a rule-based alert (AC-F25.4).
+#
+# Text patterns run over NSE's `attchmntText`. Modern filings often carry only a generic line
+# ("informed the Exchange about Resignation of Director/KMP/SMP") with the detail in the PDF, so a
+# rule that cannot tell a CFO from a director fails loud: it alerts, and the agent reads the PDF.
+
+# why: the announcements API returns a rolling window; two days covers a missed run (weekend, outage)
+lookback_days: 3
+# why: plan 03 §5b, "lock-in expiry within 15 days" (M30), in trading days
+lockin_warn_trading_days: 15
+# why: SEBI ICDR lock-in steps counted from the listing date (anchor 30 and 90 days; pre-IPO and
+# promoter-excess 6 months; promoter minimum contribution 18 months). An assumption to check against
+# the prospectus of each young listing, which is why the alert says "expected".
+lockin_schedule:
+  - {days_after_listing: 30, label: "anchor investors, first half"}
+  - {days_after_listing: 90, label: "anchor investors, balance"}
+  - {days_after_listing: 180, label: "pre-IPO holders and promoter excess"}
+  - {days_after_listing: 548, label: "promoters' minimum contribution"}
+# why: lock-in steps older than this are never alerted (a stock listed years ago has none left)
+lockin_max_age_days: 640
+
+rules:
+  - id: E04
+    name: Auditor change (resignation or unknown)
+    source: announcement
+    severity: High
+    max_severity: High
+    valence: negative
+    desc_any: ["Change in Auditors"]
+    # why: a routine (re)appointment at the AGM is E12; everything else about auditors fails loud
+    text_none: ['(?i)\bappointment of\b.{0,120}\bauditor', '(?i)\bre-?appointment of\b']
+  - id: E12
+    name: Auditor appointment
+    source: announcement
+    severity: Low
+    max_severity: Low
+    valence: neutral
+    desc_any: ["Change in Auditors"]
+  - id: E05
+    name: CEO, CFO or other key management exit
+    source: announcement
+    severity: High
+    max_severity: High
+    valence: negative
+    desc_any: ["Resignation", "Resignation of Director/KMP/SMP", "Change in Management"]
+    # why: only named CEO/CFO/MD roles are certain; the generic line is E13 below
+    text_all: ['(?i)(chief financial officer|\bCFO\b|chief executive|\bCEO\b|managing director)', '(?i)resign|cessation|step(ping)? down|relinquish']
+  - id: E13
+    name: Director or key management change (role not in the filing line)
+    source: announcement
+    severity: Medium
+    max_severity: High
+    valence: neutral
+    desc_any: ["Resignation", "Resignation of Director/KMP/SMP", "Change in Management", "Change in Director(s)"]
+    escalate_if: ['(?i)resign|cessation']
+    text_none: ['(?i)non[- ]?executive|independent director|additional director']
+  - id: E07
+    name: Credit rating action
+    source: announcement
+    severity: Medium
+    max_severity: High
+    valence: neutral
+    desc_any: ["Credit Rating", "Credit Rating- Others"]
+    escalate_if: ['(?i)downgrad|negative outlook|watch with negative|default|suspend|withdraw']
+  - id: E02
+    name: Concall transcript filed
+    source: announcement
+    severity: Medium
+    max_severity: Medium
+    valence: neutral
+    refresh: true
+    desc_any: ["Analysts/Institutional Investor Meet/Con. Call Updates"]
+    text_all: ['(?i)transcript']
+  - id: E01
+    name: Results filed
+    source: announcement
+    severity: Medium
+    max_severity: Medium
+    valence: neutral
+    refresh: true
+    desc_any: ["Financial Result Updates", "Outcome of Board Meeting"]
+    text_all: ['(?i)financial results']
+    # why: one results event reaches NSE as several rows (outcome of board meeting, result update,
+    # and a revised copy); one alert per period ended
+    group_regex: '(?i)period ended\s+([A-Za-z]+\.? ?\d{1,2},? \d{4})'
+  - id: E14
+    name: Regulatory action or order
+    source: announcement
+    severity: Medium
+    max_severity: High
+    valence: negative
+    desc_any: ["Action(s) taken or orders passed"]
+    escalate_if: ['(?i)penalt|fine|show cause|suspen|cancel|ban']
+  - id: E03
+    name: Promoter or promoter-group trade
+    source: insider
+    severity: Medium
+    max_severity: Medium
+    valence: neutral
+    person_categories: ["promoter"]
+    acq_modes: ["market purchase", "market sale", "off market", "inter-se"]
+  - id: E06
+    name: Promoter pledge created, invoked or released
+    source: insider
+    severity: High
+    max_severity: High
+    valence: negative
+    person_categories: ["promoter"]
+    acq_modes: ["pledge", "invocation"]
+    # why: a release or revocation lowers risk, so it is a Medium, positive item
+    relax_if: ['(?i)revok|releas']
+  - id: E08
+    name: ASM or GSM surveillance inclusion or stage change
+    source: surveillance
+    severity: High
+    max_severity: High
+    valence: negative
+    signal_id: M28
+  - id: E10
+    name: Bulk or block deal
+    source: deals
+    severity: Low
+    max_severity: Low
+    valence: neutral
+  - id: E11
+    name: Lock-in expiry approaching
+    source: lockin
+    severity: Medium
+    max_severity: Medium
+    valence: negative
+    signal_id: M30
