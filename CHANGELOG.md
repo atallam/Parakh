@@ -12,7 +12,10 @@ All notable changes. Framework and lens versions follow SemVer; tool schemas are
 - MCP tools `notify.queue` and `data.get_document`; Monthly Reviewer and Event Triage agents, prompts, cards and inventory rows.
 - `alerts_log` migration, `docs/FAILURE_MODES.md` with impact column (19 rows), per-stock `signal_log`.
 
+- AWS secrets path (ADR-009): `infra/aws/parakh-github-oidc.yaml` (GitHub OIDC provider and a read-only role), `docs/AWS_SETUP.md`, and `secrets.load_ssm_environment`, which loads `/parakh/prod/*` into the environment on scheduled runs.
+
 ### Changed
+- `get_secret` no longer raises when an optional parameter is absent; parameters are read per environment path (`/parakh/prod/<NAME>`) instead of `/parakh/<NAME>`.
 - Run manifests now carry alert, suppressed, agent-run, failed-step and token counts; the heartbeat checks the monthly 12:00 IST and watcher 19:30 IST service levels.
 
 ### Not yet
