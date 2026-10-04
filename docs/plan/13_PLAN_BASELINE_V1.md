@@ -1,6 +1,6 @@
 ---
 title: Parakh — Plan Baseline v1.0 (locked)
-version: 1.23 (Phase 3 built, §8.0d; v1.22: UAT-0 and UAT-1 added to the prep backlog as BL-05 and BL-06; v1.21: Phase 1 built and loaded, §8.0c; order book and offer-document financials move to the Phase 2 document work; pilot is 4 Large, 1 Mid, 2 Small by AMFI; v1.20: all Phase 0.5 spikes closed; BL-02/03/04 done; v1.19: Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
+version: 1.24 (BL-01 done: AWS account ready, OIDC role and Parameter Store loader written; v1.23: Phase 3 built, §8.0d; v1.22: UAT-0 and UAT-1 added to the prep backlog as BL-05 and BL-06; v1.21: Phase 1 built and loaded, §8.0c; order book and offer-document financials move to the Phase 2 document work; pilot is 4 Large, 1 Mid, 2 Small by AMFI; v1.20: all Phase 0.5 spikes closed; BL-02/03/04 done; v1.19: Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
 date: 2026-09-24
 owner: Avinash Tallam
 status: LOCKED. This is the plan of record; changes follow §6
@@ -165,7 +165,7 @@ Dates, phase contents and exit gates live only in **plan 09**. The Production it
 3. ✅ *Done 27 Sep:* Screener export for **M&M** saved in `FILES FOR ANALYSIS`. Format confirmed: Data Sheet v2.1, consolidated figures, 10 years FY17–FY26, 10 quarters to Jun 2026, 10 year-end prices. The file name is `M & M.xlsx`, so the adapter maps files by the COMPANY NAME cell, not the file name.
 4. ✅ *Done 27 Sep:* Telegram bot **@Parakh_avinash_bot** created, group adds disabled; `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` in `.env`; a test message reached your chat.
 5. ✅ *Done 27 Sep:* Supabase project `parakh` created.
-6. ⏸ *Moved to backlog 28 Sep (**BL-01**, reminder set for 29 Sep):* confirm you have an **AWS account** for SSM (P1), or accept the GitHub-environment-secrets deviation. Not a Phase 0 blocker: SSM/OIDC is only needed in Phase 3, before M2 (§4.3). Target: close it by the end of Phase 0 (4 Oct).
+6. ✅ *Done 4 Oct (**BL-01**; account created, root MFA on, $1 budget, region Mumbai):* confirm you have an **AWS account** for SSM (P1), or accept the GitHub-environment-secrets deviation. Not a Phase 0 blocker: SSM/OIDC is only needed in Phase 3, before M2 (§4.3). Target: close it by the end of Phase 0 (4 Oct).
 7. ✅ *Done 27 Sep:* the original **`aiscaffold.py` + `stack_config.yaml`** weren't on your PC, so Claude rebuilt them (v1.0.0) in `Stock Analysis\Parakh-scaffold\`. The `parakh` profile follows §4.4: no LangGraph, tools under `mcp/toolsets` (D20), an `agents/runtime` package for the `AgentRunner` (D21). Every tier's generated project passes ruff, pyright, pytest and the 34-item check. Monday: `uv run aiscaffold.py new parakh --path C:\dev\parakh`.
 8. ✅ *Done 27 Sep:* golden stocks confirmed: HDFCBANK, INDIGO, M&M (D18).
 9. ✅ *Done 27 Sep:* **Docker Desktop** installed (Docker 29.8.0, Compose v5.5.1), for the local Supabase test stack (plan 14 §3). The engine wasn't running at the check, so start Docker Desktop before Monday's session; `docker run --rm hello-world` confirms it.
@@ -210,7 +210,7 @@ Built on branch `phase-0` in `atallam/Parakh`, **pull request #1**. All four CI 
 **You, to close Phase 0:**
 1. Review and merge PR #1, then `git pull` in `Stock Analysis\parakh`, `uv sync`, `uv run pre-commit install`, `uv run pytest`.
 2. Branch protection on `main`: require a PR, code-owner review, and the four checks *L0 static*, *L1–L5 tests*, *L4 database (Supabase local stack)*, *L0 security (P10)* (P10).
-3. BL-01 (AWS account) when convenient; it isn't needed before Phase 3.
+3. ✅ BL-01 (AWS account): done 4 Oct.
 
 ### 8.0b Phase 0.5 status *(29 Sep 2026)*
 
@@ -280,7 +280,7 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 
 | ID | Item | Needed by | Status |
 |---|---|---|---|
-| BL-01 | AWS account for SSM Parameter Store via GitHub OIDC (P1, ADR-009); fallback: GitHub environment secrets with required reviewers | Phase 3, before M2 (2 Dec 2026) | Open; reminder sent 29 Sep; target end of Phase 0 (4 Oct) |
+| ~~BL-01~~ | ~~AWS account for SSM Parameter Store via GitHub OIDC (P1, ADR-009)~~ | Phase 3, before M2 (2 Dec 2026) | ✅ Done 4 Oct (account, root MFA, $1 budget, ap-south-1). Next, yours: the three steps in `docs/AWS_SETUP.md` (role stack, parameters, two GitHub variables) before the workflows are switched on |
 | ~~BL-02~~ | ~~`TELEGRAM_CHAT_ID` missing from `.env`~~ | Spike ⑥; Phase 3 | ✅ Done 29 Sep (read from the bot, written to `.env`) |
 | ~~BL-03~~ | ~~`ANTHROPIC_API_KEY` in `.env` and as a repo secret~~ | Spike ⑧; Phase 3 agents | ✅ Done 29 Sep |
 | ~~BL-04~~ | ~~`SUPABASE_URL` and `SUPABASE_SERVICE_KEY` in `.env`~~ | Phase 1 | ✅ Done 29 Sep (secret key; `.env` comment lines fixed) |
@@ -293,6 +293,7 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 
 | Version | Date | Change |
 |---|---|---|
+| 1.24 | 2026-10-04 | **BL-01 done.** AWS account ready. Added the OIDC role template (`infra/aws/`), the Parameter Store loader (path `/parakh/prod`, set by the job) and `docs/AWS_SETUP.md`. The workflow secrets that shadow mode waits for (§8.0d) are the parameters in that guide. Version: 13 1.24 |
 | 1.23 | 2026-10-04 | **Phase 3 built (§8.0d).** Shadow mode waits for the workflow secrets and the `alerts_log` migration. `jobs.request_refresh` stays in Phase 4; F24.4 moves with the portfolio toolset. Version: 13 1.23 |
 | 1.22 | 2026-10-04 | UAT-0 (oracle sign-off) and UAT-1 (pilot report review) added to the prep backlog as BL-05 and BL-06, with a daily reminder until both are signed. Version: 13 1.22 |
 | 1.21 | 2026-10-02 | **Phase 1 built and loaded (§8.0c).** Order book (MAZDOCK) and offer-document financials (young listings) move to the Phase 2 document work. Pilot cap mix by AMFI is 4 Large, 1 Mid, 2 Small. Golden folder keeps parsed facts and export hashes, not the Screener exports |

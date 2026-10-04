@@ -97,5 +97,9 @@ def output_dir() -> Path:
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
+    # Scheduled runs: Parameter Store values become environment variables first (ADR-009).
+    from parakh.secrets import load_ssm_environment
+
+    load_ssm_environment()
     path = env_file()
     return Settings(_env_file=path) if path else Settings()  # pyright: ignore[reportCallIssue]

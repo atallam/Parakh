@@ -1,0 +1,75 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  Parakh (ADR-009): lets GitHub Actions in one repository read the SecureString parameters under
+  one Parameter Store path, through OIDC. No access keys are created. Deploy in ap-south-1.
+
+Parameters:
+  GitHubOwner:
+    Type: String
+    Default: atallam
+  GitHubRepo:
+    Type: String
+    Default: parakh
+    Description: Repository name in lower case; the capitalised spelling is allowed as well.
+  GitHubRepoAltCase:
+    Type: String
+    Default: Parakh
+    Description: The same name as GitHub displays it (the token's subject is case-sensitive).
+  Branch:
+    Type: String
+    Default: main
+    Description: Only workflows running on this branch can assume the role.
+  ParameterPath:
+    Type: String
+    Default: parakh/prod
+    Description: Parameter Store path without the leading slash.
+    AllowedPattern: "^[a-zA-Z0-9_.-]+(/[a-zA-Z0-9_.-]+)*$"
+
+Resources:
+  GitHubOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+
+  ParakhRunnerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: parakh-github-runner
+      Description: Assumed by Parakh's GitHub Actions jobs; read-only on its own parameters.
+      MaxSessionDuration: 3600
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Ref GitHubOidcProvider
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                "token.actions.githubusercontent.com:aud": sts.amazonaws.com
+                "token.actions.githubusercontent.com:sub":
+                  - !Sub "repo:${GitHubOwner}/${GitHubRepo}:ref:refs/heads/${Branch}"
+                  - !Sub "repo:${GitHubOwner}/${GitHubRepoAltCase}:ref:refs/heads/${Branch}"
+      Policies:
+        - PolicyName: read-parakh-parameters
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ssm:GetParametersByPath
+                  - ssm:GetParameters
+                  - ssm:GetParameter
+                Resource:
+                  - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${ParameterPath}"
+                  - !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/${ParameterPath}/*"
+
+Outputs:
+  RoleArn:
+    Description: Store this in GitHub as the repository variable AWS_ROLE_ARN.
+    Value: !GetAtt ParakhRunnerRole.Arn
+  ParameterPathOut:
+    Description: Create the SecureString parameters under this path.
+    Value: !Sub "/${ParameterPath}"

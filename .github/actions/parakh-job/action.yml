@@ -30,6 +30,10 @@ runs:
       with:
         role-to-assume: ${{ env.AWS_ROLE_ARN }}
         aws-region: ${{ env.AWS_REGION || 'ap-south-1' }}
+    - name: point the job at its Parameter Store path
+      if: env.AWS_ROLE_ARN != ''
+      shell: bash
+      run: echo "PARAKH_SSM_PATH=${PARAKH_SSM_PATH:-/parakh/prod}" >> "$GITHUB_ENV"
     - name: pull state from the parakh-data branch
       shell: bash
       run: |
