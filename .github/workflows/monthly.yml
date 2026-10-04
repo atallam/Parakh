@@ -22,6 +22,18 @@ concurrency:
 env:
   AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
   AWS_REGION: ${{ vars.AWS_REGION }}
+  # why: GitHub repository secrets are the recorded fallback to SSM (ADR-009); a name left unset
+  # stays empty and the code treats it as "not configured"
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+  SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  SMTP_USER: ${{ secrets.SMTP_USER }}
+  SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+  MAIL_TO: ${{ secrets.MAIL_TO }}
+  NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
 
 jobs:
   run:

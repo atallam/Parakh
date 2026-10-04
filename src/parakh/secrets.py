@@ -17,6 +17,8 @@ def get_secret(name: str) -> str | None:
     value = os.environ.get(name)
     if value or get_settings().app_env != "prod":
         return value
+    if not os.environ.get("AWS_ACCESS_KEY_ID"):
+        return value  # no AWS role assumed: the GitHub-secrets fallback (ADR-009) left it unset
     import boto3
 
     ssm = boto3.client("ssm", region_name=get_settings().aws_region)
