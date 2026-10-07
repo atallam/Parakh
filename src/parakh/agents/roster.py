@@ -17,6 +17,11 @@ from parakh.audit.context import RunContext
 from parakh.audit.emit import AuditSink
 from parakh.audit.events import AUD
 from parakh.configs import ConfigBundle
+from parakh.observability.tracing import (
+    observation,
+    score_current_trace,
+    trace_attributes,
+)
 from parakh.prompts import load_prompt
 
 
@@ -48,7 +53,72 @@ def run_agent(
     sink: AuditSink,
     bundle: ConfigBundle,
 ) -> AgentResult:
-    """Run one task with START and END audit events and the limit events when it stops early."""
+    """Run one task with START and END audit events and the limit events when it stops early.
+
+    Also one Langfuse trace per agent run: an `agent` observation named `run-<agent>`, grouped
+    into a session by the audit `run_id` so a job's traces and its audit trail share one ID.
+    Task inputs are IDs and enums only (AG-06), so they are safe to record.
+    """
+    agent_name = spec.agent_id.removeprefix("AGENT.").replace("_", "-")
+    with (
+        trace_attributes(
+            session_id=ctx.run_id,
+            tags=["agent", agent_name],
+            version=spec.version,
+            trace_name=f"run-{agent_name}",
+            metadata={
+                "agent_id": spec.agent_id,
+                "task_id": task.task_id,
+                "kind": task.kind,
+                "model_id": spec.model_id,
+                "prompt_id": spec.prompt_id,
+                "dry_run": bundle.agents.dry_run,
+            },
+        ),
+        observation(
+            f"run-{agent_name}",
+            as_type="agent",
+            input={"kind": task.kind, "task_id": task.task_id, "inputs": task.inputs},
+        ) as run,
+    ):
+        result = _run_audited(runner, spec, task, ctx, sink, bundle)
+        run.update(
+            output={
+                "status": result.status,
+                "reason": result.reason,
+                "output": result.output,
+                "turns": result.turns,
+                "tokens_in": result.tokens_in,
+                "tokens_out": result.tokens_out,
+                "tools": [t.tool for t in result.tool_uses],
+                "tools_denied": [t.tool for t in result.tool_uses if not t.ok],
+            },
+            **_status_level(result),
+        )
+        confidence = (result.output or {}).get("confidence")
+        if isinstance(confidence, int | float):
+            score_current_trace("agent-confidence", float(confidence))
+    return result
+
+
+def _status_level(result: AgentResult) -> dict[str, str]:
+    """A pending run is a warning in Langfuse, a failed one an error (filterable in the UI)."""
+    if result.status == "ok":
+        return {}
+    return {
+        "level": "WARNING" if result.status == "pending" else "ERROR",
+        "status_message": result.reason or result.status,
+    }
+
+
+def _run_audited(
+    runner: AgentRunner,
+    spec: AgentSpec,
+    task: AgentTask,
+    ctx: RunContext,
+    sink: AuditSink,
+    bundle: ConfigBundle,
+) -> AgentResult:
     sink.emit(
         ctx,
         AUD.AGENT_START,

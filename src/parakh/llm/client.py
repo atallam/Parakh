@@ -17,7 +17,7 @@ from parakh.guardrails import Budget, RateLimiter
 from parakh.llm.schemas import LLMResponse, LLMUsage
 from parakh.observability.alerts import alert
 from parakh.observability.cost import CostTracker
-from parakh.observability.tracing import observe
+from parakh.observability.tracing import observation
 
 log = structlog.get_logger(__name__)
 
@@ -94,27 +94,53 @@ class LLMClient:
         )
         self.budget = Budget(self.settings.max_usd_per_run)
         self.rate_limiter = RateLimiter(self.settings.max_llm_calls_per_minute)
+        self._attempts = 0  # provider calls made by the latest request, retries included
 
-    @observe(name="llm.complete")
     def complete(
         self, *, prompt_id: str, system: str, prompt: str, max_tokens: int = 1024
     ) -> LLMResponse:
         self.budget.check()
         self.rate_limiter.acquire()
-        try:
-            response = self._call(system=system, prompt=prompt, max_tokens=max_tokens)
-        except LLMError as exc:
-            log.error(
-                "llm.call",
-                agent_name=self.agent_name,
-                prompt_id=prompt_id,
-                success=False,
-                error=str(exc),
+        # One generation per completed request, with retries folded in (see `attempts`).
+        # Name = the action; agent, prompt and model go in metadata so the name stays stable.
+        with observation(
+            "generate-completion",
+            as_type="generation",
+            input=[{"role": "system", "content": system}, {"role": "user", "content": prompt}],
+            model=self.settings.llm_model,
+            model_parameters={"max_tokens": max_tokens},
+            metadata={"agent_name": self.agent_name, "prompt_id": prompt_id},
+        ) as generation:
+            try:
+                response = self._call(system=system, prompt=prompt, max_tokens=max_tokens)
+            except LLMError as exc:
+                log.error(
+                    "llm.call",
+                    agent_name=self.agent_name,
+                    prompt_id=prompt_id,
+                    success=False,
+                    error=str(exc),
+                )
+                alert(
+                    "llm_failure", agent_name=self.agent_name, prompt_id=prompt_id, error=str(exc)
+                )
+                generation.update(metadata={"attempts": self._attempts})
+                raise LLMUnavailable(str(exc)) from exc
+            usd = self.cost.add(response.usage)
+            self.budget.spend(usd)
+            generation.update(
+                output={"role": "assistant", "content": response.text},
+                model=response.model,
+                usage_details={
+                    "input_tokens": response.usage.input_tokens,
+                    "output_tokens": response.usage.output_tokens,
+                },
+                metadata={
+                    "attempts": self._attempts,
+                    "latency_ms": round(response.latency_ms, 1),
+                    "cost_usd": round(usd, 6),  # the app's own estimate; Langfuse prices by model
+                },
             )
-            alert("llm_failure", agent_name=self.agent_name, prompt_id=prompt_id, error=str(exc))
-            raise LLMUnavailable(str(exc)) from exc
-        usd = self.cost.add(response.usage)
-        self.budget.spend(usd)
         dev = self.settings.app_env == "dev"
         log.info(
             "llm.call",
@@ -140,10 +166,13 @@ class LLMClient:
             wait=wait_exponential(min=s.llm_retry_min_wait_s, max=s.llm_retry_max_wait_s),
             retry=retry_if_exception_type(LLMError),
         )(self._backend.complete)
-        return call(
-            system=system,
-            prompt=prompt,
-            model=s.llm_model,
-            max_tokens=max_tokens,
-            timeout_s=s.llm_timeout_s,
-        )
+        try:
+            return call(
+                system=system,
+                prompt=prompt,
+                model=s.llm_model,
+                max_tokens=max_tokens,
+                timeout_s=s.llm_timeout_s,
+            )
+        finally:
+            self._attempts = call.statistics.get("attempt_number", 1)  # pyright: ignore[reportAttributeAccessIssue]

@@ -20,7 +20,7 @@ Everything below is done once, in the AWS console, in region **Asia Pacific (Mum
 ## 2. Store the secrets (about 10 minutes)
 
 Open **Systems Manager** → **Parameter Store** (region Mumbai). For each row: **Create parameter**,
-name exactly as shown, tier **Standard**, type **SecureString**, KMS key source **My current
+name exactly as shown (one parameter per row; type the name, starting with `/`, with no backticks, spaces or commas), tier **Standard**, type **SecureString**, KMS key source **My current
 account** with the default `alias/aws/ssm`, and paste the value from your `.env`.
 
 | Name | Needed for |
@@ -30,8 +30,11 @@ account** with the default `alias/aws/ssm`, and paste the value from your `.env`
 | `/parakh/prod/SUPABASE_URL` | runs, snapshots, audit |
 | `/parakh/prod/SUPABASE_SERVICE_KEY` | runs, snapshots, audit |
 | `/parakh/prod/ANTHROPIC_API_KEY` | Monthly Reviewer and Event Triage |
-| `/parakh/prod/SMTP_USER`, `/parakh/prod/SMTP_PASSWORD`, `/parakh/prod/MAIL_TO` | optional: monthly email, and the fallback when Telegram fails |
-| `/parakh/prod/LANGFUSE_PUBLIC_KEY`, `/parakh/prod/LANGFUSE_SECRET_KEY` | optional: tracing |
+| `/parakh/prod/SMTP_USER` | optional: monthly email, and the fallback when Telegram fails |
+| `/parakh/prod/SMTP_PASSWORD` | optional: same as above |
+| `/parakh/prod/MAIL_TO` | optional: same as above |
+| `/parakh/prod/LANGFUSE_PUBLIC_KEY` | optional: tracing |
+| `/parakh/prod/LANGFUSE_SECRET_KEY` | optional: tracing |
 | `/parakh/prod/NTFY_TOPIC` | optional: ntfy |
 
 Not stored here: `CAS_PASSWORD` and `PARAKH_ACCOUNT_KEY`. The CAS is parsed only on your PC (P6).
@@ -61,6 +64,7 @@ Run the **heartbeat** workflow by hand (**Actions** → **heartbeat** → **Run 
 |---|---|
 | `Not authorized to perform sts:AssumeRoleWithWebIdentity` | the workflow ran on a branch other than `main`, or the repository name in the stack parameters is wrong |
 | `AccessDeniedException ... ssm:GetParametersByPath` | the parameters are not under `/parakh/prod`, or not in Mumbai |
+| `ValidationException` when creating a parameter | the Name field holds more than one name, a comma, a space or a backtick; underscores are fine |
 | The job runs but sends nothing | a parameter name is misspelt; compare with the table above |
 
 ## Later

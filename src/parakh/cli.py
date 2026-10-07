@@ -10,6 +10,7 @@ from pathlib import Path
 from parakh import __version__
 from parakh.config import env_file, get_settings
 from parakh.observability.logging import configure_logging
+from parakh.observability.tracing import flush_tracing
 
 SECRET_SUFFIXES = ("_key", "_token", "_password", "_secret", "_id")
 
@@ -772,6 +773,13 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    try:
+        return _dispatch(argv)
+    finally:
+        flush_tracing()  # short-lived jobs must send their Langfuse traces before the process ends
+
+
+def _dispatch(argv: list[str] | None) -> int:
     parser = build_parser()
     args = parser.parse_args(argv)
     configure_logging()

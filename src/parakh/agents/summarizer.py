@@ -9,6 +9,7 @@ from pydantic import ValidationError
 
 from parakh.llm.client import LLMClient, LLMUnavailable
 from parakh.llm.schemas import Summary
+from parakh.observability.tracing import observation
 from parakh.privacy import redact_pii
 from parakh.prompts import render_prompt
 
@@ -33,6 +34,14 @@ def summarize(text: str, client: LLMClient | None = None) -> Summary | None:
     """Summarise `text`. Returns None if the LLM is unavailable (graceful degradation, C3.5)."""
     client = client or LLMClient(agent_name=AGENT_NAME)
     text = redact_pii(text)  # no PII reaches the cloud model (C6.3)
+    # A `chain` groups the validate-and-retry attempts; each attempt is one generation inside it.
+    with observation("summarize-text", as_type="chain", input={"text": text}) as run:
+        summary = _summarize(text, client)
+        run.update(output=summary.model_dump() if summary else {"degraded": "llm_unavailable"})
+    return summary
+
+
+def _summarize(text: str, client: LLMClient) -> Summary | None:
     system, prompt = render_prompt("summarize", text=text)
     feedback = ""
     max_iterations = client.settings.llm_max_iterations  # hard cap (C3.1)
