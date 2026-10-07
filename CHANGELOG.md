@@ -13,6 +13,7 @@ All notable changes. Framework and lens versions follow SemVer; tool schemas are
 - `alerts_log` migration, `docs/FAILURE_MODES.md` with impact column (19 rows), per-stock `signal_log`.
 
 - AWS secrets path (ADR-009): `infra/aws/parakh-github-oidc.yaml` (GitHub OIDC provider and a read-only role), `docs/AWS_SETUP.md`, and `secrets.load_ssm_environment`, which loads `/parakh/prod/*` into the environment on scheduled runs.
+- Langfuse tracing on SDK v4: `generate-completion` generations (model, tokens, chat-style input and output, retries), one `agent` trace per agent run grouped by `run_id`, a `chain` trace for the summary pipeline, and Claude Agent SDK turns and tool calls through the OpenInference instrumentor (`--extra agents`). Spans are masked with the log scrubber before export. The Langfuse skill is installed under `.claude/skills/langfuse`.
 
 ### Changed
 - `get_secret` no longer raises when an optional parameter is absent; parameters are read per environment path (`/parakh/prod/<NAME>`) instead of `/parakh/<NAME>`.

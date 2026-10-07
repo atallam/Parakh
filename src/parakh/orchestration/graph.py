@@ -11,6 +11,8 @@ from parakh.audit.review_queue import default_queue
 from parakh.config import get_settings
 from parakh.llm.client import LLMClient
 from parakh.llm.schemas import Summary
+from parakh.observability.tracing import observation
+from parakh.privacy import redact_pii
 
 
 class PipelineState(TypedDict, total=False):
@@ -53,7 +55,23 @@ def review_gate(state: Mapping[str, Any]) -> dict[str, Any]:
 
 
 def run_pipeline(text: str, client: LLMClient | None = None) -> PipelineResult:
+    """One trace per pipeline run: summarise (which traces its own LLM calls), then the gate."""
     state: dict[str, Any] = {"text": text}
-    state.update(summarize_step(state, client))
-    state.update(review_gate(state))
-    return PipelineResult.from_state(state)
+    with observation(
+        "run-summary-pipeline", as_type="chain", input={"text": redact_pii(text)}
+    ) as run:
+        state.update(summarize_step(state, client))
+        with observation("review-summary", as_type="evaluator") as gate:
+            state.update(review_gate(state))
+            gate.update(
+                output={"needs_review": state["needs_review"], "reason": state.get("review_reason")}
+            )
+        result = PipelineResult.from_state(state)
+        run.update(
+            output={
+                "summary": result.summary.model_dump() if result.summary else None,
+                "needs_review": result.needs_review,
+                "review_reason": result.review_reason,
+            }
+        )
+    return result

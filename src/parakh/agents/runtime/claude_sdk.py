@@ -25,6 +25,7 @@ from parakh.agents.runtime.base import AgentResult, AgentSpec, AgentTask, ToolUs
 from parakh.audit.context import RunContext
 from parakh.audit.ids import new_ulid
 from parakh.configs.models import SDK_BUILTIN_TOOLS
+from parakh.observability.tracing import enable_agent_sdk_tracing
 
 if TYPE_CHECKING:
     from claude_agent_sdk import ClaudeAgentOptions
@@ -96,6 +97,7 @@ class ClaudeSDKRunner:
     async def run(self, spec: AgentSpec, task: AgentTask, ctx: RunContext) -> AgentResult:
         from claude_agent_sdk import AssistantMessage, ResultMessage, ToolUseBlock, query
 
+        enable_agent_sdk_tracing()  # turns and tool calls nest under run_agent's observation
         result = AgentResult(agent_run_id=new_ulid(), agent_id=spec.agent_id, status="ok")
         problems = spec.contract_problems()
         if problems:

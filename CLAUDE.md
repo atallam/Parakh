@@ -29,6 +29,7 @@ Guidance for AI coding assistants (Claude, Copilot, Cursor) working in this repo
 - **UI:** no hex colour outside `config/ui_tokens.yaml`; format numbers only with `render/format.py`; unit suffixes `_pct`, `_ratio`, `_x`, `_cr`, `_inr`, `_days`, `_bps`.
 - **Metrics and signals:** test-first against oracle values; docstrings need `Formula / Meaning / Pitfalls / Source`.
 - Prompts live in `src/parakh/prompts/` as YAML. Only `src/parakh/llm/` may import a provider SDK. Every LLM output is parsed into a Pydantic model; every loop has a hard cap.
+- **Tracing** (C4.1): Langfuse SDK v4, only through `observability/tracing.py` (`observation`, `trace_attributes`, `score_current_trace`). Off in tests and without keys. Names are stable and verb-first (`run-<agent>`, `generate-completion`); run-specific values go in metadata, never in names. One trace per agent run or pipeline run, `session_id` = the audit `run_id`. Spans are masked with the log scrubber before export (P6). `.claude/skills/langfuse` holds the Langfuse skill; use it for any tracing, prompt or eval work.
 - Tests never call a real LLM or the network (sockets are blocked). Mark tests that prove an acceptance criterion with `@pytest.mark.ac("AC-F21.1")`.
 - The summarizer agent, summarize prompt and `llm/client.py` are scaffold samples kept for the checklist; replace them as the real agents land.
 
