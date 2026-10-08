@@ -1,0 +1,400 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M4EK7C7AVJF6SV4CK4BCK8XK",
+  "mode": "prices",
+  "env": "prod",
+  "asof": "2026-10-09",
+  "trigger": "manual",
+  "triggered_by": "user:avinash",
+  "status": "SUCCESS",
+  "started_at": "2026-10-08T20:28:09.324656Z",
+  "finished_at": "2026-10-08T20:28:42.760061Z",
+  "code_version": "1940b966adb3",
+  "config_hash": "sha256:1c6de6139f7ebad03c0fb5482a0e82971401ba141e2aaccbe062f2a138fb9329",
+  "framework_version": "0.1.0",
+  "lens_versions": {},
+  "policy_version": null,
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.fetch_prices.01",
+      "name": "fetch_prices",
+      "seq": 1,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:11.257470Z",
+      "ended_at": "2026-10-08T20:28:12.489294Z",
+      "duration_ms": 1231.8,
+      "inputs": {
+        "isin": "INE646L01027",
+        "start": "2016-10-09"
+      },
+      "outputs": {
+        "rows": 2473,
+        "source": "yfinance"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.check_prices.02",
+      "name": "check_prices",
+      "seq": 2,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:12.489475Z",
+      "ended_at": "2026-10-08T20:28:14.774276Z",
+      "duration_ms": 2284.8,
+      "inputs": {
+        "isin": "INE646L01027"
+      },
+      "outputs": {
+        "status": "pass",
+        "checks": 5
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.write_prices.03",
+      "name": "write_prices",
+      "seq": 3,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:14.774485Z",
+      "ended_at": "2026-10-08T20:28:21.363536Z",
+      "duration_ms": 6589.1,
+      "inputs": {
+        "isin": "INE646L01027"
+      },
+      "outputs": {
+        "rows": 2473,
+        "sha256": "sha256:1d694c26c4321c3b4c957b544c9be0e34d36d0bb83dc02e5307bb4907aadee68",
+        "files": 11
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.fetch_prices.04",
+      "name": "fetch_prices",
+      "seq": 4,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:21.923867Z",
+      "ended_at": "2026-10-08T20:28:22.254349Z",
+      "duration_ms": 330.5,
+      "inputs": {
+        "isin": "INE101A01026",
+        "start": "2016-10-09"
+      },
+      "outputs": {
+        "rows": 2474,
+        "source": "yfinance"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.check_prices.05",
+      "name": "check_prices",
+      "seq": 5,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:22.254524Z",
+      "ended_at": "2026-10-08T20:28:22.486533Z",
+      "duration_ms": 232.0,
+      "inputs": {
+        "isin": "INE101A01026"
+      },
+      "outputs": {
+        "status": "pass",
+        "checks": 5
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.write_prices.06",
+      "name": "write_prices",
+      "seq": 6,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:22.486779Z",
+      "ended_at": "2026-10-08T20:28:27.115084Z",
+      "duration_ms": 4628.3,
+      "inputs": {
+        "isin": "INE101A01026"
+      },
+      "outputs": {
+        "rows": 2474,
+        "sha256": "sha256:26c6e46de740c4d2723b2353312e2c5c880648f2f4981ba468b50ed607a5dd3b",
+        "files": 11
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.fetch_prices.07",
+      "name": "fetch_prices",
+      "seq": 7,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:27.563173Z",
+      "ended_at": "2026-10-08T20:28:27.981892Z",
+      "duration_ms": 418.7,
+      "inputs": {
+        "isin": "INE040A01034",
+        "start": "2016-10-09"
+      },
+      "outputs": {
+        "rows": 2474,
+        "source": "yfinance"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.check_prices.08",
+      "name": "check_prices",
+      "seq": 8,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:27.982074Z",
+      "ended_at": "2026-10-08T20:28:28.210481Z",
+      "duration_ms": 228.4,
+      "inputs": {
+        "isin": "INE040A01034"
+      },
+      "outputs": {
+        "status": "pass",
+        "checks": 5
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.write_prices.09",
+      "name": "write_prices",
+      "seq": 9,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:28.210710Z",
+      "ended_at": "2026-10-08T20:28:32.499443Z",
+      "duration_ms": 4288.7,
+      "inputs": {
+        "isin": "INE040A01034"
+      },
+      "outputs": {
+        "rows": 2474,
+        "sha256": "sha256:7ac6311447f4cffca27fccd26a231a25facff3c3f498e729bc61c8ab8729cb3e",
+        "files": 11
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.fetch_prices.10",
+      "name": "fetch_prices",
+      "seq": 10,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:32.938057Z",
+      "ended_at": "2026-10-08T20:28:33.088459Z",
+      "duration_ms": 150.4,
+      "inputs": {
+        "isin": "INE0HOQ01053",
+        "start": "2025-11-12"
+      },
+      "outputs": {
+        "rows": 229,
+        "source": "yfinance"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.check_prices.11",
+      "name": "check_prices",
+      "seq": 11,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:33.088682Z",
+      "ended_at": "2026-10-08T20:28:33.325623Z",
+      "duration_ms": 236.9,
+      "inputs": {
+        "isin": "INE0HOQ01053"
+      },
+      "outputs": {
+        "status": "pass",
+        "checks": 5
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.write_prices.12",
+      "name": "write_prices",
+      "seq": 12,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:33.325825Z",
+      "ended_at": "2026-10-08T20:28:34.304522Z",
+      "duration_ms": 978.7,
+      "inputs": {
+        "isin": "INE0HOQ01053"
+      },
+      "outputs": {
+        "rows": 229,
+        "sha256": "sha256:b1663848bb53bb31396f0e13f8dfbef83d60ac297a97b19454a20880f5ac4ba0",
+        "files": 2
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.fetch_prices.13",
+      "name": "fetch_prices",
+      "seq": 13,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:34.563481Z",
+      "ended_at": "2026-10-08T20:28:34.766295Z",
+      "duration_ms": 202.8,
+      "inputs": {
+        "isin": "INE249Z01020",
+        "start": "2020-10-12"
+      },
+      "outputs": {
+        "rows": 1487,
+        "source": "yfinance"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.check_prices.14",
+      "name": "check_prices",
+      "seq": 14,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:34.766477Z",
+      "ended_at": "2026-10-08T20:28:34.975877Z",
+      "duration_ms": 209.4,
+      "inputs": {
+        "isin": "INE249Z01020"
+      },
+      "outputs": {
+        "status": "pass",
+        "checks": 5
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.write_prices.15",
+      "name": "write_prices",
+      "seq": 15,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:34.976087Z",
+      "ended_at": "2026-10-08T20:28:39.098242Z",
+      "duration_ms": 4122.2,
+      "inputs": {
+        "isin": "INE249Z01020"
+      },
+      "outputs": {
+        "rows": 1487,
+        "sha256": "sha256:e6df91558302a2d208d2dd2a5d54eee0f6c31e39f28ed7a5b022e43a51ba12a1",
+        "files": 7
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.fetch_prices.16",
+      "name": "fetch_prices",
+      "seq": 16,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:39.367697Z",
+      "ended_at": "2026-10-08T20:28:39.481783Z",
+      "duration_ms": 114.1,
+      "inputs": {
+        "isin": "INE0LEZ01016",
+        "start": "2025-05-06"
+      },
+      "outputs": {
+        "rows": 360,
+        "source": "yfinance"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.check_prices.17",
+      "name": "check_prices",
+      "seq": 17,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:39.481959Z",
+      "ended_at": "2026-10-08T20:28:39.703367Z",
+      "duration_ms": 221.4,
+      "inputs": {
+        "isin": "INE0LEZ01016"
+      },
+      "outputs": {
+        "status": "pass",
+        "checks": 5
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.write_prices.18",
+      "name": "write_prices",
+      "seq": 18,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:39.703595Z",
+      "ended_at": "2026-10-08T20:28:41.128851Z",
+      "duration_ms": 1425.3,
+      "inputs": {
+        "isin": "INE0LEZ01016"
+      },
+      "outputs": {
+        "rows": 360,
+        "sha256": "sha256:f18d53d008dc685d77ea2d4d12b3633d785ccb889210eda84a2a8a04392f6e1a",
+        "files": 2
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.fetch_prices.19",
+      "name": "fetch_prices",
+      "seq": 19,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:41.409657Z",
+      "ended_at": "2026-10-08T20:28:41.522988Z",
+      "duration_ms": 113.3,
+      "inputs": {
+        "isin": "INE12UN01015",
+        "start": "2026-01-28"
+      },
+      "outputs": {
+        "rows": 176,
+        "source": "yfinance"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.check_prices.20",
+      "name": "check_prices",
+      "seq": 20,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:41.523152Z",
+      "ended_at": "2026-10-08T20:28:41.721950Z",
+      "duration_ms": 198.8,
+      "inputs": {
+        "isin": "INE12UN01015"
+      },
+      "outputs": {
+        "status": "pass",
+        "checks": 5
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EK7C7AVJF6SV4CK4BCK8XK.write_prices.21",
+      "name": "write_prices",
+      "seq": 21,
+      "status": "ok",
+      "started_at": "2026-10-08T20:28:41.722148Z",
+      "ended_at": "2026-10-08T20:28:42.033847Z",
+      "duration_ms": 311.7,
+      "inputs": {
+        "isin": "INE12UN01015"
+      },
+      "outputs": {
+        "rows": 176,
+        "sha256": "sha256:734ed35415cdbd67c085cdb2ea103b32956dc6732bd07e3eb52dae1c88454db7",
+        "files": 1
+      },
+      "error": null
+    }
+  ],
+  "audit_events": 9,
+  "audit_pending": 0,
+  "audit_chain_head": "sha256:a9f52dadd98829575a8de0fd7af2021d61fd0a7b4440507a0a9b48a419d81359",
+  "audit_sink": "supabase",
+  "llm_tokens": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 0,
+  "agent_runs": 0,
+  "failed_steps": 0
+}
