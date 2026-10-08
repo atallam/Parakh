@@ -1,0 +1,91 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M4EFGJAQMFMQ2VTAPN4QQNJS",
+  "mode": "events",
+  "env": "prod",
+  "asof": "2026-10-09",
+  "trigger": "cron",
+  "triggered_by": "scheduler:daily-events",
+  "status": "SUCCESS",
+  "started_at": "2026-10-08T19:23:16.184655Z",
+  "finished_at": "2026-10-08T19:23:28.995924Z",
+  "code_version": "8cae13177ec7",
+  "config_hash": "sha256:1c6de6139f7ebad03c0fb5482a0e82971401ba141e2aaccbe062f2a138fb9329",
+  "framework_version": "0.1.0",
+  "lens_versions": {},
+  "policy_version": null,
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M4EFGJAQMFMQ2VTAPN4QQNJS.positions.01",
+      "name": "positions",
+      "seq": 1,
+      "status": "ok",
+      "started_at": "2026-10-08T19:23:17.740931Z",
+      "ended_at": "2026-10-08T19:23:18.573543Z",
+      "duration_ms": 832.6,
+      "inputs": {},
+      "outputs": {
+        "owned": 7
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EFGJAQMFMQ2VTAPN4QQNJS.scan.02",
+      "name": "scan",
+      "seq": 2,
+      "status": "ok",
+      "started_at": "2026-10-08T19:23:18.573780Z",
+      "ended_at": "2026-10-08T19:23:28.264445Z",
+      "duration_ms": 9690.7,
+      "inputs": {
+        "stocks": 7
+      },
+      "outputs": {
+        "alerts": 0,
+        "errors": 0,
+        "refresh": 0
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EFGJAQMFMQ2VTAPN4QQNJS.queue_refresh.03",
+      "name": "queue_refresh",
+      "seq": 3,
+      "status": "ok",
+      "started_at": "2026-10-08T19:23:28.264628Z",
+      "ended_at": "2026-10-08T19:23:28.265216Z",
+      "duration_ms": 0.6,
+      "inputs": {},
+      "outputs": {
+        "queued": 0
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4EFGJAQMFMQ2VTAPN4QQNJS.notify.04",
+      "name": "notify",
+      "seq": 4,
+      "status": "ok",
+      "started_at": "2026-10-08T19:23:28.265327Z",
+      "ended_at": "2026-10-08T19:23:28.268478Z",
+      "duration_ms": 3.2,
+      "inputs": {},
+      "outputs": {
+        "sent": 0,
+        "shadowed": 0,
+        "suppressed": 0
+      },
+      "error": null
+    }
+  ],
+  "audit_events": 2,
+  "audit_pending": 0,
+  "audit_chain_head": "sha256:52106c58b0d4c74fec9db89ba6ef942f41ec2f28f3af71a19539a2f921b6f255",
+  "audit_sink": "supabase",
+  "llm_tokens": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 0,
+  "agent_runs": 0,
+  "failed_steps": 0
+}
