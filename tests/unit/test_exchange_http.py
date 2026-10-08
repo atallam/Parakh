@@ -56,3 +56,18 @@ def test_bse_when_nse_fails_and_holidays_are_remembered(tmp_path: Path) -> None:
     assert archive.bars(holiday) is None and len(calls) == n  # not asked again
     assert archive.bars(dt.date(2026, 9, 26)) is None  # Saturday: no request at all
     assert len(calls) == n
+
+
+def test_unusable_reply_counts_as_no_file_and_is_not_cached(tmp_path: Path) -> None:
+    """T-ADP-52: an error page instead of a bhavcopy must not crash the price load or stay cached."""
+    html = b"<html><head><title>Error</title></head>\n<body>\n<p>Service unavailable</p>\n</body></html>"
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        if request.url.host.endswith("nseindia.com"):
+            return httpx.Response(404)
+        return httpx.Response(200, content=html)
+
+    archive, _ = _archive(tmp_path, handler)
+    day = dt.date(2026, 9, 28)
+    assert archive.bars(day) is None
+    assert not (tmp_path / "raw" / "bse" / "20260928").exists()

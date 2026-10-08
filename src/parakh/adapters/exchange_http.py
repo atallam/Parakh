@@ -22,6 +22,7 @@ from typing import Any
 
 import httpx
 import pandas as pd
+import structlog
 
 from parakh.adapters.prices import (
     bse_bhavcopy_url,
@@ -39,6 +40,8 @@ BROWSER_HEADERS = {
     "Accept": "text/html,application/json,application/xhtml+xml,*/*;q=0.8",
     "Accept-Language": "en-IN,en;q=0.9",
 }
+log = structlog.get_logger(__name__)
+
 # why: be a polite client of public exchange sites; ~3 requests a second at most
 MIN_INTERVAL_S = 0.35
 
@@ -94,6 +97,10 @@ class ExchangeArchive:
         )
         return resp.content
 
+    def _discard(self, source: str, day: dt.date) -> None:
+        """Drop a cached download that does not parse, so the next run asks the exchange again."""
+        (self.raw_dir / source / f"{day:%Y%m%d}").unlink(missing_ok=True)
+
     def bars(self, day: dt.date) -> pd.DataFrame | None:
         if day.weekday() >= 5:
             return None
@@ -104,12 +111,32 @@ class ExchangeArchive:
         except httpx.HTTPError:
             if not self.use_bse:
                 raise
-        if self.use_bse:
-            data = self._raw(
-                "bse", day, bse_bhavcopy_url(day), {"Referer": "https://www.bseindia.com/"}
+        except ValueError as exc:
+            # why: a reply that is not a bhavcopy (an error page, a half-published file) means "no
+            # usable file for that day", the same as a 404. The cross-check then warns instead of
+            # the whole price load crashing.
+            self._discard("nse", day)
+            log.warning(
+                "exchange.bhavcopy_unusable",
+                source="nse",
+                day=day.isoformat(),
+                error=str(exc)[:120],
             )
-            if data is not None:
-                return parse_bse_bhavcopy(data)
+        if self.use_bse:
+            try:
+                data = self._raw(
+                    "bse", day, bse_bhavcopy_url(day), {"Referer": "https://www.bseindia.com/"}
+                )
+                if data is not None:
+                    return parse_bse_bhavcopy(data)
+            except ValueError as exc:
+                self._discard("bse", day)
+                log.warning(
+                    "exchange.bhavcopy_unusable",
+                    source="bse",
+                    day=day.isoformat(),
+                    error=str(exc)[:120],
+                )
         return None
 
 
