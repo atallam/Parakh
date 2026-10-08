@@ -62,7 +62,7 @@ Run the **heartbeat** workflow by hand (**Actions** → **heartbeat** → **Run 
 
 | Symptom | Cause |
 |---|---|
-| `Not authorized to perform sts:AssumeRoleWithWebIdentity` | the workflow ran on a branch other than `main`, or the repository name in the stack parameters is wrong |
+| `Not authorized to perform sts:AssumeRoleWithWebIdentity` | the workflow ran on a branch other than `main`, the repository name in the stack parameters is wrong, or the repo's token subject uses numeric IDs (`repo:owner@<id>/Repo@<id>:ref:...`): set `GitHubOwnerId` and `GitHubRepoId` in the stack to the IDs the token shows |
 | `AccessDeniedException ... ssm:GetParametersByPath` | the parameters are not under `/parakh/prod`, or not in Mumbai |
 | `ValidationException` when creating a parameter | the Name field holds more than one name, a comma, a space or a backtick; underscores are fine |
 | The job runs but sends nothing | a parameter name is misspelt; compare with the table above |
