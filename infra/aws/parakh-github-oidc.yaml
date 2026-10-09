@@ -15,6 +15,14 @@ Parameters:
     Type: String
     Default: Parakh
     Description: The same name as GitHub displays it (the token's subject is case-sensitive).
+  GitHubOwnerId:
+    Type: String
+    Default: "42871668"
+    Description: Numeric ID of the GitHub owner. Newer repositories put it in the token's subject.
+  GitHubRepoId:
+    Type: String
+    Default: "1389746900"
+    Description: Numeric ID of the repository (same reason). Stays the same if the repo is renamed.
   Branch:
     Type: String
     Default: main
@@ -52,6 +60,7 @@ Resources:
                 "token.actions.githubusercontent.com:sub":
                   - !Sub "repo:${GitHubOwner}/${GitHubRepo}:ref:refs/heads/${Branch}"
                   - !Sub "repo:${GitHubOwner}/${GitHubRepoAltCase}:ref:refs/heads/${Branch}"
+                  - !Sub "repo:${GitHubOwner}@${GitHubOwnerId}/${GitHubRepoAltCase}@${GitHubRepoId}:ref:refs/heads/${Branch}"
       Policies:
         - PolicyName: read-parakh-parameters
           PolicyDocument:

@@ -33,6 +33,9 @@ All notable changes. Framework and lens versions follow SemVer; tool schemas are
 ### Not yet
 - `portfolio.positions` (AC-F24.4) and `jobs.request_refresh` arrive in Phase 4.
 
+### Fixed
+- Daily watch, events and digest default to the latest session whose data can exist (`service_levels.session_data_ready_ist`), so a scheduled run that GitHub starts after midnight IST no longer fails with a stale-price error.
+
 ## Phase 0.5 (infrastructure spikes), 2026-09-29
 
 ### Added
