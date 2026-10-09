@@ -89,6 +89,7 @@ class ServiceLevels(Strict):
     monthly_summary_by_ist: str = Field(pattern=r"^\d{2}:\d{2}$")
     watcher_by_ist: str = Field(pattern=r"^\d{2}:\d{2}$")
     failure_alert_minutes: int = Field(ge=1)
+    session_data_ready_ist: str = Field(pattern=r"^\d{2}:\d{2}$")
 
 
 class Links(Strict):
