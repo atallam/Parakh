@@ -69,6 +69,10 @@ service_levels:
   monthly_summary_by_ist: "12:00"
   watcher_by_ist: "19:30"
   failure_alert_minutes: 5
+  # why: the NSE bhavcopy is published after the 15:30 close and the price job runs at 17:45; before this
+  # time of day the day's bar does not exist yet, so the watch jobs use the previous trading day. GitHub
+  # starts scheduled runs hours late, sometimes past midnight, and a run must not ask for tomorrow's bar.
+  session_data_ready_ist: "17:45"
 
 links:
   # why: until the Streamlit app is hosted (Phase 6) the "Open ▸" link is the report path

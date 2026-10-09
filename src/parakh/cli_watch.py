@@ -58,6 +58,32 @@ def _asof(text: str | None) -> dt.date:
     return dt.date.fromisoformat(text) if text else today_ist()
 
 
+def session_asof(
+    text: str | None,
+    *,
+    now: dt.datetime | None = None,
+    bundle=None,  # type: ignore[no-untyped-def]
+) -> dt.date:
+    """The as-of date for the daily jobs: the latest session whose data can exist.
+
+    An explicit date wins. Otherwise, from `service_levels.session_data_ready_ist` onwards the day
+    itself is used (so a holiday or weekend still skips with its reason); before it, the previous
+    trading day. GitHub starts scheduled runs hours late, so a run that lands after midnight IST must
+    work on the session it was scheduled for, not ask for a bar that does not exist yet.
+    """
+    if text:
+        return dt.date.fromisoformat(text)
+    from parakh.calendar import Calendar
+    from parakh.configs import load_all
+
+    bundle = bundle or load_all()
+    stamp = (now or dt.datetime.now(IST)).astimezone(IST)
+    hh, mm = bundle.notify.service_levels.session_data_ready_ist.split(":")
+    if stamp.time() >= dt.time(int(hh), int(mm)):
+        return stamp.date()
+    return Calendar.from_config(bundle.holidays).previous_trading_day(stamp.date())
+
+
 def _report(res) -> int:  # type: ignore[no-untyped-def]
     if res.status == "skipped":
         print(f"{res.job}: skipped, {res.reason}")
@@ -74,21 +100,21 @@ def watch(asof: str | None, store: str, symbols: list[str] | None) -> int:
     from parakh.orchestration.watch_jobs import daily_watch
 
     deps = build_deps(store)
-    return 2 if deps is None else _report(daily_watch(deps, _asof(asof), symbols=symbols))
+    return 2 if deps is None else _report(daily_watch(deps, session_asof(asof), symbols=symbols))
 
 
 def events(asof: str | None, store: str) -> int:
     from parakh.orchestration.watch_jobs import daily_events
 
     deps = build_deps(store, need_feeds=True)
-    return 2 if deps is None else _report(daily_events(deps, _asof(asof)))
+    return 2 if deps is None else _report(daily_events(deps, session_asof(asof)))
 
 
 def digest(asof: str | None, store: str) -> int:
     from parakh.orchestration.watch_jobs import evening_digest
 
     deps = build_deps(store, need_data=False)
-    return 2 if deps is None else _report(evening_digest(deps, _asof(asof)))
+    return 2 if deps is None else _report(evening_digest(deps, session_asof(asof)))
 
 
 def heartbeat(asof: str | None) -> int:
