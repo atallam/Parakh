@@ -1,8 +1,8 @@
 """Segment summary view model (F10, basic): one cap segment, one month, ranked and flagged.
 
-Holdings lead (UX-04), then opportunities, then the full ranked table. XIRR, drawdown and
-the correlation view arrive in Phase 4; the concentration check here uses the weights of the
-holdings that have a loaded price and says so (plan 05 §4).
+Holdings lead (UX-04), then opportunities, then the full ranked table. Holdings carry XIRR against
+the cap benchmark and the worst drawdown in the chart window; the portfolio block adds HHI and the
+top-5 share. All use the weights of the holdings that have a loaded price and say so (plan 05 §4).
 """
 
 from __future__ import annotations
@@ -14,6 +14,7 @@ from typing import Any
 from parakh.configs.lens_models import OverridesConfig, PortfolioConfig, VerdictPolicy
 from parakh.policy.overrides import nearing_expiry
 from parakh.services.reports import chip, verdict_label
+from parakh.services.risk import holding_returns, portfolio_risk, stock_drawdown
 
 BUY_SET = {"STRONG_BUY", "BUY", "ACCUMULATE"}
 ACTION_WORDS = {"TRIM", "EXIT"}
@@ -72,6 +73,8 @@ def row(s: dict[str, Any], prev: dict[str, Any] | None) -> dict[str, Any]:
         "unknown_checks": sum(1 for c in s.get("checks", []) if c["state"] == "UNKNOWN"),
         "driver": (v.get("drivers") or [{}])[0].get("text"),
         "combined": round(_combined(s), 1),
+        "drawdown_pct": None if (d := stock_drawdown(s)) is None else round(d, 1),
+        **holding_returns(s),
     }
 
 
@@ -135,6 +138,7 @@ def segment_view(
         "red_flags": [r for r in rows if r["red_flags"] or r["flags"]],
         "new_signals": [r for r in rows if r["signals"]],
         "concentration": concentration(held, portfolio),
+        "portfolio_risk": portfolio_risk(held),
         "weight_basis": next(
             (s["position"]["weight_basis"] for s in snaps if s.get("position")), None
         ),
@@ -146,7 +150,7 @@ def segment_view(
         "overrides_expiring": [o.model_dump(mode="json") for o in nearing_expiry(overrides, asof)],
         "framework": snaps[0]["framework"] if snaps else None,
         "pending": [
-            "XIRR, drawdown and correlation clusters arrive in Phase 4",
+            "correlation clusters need a constituent price history the pilot does not load yet",
             "the framework scorecard (hit rate of past calls) arrives in Phase 5",
         ],
     }

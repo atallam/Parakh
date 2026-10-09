@@ -107,7 +107,7 @@ def build_held(deps: WatchDeps, asof: dt.date) -> dict[str, Held]:
     """Weight and P&L per owned ISIN, as percentages only (plan 12 §8)."""
     start = dt.date(asof.year - 1, 1, 1)
     closes: dict[str, float] = {}
-    for sec in deps.bundle.universe.pilot:
+    for sec in deps.bundle.universe.active:
         f = deps.data.prices(sec.isin, start, asof)
         if f is not None and not f.empty:
             closes[sec.isin] = float(f.sort_values("trade_date")["close"].iloc[-1])
@@ -163,7 +163,7 @@ def daily_watch(deps: WatchDeps, asof: dt.date, *, symbols: list[str] | None = N
                 held = build_held(deps, asof)
                 step.record_output(owned=len(held))
             watcher = MomentumWatcher(deps.bundle, deps.data, deps.store, held)
-            secs = [s for s in deps.bundle.universe.pilot if not symbols or s.symbol in symbols]
+            secs = [s for s in deps.bundle.universe.active if not symbols or s.symbol in symbols]
             with audited_step(ctx, "scan", stocks=len(secs)) as step:
                 scan: WatchResult = watcher.scan(asof, secs)
                 step.record_output(
@@ -226,8 +226,8 @@ def daily_events(deps: WatchDeps, asof: dt.date) -> JobResult:
                 held = build_held(deps, asof)
                 step.record_output(owned=len(held))
             watcher = EventWatcher(deps.bundle, deps.store, held, deps.cal())
-            with audited_step(ctx, "scan", stocks=len(deps.bundle.universe.pilot)) as step:
-                scan: EventResult = watcher.scan(asof, deps.bundle.universe.pilot, deps.feeds)
+            with audited_step(ctx, "scan", stocks=len(deps.bundle.universe.active)) as step:
+                scan: EventResult = watcher.scan(asof, deps.bundle.universe.active, deps.feeds)
                 step.record_output(
                     alerts=len(scan.alerts),
                     errors=len(scan.errors),
@@ -269,9 +269,9 @@ def daily_events(deps: WatchDeps, asof: dt.date) -> JobResult:
                 step.record_output(sent=res.sent, shadowed=res.shadowed, suppressed=res.suppressed)
             res.alerts = len(scan.alerts)
             outcome.summary = _summary(
-                len(deps.bundle.universe.pilot), scan.alerts, scan.errors, res
+                len(deps.bundle.universe.active), scan.alerts, scan.errors, res
             )
-            if scan.errors and len(scan.errors) >= 2 * len(deps.bundle.universe.pilot):
+            if scan.errors and len(scan.errors) >= 2 * len(deps.bundle.universe.active):
                 raise RuntimeError(f"event sources failing: {sorted(scan.errors)[:3]}")
     except Exception as exc:
         _send_failure(deps, ctx, "Daily event watch", exc)

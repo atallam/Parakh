@@ -1,0 +1,68 @@
+# Watchlist rules (plan 06 §8; F14). Two lists: My Watchlist (changes only with your approval)
+# and System Watchlist (automatic, capacity-limited). Every threshold has a `why`.
+system_watchlist:
+  # why: plan 06 §2 capacity per cap keeps Tier A (deep dive) LLM cost predictable
+  capacity: { large: 10, mid: 15, small: 15 }
+  # why: prevents month-to-month churn (AC-F14.3)
+  min_stay_cycles: 2
+  # why: one-in-one-out buffer; a newcomer must beat the weakest entry by this many points (AC-F14.4)
+  bump_margin_points: 10
+  # why: plan 06 §4.1 RM.fade, outside the top 20% of its cap for 3 consecutive monthly runs
+  fade_rule: { outside_top_pct: 20, consecutive_runs: 3 }
+  urgent_adds:
+    enabled: true
+    # why: AC-F14.5, mid-month adds are for High-severity setups only
+    max_per_cap_per_week: 3
+    signals: [M01, M02, M03, M05, M08]
+sources:
+  top_combined:
+    # why: plan 06 §3.1, top 10% of its cap on the combined value + momentum score
+    top_pct: 10
+  momentum_setup:
+    # why: plan 06 §3.1, the breakout and stage-change signals worth a deep dive
+    signals: [M01, M02, M03, M05, M08]
+    # why: not over-extended (M24), not a circuit trap (M27)
+    blocked_by_signals: [M24, M27]
+    blocked_regimes: ["Risk-Off"]
+  value_zone:
+    # why: plan 06 §3.1, margin of safety at the required level; the value lens names that view
+    views: [UNDERVALUED]
+    # why: plan 06 §3.1, quality sub-score of at least 0.6
+    min_quality_subscore: 0.6
+    # why: plan 01 §11, a value-trap flag switches the source off
+    trap_flag_text: ["value trap"]
+  smart_money:
+    # why: plan 06 §3.1; M29 is index inclusion, the rest come from the event watcher's history
+    signals: [M29]
+    # why: E03 promoter or promoter-group trades and E10 bulk or block deals (events.yaml)
+    event_codes: [E03, E10]
+    # why: only buying counts; the event history stores the filing headline
+    buy_text: ['(?i)acqui|purchase|\bbuy|bought|allot']
+    # why: plan 06 §3.1, ESOP allotments, gifts and inter-promoter transfers are not conviction
+    exclude_text: ['(?i)esop|employee stock|gift|inter[- ]se|between promoter|transmission|pledge']
+    lookback_days: 60
+liquidity_floor_ok_required: true
+my_watchlist:
+  # why: plan 06 §4.2 FLAG.stale_review, six months after adding
+  default_review_months: 6
+  # why: plan 06 §4.2 FLAG.persistently_weak
+  weak_flag: { bottom_pct: 40, months: 6 }
+  # why: plan 06 §2, a soft warning only
+  soft_size_warning_per_cap: 25
+promotion:
+  # why: plan 06 §4.3, three months on the System list with a top-20% score
+  min_months_on_system: 3
+  stay_top_pct: 20
+  # why: rejected twice means never suggested again unless the sources change
+  max_rejections_before_mute: 2
+suggestions:
+  # why: AC-F14.6, so suggestions do not pile up
+  expire_after_days: 30
+  snooze_days: 30
+  # why: plan 03 §4.3, at most five pending cards go to Telegram
+  telegram_max_cards: 5
+agent_proposals:
+  # why: AG-05, an agent cannot flood the review inbox; the cap is per agent run
+  max_per_run: 5
+  # why: a proposal for a stock that already has an open suggestion is dropped
+  dedupe_open: true

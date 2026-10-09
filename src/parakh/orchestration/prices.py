@@ -158,7 +158,7 @@ def load_prices(
     today = ctx.asof
     loads: list[PriceLoad] = []
     with run_lifecycle(ctx, sink) as outcome:
-        for sec in securities or bundle.universe.pilot:
+        for sec in securities or bundle.universe.active:
             aliases = {p.isin for p in sec.previous_isins}
             start = required_start(today, cfg.history_years, sec.listed_on)
             actions = actions_for(sec.isin)

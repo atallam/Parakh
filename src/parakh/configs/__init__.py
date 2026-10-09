@@ -30,6 +30,7 @@ from parakh.configs.models import (
     UniverseConfig,
 )
 from parakh.configs.notify_models import EventsConfig, HolidaysConfig, NotifyConfig
+from parakh.configs.watchlist_models import WatchlistConfig
 
 FILES: dict[str, type[BaseModel]] = {
     "universe.yaml": UniverseConfig,
@@ -51,6 +52,7 @@ FILES: dict[str, type[BaseModel]] = {
     "holidays.yaml": HolidaysConfig,
     "notify.yaml": NotifyConfig,
     "events.yaml": EventsConfig,
+    "watchlist.yaml": WatchlistConfig,
 }
 
 
@@ -101,6 +103,7 @@ class ConfigBundle:
     holidays: HolidaysConfig
     notify: NotifyConfig
     events: EventsConfig
+    watchlist: WatchlistConfig
     sources: list[str] = field(default_factory=list)
 
 
@@ -200,5 +203,6 @@ def load_all(root: Path | None = None) -> ConfigBundle:
         holidays=loaded["holidays.yaml"],  # type: ignore[arg-type]
         notify=loaded["notify.yaml"],  # type: ignore[arg-type]
         events=loaded["events.yaml"],  # type: ignore[arg-type]
+        watchlist=loaded["watchlist.yaml"],  # type: ignore[arg-type]
         sources=list(FILES),
     )

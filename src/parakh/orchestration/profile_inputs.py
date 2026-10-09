@@ -184,7 +184,7 @@ def load_profile_inputs(
     ctx = RunContext.create(mode="profile_inputs")
     loads: dict[str, ProfileLoad] = {}
     with run_lifecycle(ctx, sink) as outcome:
-        for sec in bundle.universe.pilot:
+        for sec in bundle.universe.active:
             profile, register = cfg.filing_items.get(sec.isin), cfg.listed_stakes.get(sec.isin)
             if profile is None and register is None:
                 continue

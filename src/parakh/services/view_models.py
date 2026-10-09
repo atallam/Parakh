@@ -109,3 +109,136 @@ class CatalogueLookup(BaseModel):
     stamp: Stamp
     kind: str
     items: list[dict[str, Any]] = Field(default_factory=list)
+
+
+# -- Phase 4: portfolio, jobs and data tools (plan 15 §4.2) ---------------------------------------
+class PositionRow(BaseModel):
+    symbol: str
+    isin: str
+    cap: str
+    verdict: str
+    weight_pct: float | None = None
+    pnl_pct: float | None = None
+    days_to_long_term: int | None = None
+    cost_pending: bool = False
+    thesis_status: str = "NOT_SET"
+    # present only for the owner's own interactive client with detail=true (AG-07, AC-F24.4)
+    quantity: float | None = None
+    avg_cost_inr: float | None = None
+    market_value_inr: float | None = None
+    pnl_inr: float | None = None
+
+
+class PositionsOut(BaseModel):
+    stamp: Stamp
+    found: bool
+    masked: bool = True
+    message: str = ""
+    weight_basis: str | None = None
+    rows: list[PositionRow] = Field(default_factory=list)
+
+
+class ThesisKeyMetric(BaseModel):
+    id: str
+    text: str
+
+
+class ThesisBreaker(BaseModel):
+    id: str
+    text: str
+    check: str
+    rule: str | None = None
+
+
+class ThesisOut(BaseModel):
+    stamp: Stamp
+    found: bool
+    message: str = ""
+    symbol: str | None = None
+    isin: str | None = None
+    status: str = "NOT_SET"
+    status_source: str | None = None
+    original_statement: str | None = None
+    key_metrics: list[ThesisKeyMetric] = Field(default_factory=list)
+    breakers: list[ThesisBreaker] = Field(default_factory=list)
+    review_by: dt.date | None = None
+    review_due: bool = False
+
+
+class PendingItem(BaseModel):
+    kind: str  # suggestion | proposal
+    id: str
+    symbol: str | None = None
+    action: str
+    origin: str
+    reason: str
+    expires_on: dt.date | None = None
+    sources: list[str] = Field(default_factory=list)
+
+
+class PendingOut(BaseModel):
+    stamp: Stamp
+    items: list[PendingItem] = Field(default_factory=list)
+
+
+class ProposalOut(BaseModel):
+    accepted: bool
+    proposal_id: str | None = None
+    message: str = ""
+
+
+class RefreshOut(BaseModel):
+    queued: bool
+    request_id: str | None = None
+    remaining_today: int = 0
+    message: str = ""
+
+
+class MetricValue(BaseModel):
+    id: str
+    value: float | None
+    source: str | None = None
+    asof: str | None = None
+
+
+class FundamentalsOut(BaseModel):
+    stamp: Stamp
+    found: bool
+    message: str = ""
+    symbol: str | None = None
+    as_of: str | None = None
+    metrics: list[MetricValue] = Field(default_factory=list)
+    unavailable: dict[str, str] = Field(default_factory=dict)
+
+
+class PriceRow(BaseModel):
+    date: dt.date
+    close: float
+    dma50: float | None = None
+    dma200: float | None = None
+
+
+class PricesOut(BaseModel):
+    stamp: Stamp
+    found: bool
+    message: str = ""
+    symbol: str | None = None
+    source: str | None = None
+    rows: list[PriceRow] = Field(default_factory=list)
+    truncated: bool = False
+
+
+class DqCheck(BaseModel):
+    isin: str
+    symbol: str
+    check_id: str
+    status: str
+    detail: str = ""
+
+
+class QualityOut(BaseModel):
+    stamp: Stamp
+    found: bool
+    message: str = ""
+    checks: list[DqCheck] = Field(default_factory=list)
+    confidence: dict[str, str] = Field(default_factory=dict)

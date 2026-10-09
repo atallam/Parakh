@@ -143,6 +143,15 @@ def _run_audited(
             status="failed",
             reason=f"{type(exc).__name__}",
         )
+    if result.reason and "validation" in result.reason:
+        sink.emit(  # counts toward the P4 validation-failure rate
+            ctx,
+            AUD.LLM_VALIDATION_FAIL,
+            entity_type="agent_run",
+            entity_id=task.task_id,
+            reason=result.reason,
+            details={"agent_id": spec.agent_id},
+        )
     if result.status == "pending":
         event = AUD.LLM_BUDGET_STOP if "budget" in result.reason else AUD.AGENT_TURN_LIMIT
         sink.emit(

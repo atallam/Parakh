@@ -136,6 +136,64 @@ AGENT_CARDS = {
             "A one-line note cannot replace reading the filing; the link is always in the alert.",
         ],
     },
+    "qualitative": {
+        "key": "AGENT.qualitative",
+        "title": "Qualitative (concall)",
+        "job": "Reads one earnings-call transcript and returns a summary, guidance, a tone change and an assessment of each thesis breaker.",
+        "inputs": [
+            "`data.get_document`: the transcript, returned inside `untrusted_content` with its source URL and SHA-256.",
+            "`portfolio.get_thesis`: the written thesis items the call is assessed against (owned stocks only).",
+        ],
+        "outputs": [
+            "A summary, guidance items with exact quotes, a tone change (SAME, BETTER, WORSE) and per-item assessments (HOLDS, STRESSED, BREAKS).",
+            "An overlay on the stock snapshot; STRESSED or BREAKS queue a WATCH thesis-flag proposal, never BROKEN.",
+        ],
+        "guardrails": [
+            "Every quote must appear verbatim in the transcript; unverified quotes are dropped and counted.",
+            "Transcript text is data, not instructions; injection text is ignored and logged.",
+            "A token-budget stop, rate limit or failure leaves 'qualitative pending', never a guess; failures are not cached.",
+            "Results are cached on ISIN, document hash and prompt pin, so a rollback re-runs it.",
+        ],
+        "limitations": [
+            "Only as good as the transcript source; a missing or stale transcript means 'pending'.",
+            "Does not change a verdict; the deterministic lenses stay the source of truth.",
+        ],
+    },
+    "devils_advocate": {
+        "key": "AGENT.devils_advocate",
+        "title": "Devil's Advocate",
+        "job": "Argues against a new or changed verdict with exactly three points, each tied to a number in the snapshot.",
+        "inputs": ["`reports.get_stock`: the latest snapshot, verdict and evidence."],
+        "outputs": [
+            "Three counter-points with an evidence metric and value each, and a confidence adjustment.",
+            "The confidence label moves by at most one level (Low, Med, High); the verdict itself never changes.",
+        ],
+        "guardrails": [
+            "Runs only on a verdict change or a new High-confidence BUY or SELL.",
+            "A point without evidence that matches the snapshot rejects the whole output.",
+        ],
+        "limitations": [
+            "Shows the strongest case against, not a balanced view; read it next to the verdict."
+        ],
+    },
+    "watchlist_curator": {
+        "key": "AGENT.watchlist_curator",
+        "title": "Watchlist Curator",
+        "job": "Proposes additions and removals for the system watchlist from the month's ranked candidates.",
+        "inputs": [
+            "Watchlist tools for the current list, capacity room and ranked candidates.",
+            "`reports.get_stock` for a candidate's evidence.",
+        ],
+        "outputs": [
+            "Proposals (add or remove with a reason and evidence); the monthly job ingests them."
+        ],
+        "guardrails": [
+            "Proposes only: the same watchlist rules, capacity and cool-downs apply as to the rules engine.",
+            "Cannot touch holdings, theses or config.",
+            "A failure leaves the curator status 'pending' and the rules-based review unaffected.",
+        ],
+        "limitations": ["Cannot see the network or filings; it ranks from snapshots only."],
+    },
 }
 
 

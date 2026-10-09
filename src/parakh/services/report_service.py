@@ -57,6 +57,8 @@ def mask_position(pos: dict[str, Any] | None) -> dict[str, Any] | None:
         "weight_pct",
         "weight_basis",
         "pnl_pct",
+        "xirr_pct",
+        "benchmark_xirr_pct",
         "cost_pending",
         "days_to_long_term",
         "lots",
@@ -69,7 +71,7 @@ def mask_position(pos: dict[str, Any] | None) -> dict[str, Any] | None:
 def resolve(symbol_or_isin: str, root: Path | None = None) -> Security | None:
     key = symbol_or_isin.strip().upper()
     return next(
-        (s for s in load_all().universe.pilot if key in (s.symbol.upper(), s.isin.upper())), None
+        (s for s in load_all().universe.active if key in (s.symbol.upper(), s.isin.upper())), None
     )
 
 
@@ -97,6 +99,12 @@ def _load(symbol_or_isin: str, period: str | None, root: Path | None):  # type: 
     return sec, snap, load_previous(sec.cap, sec.symbol, p, root), ""
 
 
+def _score_delta(cur: dict[str, Any], prev: dict[str, Any] | None) -> float | None:
+    if not prev or cur.get("score") is None or prev.get("score") is None:
+        return None
+    return round(float(cur["score"]) - float(prev["score"]), 1)
+
+
 def get_stock(
     symbol_or_isin: str, period: str | None = None, root: Path | None = None
 ) -> StockLookup:
@@ -113,12 +121,14 @@ def get_stock(
             "view": snap["value"]["view"],
             "confidence": snap["value"]["confidence"],
             "informational": snap["value"]["informational"],
+            "delta": _score_delta(snap["value"], (prev or {}).get("value")),
         },
         "momentum": {
             "score": snap["momentum"]["score"],
             "view": snap["momentum"]["view"],
             "confidence": snap["momentum"]["confidence"],
             "informational": snap["momentum"]["informational"],
+            "delta": _score_delta(snap["momentum"], (prev or {}).get("momentum")),
         },
     }
     view["verdict"] = {
@@ -161,7 +171,7 @@ def what_changed(
     period: str | None = None, cap: str | None = None, root: Path | None = None
 ) -> WhatChanged:
     bundle = load_all()
-    caps = [cap] if cap else sorted({s.cap for s in bundle.universe.pilot})
+    caps = [cap] if cap else sorted({s.cap for s in bundle.universe.active})
     snaps: list[tuple[dict[str, Any], dict[str, Any] | None]] = []
     for c in caps:
         for d in all_stock_dirs(c, root):
@@ -259,6 +269,8 @@ def segment_summary(cap: str, period: str | None = None, root: Path | None = Non
             "pending",
         )
     }
+    if "portfolio_risk" in v:
+        out["portfolio_risk"] = v["portfolio_risk"]  # percentages and ratios only
     out["ranked"] = ranked[:MAX_ROWS]
     out["holdings"] = [r["symbol"] for r in v["holdings"]]
     out["needs_action"] = [{"symbol": r["symbol"], "flags": r["flags"]} for r in v["needs_action"]]

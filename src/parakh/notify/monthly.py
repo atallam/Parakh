@@ -47,6 +47,7 @@ def build_monthly_vars(
     governance: str = "🛡 Integrity ✅",
     review_pending: bool = False,
     link: str | None = None,
+    watchlist_line: str | None = None,
 ) -> MonthlySummaryVars:
     order = bundle.verdict_policy.verdict_order
     rank = {v: i for i, v in enumerate(order)}
@@ -92,6 +93,7 @@ def build_monthly_vars(
         failed_stocks=failed or [],
         review_pending=review_pending,
         link=link,
+        watchlist_line=watchlist_line,
     )
 
 

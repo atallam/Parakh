@@ -20,6 +20,8 @@ Reads what changed after the monthly run and writes a short narrative review: on
 - `reports_segment_summary`
 - `reports_get_history`
 - `analytics_explain_verdict`
+- `portfolio_positions`
+- `data_quality`
 - `notify_queue`
 
 ## Outputs

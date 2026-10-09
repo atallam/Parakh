@@ -147,7 +147,7 @@ def load_fundamentals(
             raw_hash = "sha256:" + hashlib.sha256(data).hexdigest()
             with audited_step(ctx, "parse_export", raw_hash=raw_hash) as step:
                 export = parse_export(data)
-                sec: Security | None = match_security(export, bundle.universe.pilot)
+                sec: Security | None = match_security(export, bundle.universe.active)
                 step.record_output(
                     rows=len(export.facts), company=export.company_name, matched=sec is not None
                 )

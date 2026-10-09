@@ -17,6 +17,8 @@ Writes one line on why a rule-flagged exchange filing matters to this investor, 
 
 - `data_get_document`
 - `reports_get_stock`
+- `portfolio_get_thesis`
+- `jobs_request_refresh`
 - `notify_queue`
 
 ## Outputs

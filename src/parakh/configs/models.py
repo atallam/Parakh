@@ -116,6 +116,9 @@ class UniverseConfig(Strict):
     mode: Literal["pilot", "cap", "all"]
     small_cap_index: str
     pilot: list[Security]
+    # why: plan 09 Phase 4 staged scale-up; each stage needs the previous one to run clean first
+    rollout: Literal["pilot", "mid", "mid_large", "all"] = "pilot"
+    directory: str = "universe_directory"
 
     @model_validator(mode="after")
     def _unique(self) -> UniverseConfig:
@@ -127,11 +130,27 @@ class UniverseConfig(Strict):
         return self
 
     @property
+    def active(self) -> list[Security]:
+        """The pilot plus the directory caps the rollout stage names (pilot entries win on a clash)."""
+        if self.rollout == "pilot":
+            return list(self.pilot)
+        from parakh.config import config_dir
+        from parakh.configs.directory import load_directory
+
+        seen = {s.isin for s in self.pilot}
+        extra = [
+            s
+            for s in load_directory(config_dir() / self.directory, self.rollout)
+            if s.isin not in seen
+        ]
+        return [*self.pilot, *extra]
+
+    @property
     def golden(self) -> list[Security]:
         return [s for s in self.pilot if s.golden]
 
     def by_isin(self, isin: str) -> Security | None:
-        return next((s for s in self.pilot if s.isin == isin), None)
+        return next((s for s in self.active if s.isin == isin), None)
 
 
 # -- sources.yaml ----------------------------------------------------------------------------
@@ -249,6 +268,11 @@ class McpFlags(Strict):
     toolsets: dict[str, bool]
 
 
+class JobsFlags(Strict):
+    refresh_daily_cap: int = Field(ge=0)  # jobs.request_refresh, per IST day (AC-F25.4)
+    transcript_max_age_days: int = Field(ge=1)  # a cached transcript older than this is "stale"
+
+
 class FlagsConfig(Strict):
     alerts: AlertsFlags
     watchlist: Toggle
@@ -256,6 +280,7 @@ class FlagsConfig(Strict):
     llm: LlmFlags
     ui: Toggle
     mcp: McpFlags
+    jobs: JobsFlags
 
 
 # -- agents.yaml (plan 15 §6.2) ---------------------------------------------------------------
@@ -293,8 +318,17 @@ class AgentConfig(Strict):
         return self
 
 
+class AgentAlerts(Strict):
+    """When the end-of-run LLM health message goes out (plan 13 P4)."""
+
+    validation_fail_pct: float = Field(gt=0, le=100)
+    unverified_citation_pct: float = Field(gt=0, le=100)
+    min_runs: int = Field(ge=1)
+
+
 class AgentsConfig(Strict):
     dry_run: bool
+    alerts: AgentAlerts
     defaults: AgentDefaults
     agents: dict[str, AgentConfig]
 

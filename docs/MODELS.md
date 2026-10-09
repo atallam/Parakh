@@ -16,5 +16,8 @@ Every lens and the verdict policy. Status is `active`, `informational` or `retir
 |---|---|---|---|---|---|---|
 | `AGENT.monthly_reviewer` | `monthly_reviewer.v1` | `claude-sonnet-5` | shadow | Avinash Tallam | pending (UAT-2) | [card](agents/monthly_reviewer.md) |
 | `AGENT.event_triage` | `event_triage.v1` | `claude-sonnet-5` | shadow | Avinash Tallam | pending (UAT-2) | [card](agents/event_triage.md) |
+| `AGENT.qualitative` | `qualitative.v1` | `claude-sonnet-5` | shadow | Avinash Tallam | pending (UAT-2) | [card](agents/qualitative.md) |
+| `AGENT.devils_advocate` | `devils_advocate.v1` | `claude-sonnet-5` | shadow | Avinash Tallam | pending (UAT-2) | [card](agents/devils_advocate.md) |
+| `AGENT.watchlist_curator` | `watchlist_curator.v1` | `claude-sonnet-5` | shadow | Avinash Tallam | pending (UAT-2) | [card](agents/watchlist_curator.md) |
 
 The qualitative analyst, devil's advocate and watchlist curator join this table when they ship in Phase 4; prompts are versioned separately (`prompts/`).

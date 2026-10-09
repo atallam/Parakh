@@ -28,6 +28,9 @@ HEADERS = [
     "weight_pct",
     "pnl_pct",
     "flags",
+    "xirr_pct",
+    "vs_benchmark_pp",
+    "drawdown_pct",
     "driver",
 ]
 
@@ -59,6 +62,35 @@ def _table(rows: list[dict[str, Any]]) -> list[str]:
             f"| {fmt.pct(r['pnl_pct']) if r['pnl_pct'] is not None else '—'} | {'; '.join(r['flags']) or '—'} |"
         )
     return out
+
+
+def _risk_section(v: dict[str, Any]) -> list[str]:
+    risk = v.get("portfolio_risk") or {}
+    held = v["holdings"]
+    if not held:
+        return []
+    L = ["", "## Returns and risk", ""]
+    L += [
+        "| Stock | XIRR | Benchmark XIRR | vs benchmark | Worst drawdown |",
+        "|---|---:|---:|---:|---:|",
+    ]
+    for r in held:
+        L.append(
+            f"| [[{r['symbol']}]] | {fmt.pct(r.get('xirr_pct'))} | {fmt.pct(r.get('benchmark_xirr_pct'))} "
+            f"| {fmt.pp(r.get('vs_benchmark_pp'))} | {fmt.pct(r.get('drawdown_pct'))} |"
+        )
+    if risk.get("hhi") is not None:
+        L += [
+            "",
+            f"Concentration: top 5 hold {fmt.pct(risk['top5_pct'], signed=False)} of priced holdings, "
+            f"HHI {risk['hhi']:.2f} (about {risk['effective_n']:g} equal-sized stocks).",
+        ]
+    L += [
+        "",
+        "_XIRR needs every lot's cost; a stock with a cost pending shows n/a. The benchmark is the same rupees "
+        "put into the cap index on the same days._",
+    ]
+    return L
 
 
 def segment_md(v: dict[str, Any]) -> str:
@@ -109,6 +141,7 @@ def segment_md(v: dict[str, Any]) -> str:
         L += ["", "**Concentration**", ""] + [f"- ⚠️ {c}" for c in v["concentration"]]
     if v.get("weight_basis"):
         L += ["", f"_Weights are shares of {v['weight_basis']}._"]
+    L += _risk_section(v)
     L += ["", "## Best new ideas (not owned)", ""]
     L += (
         _table(v["ideas"])

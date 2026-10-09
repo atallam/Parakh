@@ -2,7 +2,7 @@
 
 # Traceability: acceptance criteria → tests
 
-110 of 179 acceptance criteria have tests; 60 are due now (tools/traceability_due.txt).
+141 of 179 acceptance criteria have tests; 60 are due now (tools/traceability_due.txt).
 
 | AC | Feature | Due | Tests | Last result |
 |---|---|---|---|---|
@@ -43,19 +43,19 @@
 | AC-F05.7 | F05 |  | `tests/unit/test_momentum_lens.py::test_first_20_sessions_after_listing_are_excluded` | — |
 | AC-F05.8 | F05 |  | `tests/unit/test_momentum_lens.py::test_missing_history_is_na_with_a_reason_never_zero`<br>`tests/unit/test_momentum_lens.py::test_200_dma_signals_never_fire_before_200_sessions`<br>`tests/unit/test_momentum_lens.py::test_since_listing_high_is_labelled` | — |
 | AC-F05.9 | F05 |  | `tests/unit/test_momentum_lens.py::test_under_126_sessions_the_lens_is_informational_and_low_confidence`<br>`tests/unit/test_momentum_lens.py::test_126_to_251_sessions_caps_confidence_and_reports_template_x_of_y`<br>`tests/unit/test_verdict_policy.py::test_informational_momentum_is_vetoes_only_and_watch_at_best` | — |
-| AC-F06.1 | F06 |  | — | — |
-| AC-F06.2 | F06 |  | — | — |
-| AC-F06.3 | F06 |  | — | — |
-| AC-F06.4 | F06 |  | — | — |
-| AC-F06.5 | F06 |  | — | — |
-| AC-F06.6 | F06 |  | — | — |
-| AC-F06.7 | F06 |  | — | — |
+| AC-F06.1 | F06 |  | `tests/agents/test_phase4_agents.py::test_a_verified_read_becomes_an_overlay` | — |
+| AC-F06.2 | F06 |  | `tests/agents/test_phase4_agents.py::test_a_quote_not_in_the_transcript_discards_the_read` | — |
+| AC-F06.3 | F06 |  | `tests/agents/test_phase4_agents.py::test_an_unchanged_transcript_costs_no_second_call`<br>`tests/agents/test_phase4_agents.py::test_a_new_transcript_is_read_again` | — |
+| AC-F06.4 | F06 |  | `tests/agents/test_phase4_agents.py::test_a_stressed_item_flags_watch_and_never_broken` | — |
+| AC-F06.5 | F06 |  | `tests/agents/test_phase4_agents.py::test_a_token_budget_stop_leaves_the_stock_pending` | — |
+| AC-F06.6 | F06 |  | `tests/agents/test_phase4_agents.py::test_an_injection_in_the_transcript_is_logged_and_changes_nothing` | — |
+| AC-F06.7 | F06 |  | `tests/agents/test_phase4_agents.py::test_no_transcript_means_pending_not_a_guess`<br>`tests/watchlist/test_post_monthly.py::test_a_failed_fetch_is_recorded_with_its_stage` | — |
 | AC-F06.8 | F06 |  | — | — |
 | AC-F06.9 | F06 |  | — | — |
 | AC-F06.10 | F06 |  | — | — |
-| AC-F07.1 | F07 |  | — | — |
-| AC-F07.2 | F07 |  | — | — |
-| AC-F07.3 | F07 |  | — | — |
+| AC-F07.1 | F07 |  | `tests/agents/test_phase4_agents.py::test_it_runs_only_on_a_change_or_a_new_strong_call` | — |
+| AC-F07.2 | F07 |  | `tests/agents/test_phase4_agents.py::test_confidence_moves_one_level_and_the_verdict_never` | — |
+| AC-F07.3 | F07 |  | `tests/agents/test_phase4_agents.py::test_exactly_three_counter_points_each_with_evidence` | — |
 | AC-F07.4 | F07 |  | — | — |
 | AC-F08.1 | F08 |  | `tests/unit/test_verdict_policy.py::test_high_value_and_strong_momentum_is_strong_buy_or_add` | — |
 | AC-F08.2 | F08 |  | `tests/unit/test_verdict_policy.py::test_hysteresis_band_changes_need_more_than_five_points`<br>`tests/unit/test_verdict_policy.py::test_a_score_within_five_points_of_a_threshold_does_not_flip_the_verdict` | — |
@@ -70,11 +70,11 @@
 | AC-F09.6 | F09 |  | `tests/unit/test_reports.py::test_top_block_and_folded_sections` | — |
 | AC-F09.7 | F09 |  | `tests/unit/test_reports.py::test_a_check_that_could_not_run_is_unknown_never_clean` | — |
 | AC-F09.8 | F09 |  | `tests/unit/test_reports.py::test_share_export_contains_nothing_personal` | — |
-| AC-F09.9 | F09 |  | — | — |
+| AC-F09.9 | F09 |  | `tests/unit/test_thesis_editor.py::test_a_bad_rule_writes_nothing` | — |
 | AC-F10.1 | F10 |  | `tests/unit/test_reports.py::test_segment_summary` | — |
 | AC-F10.2 | F10 |  | `tests/unit/test_reports.py::test_segment_summary` | — |
 | AC-F10.3 | F10 |  | `tests/unit/test_reports.py::test_segment_summary`<br>`tests/unit/test_reports.py::test_concentration_flags_use_the_config_limits` | — |
-| AC-F10.4 | F10 |  | — | — |
+| AC-F10.4 | F10 |  | `tests/unit/test_xirr_risk.py::test_xirr_one_year_twenty_percent`<br>`tests/unit/test_xirr_risk.py::test_xirr_two_lots_hand_computed`<br>`tests/unit/test_xirr_risk.py::test_max_drawdown`<br>`tests/unit/test_xirr_risk.py::test_hhi_and_top_five` | — |
 | AC-F10.5 | F10 |  | — | — |
 | AC-F10.6 | F10 |  | `tests/unit/test_reports.py::test_segment_summary` | — |
 | AC-F11.1 | F11 | ✅ | `tests/unit/test_calendar.py::test_monthly_asof_is_the_last_trading_day_of_the_previous_month` | — |
@@ -100,26 +100,26 @@
 | AC-F13.2 | F13 | ✅ | `tests/unit/test_event_watcher.py::test_results_once_per_period_and_refresh`<br>`tests/unit/test_event_watcher.py::test_transcript_triggers_refresh`<br>`tests/unit/test_watch_jobs.py::test_events_job_alerts_once_and_queues_refresh` | — |
 | AC-F13.3 | F13 | ✅ | `tests/unit/test_event_watcher.py::test_auditor_exit_vs_appointment` | — |
 | AC-F13.4 | F13 | ✅ | `tests/unit/test_phase3_governance.py::test_events_are_appended_once_to_the_signal_log` | — |
-| AC-F14.1 | F14 |  | — | — |
-| AC-F14.2 | F14 |  | — | — |
-| AC-F14.3 | F14 |  | — | — |
-| AC-F14.4 | F14 |  | — | — |
-| AC-F14.5 | F14 |  | — | — |
-| AC-F14.6 | F14 |  | — | — |
+| AC-F14.1 | F14 |  | `tests/watchlist/test_engine.py::test_my_watchlist_is_flagged_never_removed`<br>`tests/watchlist/test_engine.py::test_invariant_holds_over_random_months` | — |
+| AC-F14.2 | F14 |  | `tests/watchlist/test_engine.py::test_system_list_never_exceeds_capacity` | — |
+| AC-F14.3 | F14 |  | `tests/watchlist/test_engine.py::test_minimum_stay_blocks_a_bump_and_a_fade`<br>`tests/watchlist/test_engine.py::test_veto_removes_at_once_even_inside_the_stay` | — |
+| AC-F14.4 | F14 |  | `tests/watchlist/test_engine.py::test_newcomer_must_beat_the_weakest_by_the_margin` | — |
+| AC-F14.5 | F14 |  | `tests/watchlist/test_engine.py::test_urgent_adds_are_capped_per_cap_per_week` | — |
+| AC-F14.6 | F14 |  | `tests/watchlist/test_engine.py::test_pending_suggestions_expire_after_thirty_days_and_snooze_returns` | — |
 | AC-F14.7 | F14 |  | — | — |
-| AC-F15.1 | F15 |  | — | — |
-| AC-F15.2 | F15 |  | — | — |
-| AC-F15.3 | F15 |  | — | — |
+| AC-F15.1 | F15 |  | `tests/watchlist/test_service.py::test_approve_reject_snooze_update_the_store_and_the_audit_log`<br>`tests/watchlist/test_telegram.py::test_cards_have_signed_buttons_that_fit_telegram`<br>`tests/watchlist/test_telegram.py::test_a_tap_on_telegram_decides_once_and_a_second_tap_changes_nothing` | — |
+| AC-F15.2 | F15 |  | `tests/watchlist/test_service.py::test_adding_needs_a_reason_and_finds_a_stock_by_symbol_or_isin` | — |
+| AC-F15.3 | F15 |  | `tests/unit/test_holdings_editor.py::test_bad_input_is_refused`<br>`tests/unit/test_holdings_editor.py::test_a_valid_lot_is_written_with_a_buy_transaction_and_a_quiet_audit_event` | — |
 | AC-F15.4 | F15 |  | — | — |
 | AC-F15.5 | F15 |  | — | — |
 | AC-F15.6 | F15 |  | — | — |
 | AC-F15.7 | F15 |  | — | — |
-| AC-F15.8 | F15 |  | — | — |
-| AC-F15.9 | F15 |  | — | — |
-| AC-F15.10 | F15 |  | — | — |
-| AC-F15.11 | F15 |  | — | — |
-| AC-F15.12 | F15 |  | — | — |
-| AC-F15.13 | F15 |  | — | — |
+| AC-F15.8 | F15 |  | `tests/app/test_pages.py::test_marking_reviewed_is_audited_and_counts_progress` | — |
+| AC-F15.9 | F15 |  | `tests/unit/test_thesis_editor.py::test_first_save_writes_a_valid_thesis_and_one_audit_event`<br>`tests/unit/test_thesis_editor.py::test_the_original_never_changes_and_an_edit_becomes_a_revision` | — |
+| AC-F15.10 | F15 |  | `tests/app/test_pages.py::test_stock_detail_sections_follow_the_plan_order` | — |
+| AC-F15.11 | F15 |  | `tests/app/test_pages.py::test_every_page_renders_offline` | — |
+| AC-F15.12 | F15 |  | `tests/app/test_pages.py::test_every_page_renders_offline` | — |
+| AC-F15.13 | F15 |  | `tests/app/test_pages.py::test_privacy_view_hides_amounts_on_holdings` | — |
 | AC-F16.1 | F16 |  | `tests/unit/test_regime.py::test_regime_is_computed_per_segment_benchmark` | — |
 | AC-F16.2 | F16 |  | `tests/unit/test_regime.py::test_top_decile_market_raises_required_mos_by_5_points` | — |
 | AC-F16.3 | F16 |  | `tests/unit/test_regime.py::test_a_vix_spike_downgrades_one_level` | — |
@@ -156,11 +156,11 @@
 | AC-F21.13 | F21 |  | — | — |
 | AC-F21.14 | F21 | ✅ | `tests/static/test_repo_rules.py::test_plan_docs_pass_the_doc_lint`<br>`tests/static/test_repo_rules.py::test_doc_lint_catches_a_stale_milestone_date` | — |
 | AC-F21.15 | F21 | ✅ | `tests/static/test_repo_rules.py::test_every_due_acceptance_criterion_has_a_test` | — |
-| AC-F22.1 | F22 | ✅ | `tests/mcp_server/test_reports_tools.py::test_a_held_stock_over_mcp_shows_weight_and_percent_only`<br>`tests/static/test_repo_rules.py::test_no_hex_colour_outside_ui_tokens`<br>`tests/static/test_repo_rules.py::test_token_lint_catches_a_stray_hex`<br>`tests/unit/test_reports.py::test_share_export_contains_nothing_personal` | — |
-| AC-F22.2 | F22 |  | — | — |
-| AC-F22.3 | F22 | ✅ | `tests/unit/test_format.py::test_status_styles_come_from_tokens` | — |
-| AC-F22.4 | F22 |  | — | — |
-| AC-F22.5 | F22 | ✅ | `tests/unit/test_format.py::test_inr`<br>`tests/unit/test_format.py::test_percentages_multiples_and_missing`<br>`tests/unit/test_format.py::test_dates_and_times` | — |
+| AC-F22.1 | F22 | ✅ | `tests/app/test_components.py::test_components_emit_no_hex_colours`<br>`tests/mcp_server/test_reports_tools.py::test_a_held_stock_over_mcp_shows_weight_and_percent_only`<br>`tests/static/test_repo_rules.py::test_no_hex_colour_outside_ui_tokens`<br>`tests/static/test_repo_rules.py::test_token_lint_catches_a_stray_hex`<br>`tests/unit/test_reports.py::test_share_export_contains_nothing_personal` | — |
+| AC-F22.2 | F22 |  | `tests/app/test_components.py::test_every_status_carries_colour_icon_and_word`<br>`tests/app/test_components.py::test_statuses_are_distinguishable_without_colour` | — |
+| AC-F22.3 | F22 | ✅ | `tests/app/test_components.py::test_streamlit_and_telegram_use_the_same_words`<br>`tests/unit/test_format.py::test_status_styles_come_from_tokens` | — |
+| AC-F22.4 | F22 |  | `tests/app/test_pages.py::test_the_gallery_renders_every_component` | — |
+| AC-F22.5 | F22 | ✅ | `tests/app/test_components.py::test_money_formats_match_the_shared_formatter`<br>`tests/unit/test_format.py::test_inr`<br>`tests/unit/test_format.py::test_percentages_multiples_and_missing`<br>`tests/unit/test_format.py::test_dates_and_times` | — |
 | AC-F23.1 | F23 |  | `tests/unit/test_thesis.py::test_a_met_metric_breaker_sets_broken_with_evidence`<br>`tests/unit/test_verdict_policy.py::test_a_broken_thesis_leads_to_an_exit_for_an_owned_stock_only` | — |
 | AC-F23.2 | F23 |  | `tests/unit/test_thesis.py::test_an_llm_flag_never_breaks_a_thesis_on_its_own` | — |
 | AC-F23.3 | F23 |  | `tests/unit/test_thesis.py::test_a_status_change_writes_one_event_and_a_timeline_entry` | — |
@@ -171,17 +171,17 @@
 | AC-F24.1 | F24 | ✅ | `tests/mcp_server/test_registry_sweep.py::test_every_tool_has_id_tier_annotations_and_models`<br>`tests/mcp_server/test_registry_sweep.py::test_a_tool_without_models_or_a_valid_tier_is_refused`<br>`tests/static/test_repo_rules.py::test_generated_catalogues_are_fresh` | — |
 | AC-F24.2 | F24 |  | `tests/mcp_server/test_reports_tools.py::test_mcp_and_cli_return_the_same_stock_view`<br>`tests/mcp_server/test_reports_tools.py::test_mcp_and_cli_return_the_same_explanation_and_history` | — |
 | AC-F24.3 | F24 | ✅ | `tests/mcp_server/test_registry_sweep.py::test_no_registered_tool_changes_your_state`<br>`tests/mcp_server/test_registry_sweep.py::test_state_changing_tools_cannot_be_registered` | — |
-| AC-F24.4 | F24 |  | — | — |
-| AC-F24.5 | F24 | ✅ | `tests/mcp_server/test_gateway.py::test_each_call_writes_exactly_one_tool_call_event`<br>`tests/mcp_server/test_gateway.py::test_invalid_input_is_logged_once_as_a_failed_call` | — |
+| AC-F24.4 | F24 |  | `tests/mcp_server/test_portfolio_tools.py::test_desktop_may_ask_for_detail_but_an_agent_is_refused_and_audited` | — |
+| AC-F24.5 | F24 | ✅ | `tests/mcp_server/test_gateway.py::test_each_call_writes_exactly_one_tool_call_event`<br>`tests/mcp_server/test_gateway.py::test_invalid_input_is_logged_once_as_a_failed_call`<br>`tests/mcp_server/test_portfolio_tools.py::test_positions_and_pending_are_read_only_and_audited` | — |
 | AC-F24.6 | F24 | ✅ | `tests/mcp_server/test_server.py::test_server_never_listens_on_a_socket`<br>`tests/mcp_server/test_server.py::test_stdio_end_to_end_with_a_real_client` | — |
-| AC-F24.7 | F24 |  | `tests/agents/test_phase3_agents.py::test_get_document_wraps_text_as_untrusted_with_hash` | — |
+| AC-F24.7 | F24 |  | `tests/agents/test_phase3_agents.py::test_get_document_wraps_text_as_untrusted_with_hash`<br>`tests/mcp_server/test_portfolio_tools.py::test_a_propose_tool_writes_only_a_proposal` | — |
 | AC-F24.8 | F24 | ✅ | `tests/agents/test_phase3_agents.py::test_queue_twice_sends_one_message_and_logs_one_suppression`<br>`tests/agents/test_phase3_agents.py::test_requested_severity_is_capped_at_the_rule_table`<br>`tests/unit/test_notify_routing.py::test_the_same_event_queued_twice_is_a_duplicate` | — |
 | AC-F24.9 | F24 |  | — | — |
 | AC-F24.10 | F24 |  | — | — |
 | AC-F25.1 | F25 | ✅ | `tests/agents/test_claude_sdk_options.py::test_options_allow_only_parakh_tools_and_no_built_ins`<br>`tests/agents/test_claude_sdk_options.py::test_mcp_server_is_stdio_with_the_agent_identity`<br>`tests/agents/test_runtime_contract.py::test_every_configured_agent_passes_the_runtime_contract` | — |
-| AC-F25.2 | F25 | ✅ | `tests/agents/test_phase3_agents.py::test_reviewer_turn_limit_is_pending_with_audit_event`<br>`tests/agents/test_phase3_agents.py::test_reviewer_token_budget_stop_is_audited` | — |
+| AC-F25.2 | F25 | ✅ | `tests/agents/test_llm_governance.py::test_a_clean_run_sends_nothing`<br>`tests/agents/test_llm_governance.py::test_one_hard_stop_alerts_immediately`<br>`tests/agents/test_llm_governance.py::test_rates_alert_only_above_the_limit_and_with_enough_runs`<br>`tests/agents/test_phase3_agents.py::test_reviewer_turn_limit_is_pending_with_audit_event`<br>`tests/agents/test_phase3_agents.py::test_reviewer_token_budget_stop_is_audited` | — |
 | AC-F25.3 | F25 | ✅ | `tests/agents/test_phase3_agents.py::test_reviewer_ok_names_only_listed_stocks`<br>`tests/unit/test_monthly_notify.py::test_review_live_sends_second_message_and_email_section`<br>`tests/unit/test_monthly_notify.py::test_review_in_shadow_goes_to_the_log_only`<br>`tests/unit/test_monthly_notify.py::test_failed_review_leaves_the_summary_and_marks_pending` | — |
-| AC-F25.4 | F25 | ✅ | `tests/agents/test_phase3_agents.py::test_triage_live_attaches_note_and_never_changes_severity`<br>`tests/agents/test_phase3_agents.py::test_triage_failure_keeps_the_rule_alert`<br>`tests/agents/test_phase3_agents.py::test_triage_is_bounded_per_run`<br>`tests/agents/test_phase3_agents.py::test_requested_severity_is_capped_at_the_rule_table`<br>`tests/unit/test_watch_jobs.py::test_events_job_runs_triage_and_keeps_alerts_when_it_fails` | — |
-| AC-F25.5 | F25 |  | — | — |
+| AC-F25.4 | F25 | ✅ | `tests/agents/test_phase3_agents.py::test_triage_live_attaches_note_and_never_changes_severity`<br>`tests/agents/test_phase3_agents.py::test_triage_failure_keeps_the_rule_alert`<br>`tests/agents/test_phase3_agents.py::test_triage_is_bounded_per_run`<br>`tests/agents/test_phase3_agents.py::test_requested_severity_is_capped_at_the_rule_table`<br>`tests/mcp_server/test_portfolio_tools.py::test_refresh_requests_are_capped_per_day_and_blocked_in_a_monthly_run`<br>`tests/mcp_server/test_portfolio_tools.py::test_the_daily_cap_is_five`<br>`tests/unit/test_watch_jobs.py::test_events_job_runs_triage_and_keeps_alerts_when_it_fails`<br>`tests/watchlist/test_post_monthly.py::test_the_drain_serves_the_queue_and_waits_out_a_monthly_run`<br>`tests/watchlist/test_post_monthly.py::test_the_monthly_lock_is_held_during_the_review_and_always_released` | — |
+| AC-F25.5 | F25 |  | `tests/agents/test_phase4_agents.py::test_the_curator_proposes_and_the_rules_decide`<br>`tests/watchlist/test_service.py::test_agent_proposal_becomes_a_pending_agent_suggestion_and_changes_no_list` | — |
 | AC-F25.6 | F25 | ✅ | `tests/agents/test_runtime_contract.py::test_fake_runner_replays_a_trajectory_through_the_real_gateway` | — |
 | AC-F25.7 | F25 | ✅ | `tests/agents/test_phase3_agents.py::test_reviewer_ok_names_only_listed_stocks`<br>`tests/unit/test_phase3_governance.py::test_every_shipped_agent_has_a_card_and_an_inventory_row` | — |

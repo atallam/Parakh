@@ -50,7 +50,7 @@ def monthly(
 
         # the last *trading* day of the month just ended (NSE holidays and weekends skipped)
         when = Calendar.from_config(bundle.holidays).monthly_asof(dt.date.today())
-    secs = [s for s in bundle.universe.pilot if not symbols or s.symbol in symbols]
+    secs = [s for s in bundle.universe.active if not symbols or s.symbol in symbols]
     if not secs:
         print(f"no pilot stock matches {symbols}", file=sys.stderr)
         return 2
@@ -100,6 +100,32 @@ def monthly(
         mom = "N/A" if sn.momentum["score"] is None else f"{sn.momentum['score']:.0f}"
         print(f"{s.symbol:11} {chip(v)[:28]:28} {v['confidence']:5} {val:>5} {mom:>5}  {note}")
     print(f"{len(files)} files written under {res.output_root or 'the output folder'}")
+    watchlist_line = None
+    suggestions = None
+    if snaps:
+        from parakh.audit.context import RunContext
+        from parakh.audit.emit import get_sink
+        from parakh.orchestration.post_monthly import post_monthly
+
+        pm_ctx = RunContext.create(
+            mode="post-monthly", asof=when, actor_type="scheduler", actor_id="post-monthly"
+        )
+        pm = post_monthly(
+            bundle, deps.runner if deps is not None else None, pm_ctx, get_sink(),
+            period=snaps[0]["period"], today=when, snaps=snaps,
+        )  # fmt: skip
+        watchlist_line = pm.watchlist_line or None
+        suggestions = pm.suggestions
+        if deps is not None and pm.llm_alert is not None:
+            from parakh.orchestration.watch_jobs import _dispatcher
+
+            _dispatcher(deps, pm_ctx).send_message(
+                pm.llm_alert, code="SYS.LLM_HEALTH", severity="High"
+            )
+        if watchlist_line:
+            print(watchlist_line)
+        for err in pm.errors:
+            print(f"post-monthly warning: {err}", file=sys.stderr)
     if deps is not None:
         from parakh.orchestration.monthly_notify import notify_monthly
 
@@ -112,6 +138,8 @@ def monthly(
             asof=when,
             failed=failed,
             calendar_source=deps.feeds,  # type: ignore[arg-type]
+            watchlist_line=watchlist_line,
+            suggestions=suggestions,
         )
         print(
             f"notified: telegram {'ok' if notice.telegram_ok else 'FAILED'} · email {notice.email_ok} · {notice.calendar_entries} calendar entries"
@@ -124,7 +152,7 @@ def _find(symbol: str, period: str | None):  # type: ignore[no-untyped-def]
     from parakh.snapshots.store import periods_for, read_snapshot_dict, snapshot_path
 
     bundle = load_all()
-    sec = next((s for s in bundle.universe.pilot if s.symbol.upper() == symbol.upper()), None)
+    sec = next((s for s in bundle.universe.active if s.symbol.upper() == symbol.upper()), None)
     if sec is None:
         print(f"{symbol} is not in the pilot universe", file=sys.stderr)
         return None
@@ -204,7 +232,7 @@ def thesis(action: str, symbol: str | None) -> int:
             print(f"{n:32} {mid}")
         return 0
     bundle = load_all()
-    secs = [s for s in bundle.universe.pilot if not symbol or s.symbol.upper() == symbol.upper()]
+    secs = [s for s in bundle.universe.active if not symbol or s.symbol.upper() == symbol.upper()]
     bad = 0
     for s in secs:
         parsed = read_thesis(stock_dir(s.cap, s.symbol) / "THESIS.md")

@@ -126,7 +126,7 @@ class MomentumWatcher:
         persist: bool = True,
         state: dict[str, Any] | None = None,
     ) -> WatchResult:
-        secs = securities if securities is not None else self.bundle.universe.pilot
+        secs = securities if securities is not None else self.bundle.universe.active
         state = state if state is not None else self.store.load(STATE)
         first = not state
         out = WatchResult(asof=asof, seeded=first)

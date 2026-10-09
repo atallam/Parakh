@@ -24,7 +24,7 @@ def run_dummy(
             bundle = load_all()
             step.record_output(files=len(bundle.sources), config_hash=ctx.config_hash)
         with audited_step(ctx, "load_universe", mode=bundle.universe.mode) as step:
-            pilot = bundle.universe.pilot
+            pilot = bundle.universe.active
             isins = sorted(s.isin for s in pilot)
             step.record_output(rows=len(pilot), sha256=sha256_bytes("\n".join(isins).encode()))
         with audited_step(ctx, "noop_score") as step:
