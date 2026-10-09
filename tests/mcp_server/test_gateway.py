@@ -69,7 +69,10 @@ def test_disabled_toolset_is_denied_and_audited() -> None:
 def test_agent_off_its_allow_list_is_denied() -> None:
     """T-MCP-13 (AG-01 enforced in the server, AG-05)"""
     gw = Gateway.for_client("agent:qualitative")
-    assert load_all().agents.agents["AGENT.qualitative"].allowed_tools == []
+    assert (
+        "mcp__parakh__audit_get_run"
+        not in load_all().agents.agents["AGENT.qualitative"].allowed_tools
+    )
     with pytest.raises(ToolDenied, match="allow-list"):
         gw.invoke(_spec(), {})
     denied = _calls(gw, AUD.MCP_TOOL_DENIED)

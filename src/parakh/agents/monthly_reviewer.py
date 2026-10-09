@@ -52,7 +52,7 @@ class ReviewOutcome:
 
 
 def _pilot_symbols(bundle: ConfigBundle) -> set[str]:
-    return {s.symbol for s in bundle.universe.pilot}
+    return {s.symbol for s in bundle.universe.active}
 
 
 def validate_output(

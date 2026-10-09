@@ -14,3 +14,15 @@ prompts:
     active: v1
     history:
       - {version: v1, date: 2026-10-04, note: first version, shadow mode (plan 09 Phase 3)}
+  qualitative:
+    active: v1
+    history:
+      - {version: v1, date: 2026-12-01, note: first version, shadow mode until UAT-4}
+  devils_advocate:
+    active: v1
+    history:
+      - {version: v1, date: 2026-12-01, note: first version, shadow mode until UAT-4}
+  watchlist_curator:
+    active: v1
+    history:
+      - {version: v1, date: 2026-12-01, note: first version, shadow mode until UAT-4}

@@ -207,6 +207,7 @@ class MonthlySummaryVars:
     failed_stocks: list[str] = field(default_factory=list)
     review_pending: bool = False
     link: str | None = None
+    watchlist_line: str | None = None
 
 
 def _list_line(prefix: str, items: list[str], limit: int = 4) -> str | None:
@@ -245,6 +246,8 @@ def render_monthly_summary(v: MonthlySummaryVars) -> Message:
     if v.failed_stocks:
         lines.append(f"⚠️ No verdict for: {escape(', '.join(v.failed_stocks))}")
     lines.append(f"🗂 Review inbox: {v.inbox_items} items")
+    if v.watchlist_line:
+        lines.append(escape(v.watchlist_line))
     if v.data_warnings or v.unknown_checks:
         lines.append(
             f"⚠️ Data: {v.data_warnings} warning(s) · ❔ {v.unknown_checks} checks couldn't run"

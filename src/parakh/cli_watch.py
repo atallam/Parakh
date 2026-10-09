@@ -134,7 +134,15 @@ def bot(action: str) -> int:
     if deps is None or chat is None:
         print("TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID missing", file=sys.stderr)
         return 2
-    return _report(bot_poll(deps, chat.get_secret_value(), ReportProviders()))
+    from parakh.audit.context import RunContext
+    from parakh.services.watchlist import WatchlistService, default_resolver
+    from parakh.watchlist.repository import open_repository
+
+    wl_ctx = RunContext.create(mode="telegram", actor_type="user", actor_id="owner")
+    svc = WatchlistService(
+        open_repository(deps.store), deps.bundle, wl_ctx, resolver=default_resolver(deps.bundle)
+    )
+    return _report(bot_poll(deps, chat.get_secret_value(), ReportProviders(watchlist=svc)))
 
 
 def notify_test() -> int:

@@ -7,12 +7,14 @@ command in its config). The client identity comes from PARAKH_MCP_CLIENT
 
 from __future__ import annotations
 
+import copy
 import inspect
 import os
 from typing import Annotated, Any
 
 from mcp.server.mcpserver import MCPServer
 from pydantic import BaseModel
+from pydantic_core import PydanticUndefined
 
 from parakh import __version__
 from parakh.mcp.middleware import Gateway
@@ -37,7 +39,10 @@ def _flatten(spec: ToolSpec, gateway: Gateway) -> Any:
     params = []
     annotations: dict[str, Any] = {}
     for name, field in spec.input_model.model_fields.items():
-        annotation = Annotated[field.annotation, field]
+        # the default goes on the parameter, so the field metadata must not carry one as well
+        bare = copy.copy(field)
+        bare.default, bare.default_factory = PydanticUndefined, None
+        annotation = Annotated[field.annotation, bare]
         default = (
             inspect.Parameter.empty
             if field.is_required()

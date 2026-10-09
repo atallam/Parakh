@@ -90,6 +90,14 @@ def pp(value_pp: float | None, *, decimals: int = 1) -> str:
     return _signed(value_pp, decimals, " pp", True)
 
 
+def score(value_score: float | None, *, decimals: int = 0) -> str:
+    """A 0–100 lens score: 71.4 → '71'. Missing is an em dash, never 0."""
+    if _missing(value_score):
+        return MISSING
+    assert value_score is not None
+    return f"{value_score:.{decimals}f}"
+
+
 def mult(value_x: float | None, *, decimals: int = 1) -> str:
     """A multiple (`_x`): 24.3 → '24.3×'."""
     if _missing(value_x):

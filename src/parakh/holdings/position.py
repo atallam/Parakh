@@ -21,6 +21,7 @@ from pydantic import BaseModel
 
 from parakh.configs.lens_models import TaxRates
 from parakh.holdings.lots import Lot
+from parakh.holdings.xirr import benchmark_xirr, xirr
 
 
 class PositionInfo(BaseModel):
@@ -40,6 +41,8 @@ class PositionInfo(BaseModel):
     days_to_long_term: int  # until the next short-term lot turns long term; 0 when all are
     tax_if_sold_now_inr: float | None
     tax_note: str
+    xirr_pct: float | None = None  # annualised return on the lots; None when a cost is pending
+    benchmark_xirr_pct: float | None = None  # same rupees in the cap benchmark on the same days
 
 
 def _tax(lots: list[Lot], close: float, asof: dt.date, rates: TaxRates) -> float | None:
@@ -62,6 +65,8 @@ def positions_from_lots(
     asof: dt.date,
     rates: TaxRates,
     weight_basis: str = "holdings with a loaded price",
+    cap_of: dict[str, str] | None = None,
+    bench_series: dict[str, dict[dt.date, float]] | None = None,
 ) -> dict[str, PositionInfo]:
     by_isin: dict[str, list[Lot]] = defaultdict(list)
     for lot in lots:
@@ -83,6 +88,14 @@ def positions_from_lots(
             else 0
         )
         tax = _tax(ls, close, asof, rates)
+        rate: float | None = None
+        bench_rate: float | None = None
+        if not pending:
+            buys = [(x.trade_date, x.qty * (x.price_inr or 0.0)) for x in ls]
+            rate = xirr([*((d, -a) for d, a in buys), (asof, mv)])
+            series = (bench_series or {}).get((cap_of or {}).get(isin, ""))
+            if series:
+                bench_rate = benchmark_xirr(buys, series, asof)
         out[isin] = PositionInfo(
             isin=isin,
             quantity=qty,
@@ -104,5 +117,7 @@ def positions_from_lots(
                 if tax is None
                 else "estimate before the yearly LTCG exemption and loss set-offs"
             ),
+            xirr_pct=None if rate is None else rate * 100,
+            benchmark_xirr_pct=None if bench_rate is None else bench_rate * 100,
         )
     return out

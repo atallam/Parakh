@@ -70,7 +70,7 @@ def cap_checks(
             {"period_end": amfi.period_end.isoformat(), "age_days": age},
         )
     )
-    for sec in bundle.universe.pilot:
+    for sec in bundle.universe.active:
         row = by_isin.get(sec.isin)
         if row is None:
             dq.append(
@@ -133,7 +133,7 @@ def load_reference(
     sink = sink or get_sink()
     ctx = RunContext.create(mode="reference", asof=asof)
     report = ReferenceReport()
-    universe = {s.isin for s in bundle.universe.pilot}
+    universe = {s.isin for s in bundle.universe.active}
     cfg = bundle.data_quality.reference
     with run_lifecycle(ctx, sink) as outcome:
         if amfi_xlsx is not None:

@@ -50,11 +50,13 @@ FORBIDDEN_IMPORTS = ("parakh.analytics", "parakh.lenses", "parakh.adapters")
 def _files(root: Path, suffixes: set[str]) -> list[Path]:
     out = []
     for path in root.rglob("*"):
-        if (
-            path.is_file()
-            and path.suffix in suffixes
-            and not (set(path.relative_to(root).parts) & SKIP_DIRS)
-        ):
+        if path.suffix not in suffixes or set(path.relative_to(root).parts) & SKIP_DIRS:
+            continue
+        try:
+            is_file = path.is_file()
+        except OSError:  # a broken link or an unreadable OneDrive placeholder
+            continue
+        if is_file:
             out.append(path)
     return sorted(out)
 

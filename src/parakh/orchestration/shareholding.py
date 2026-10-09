@@ -192,7 +192,7 @@ def load_shareholding(
     ctx = RunContext.create(mode="shareholding", asof=asof)
     report = ShpReport()
     with run_lifecycle(ctx, sink) as outcome:
-        for sec in bundle.universe.pilot:
+        for sec in bundle.universe.active:
             if symbols and sec.symbol not in symbols:
                 continue
             with audited_step(ctx, "shareholding", isin=sec.isin) as step:

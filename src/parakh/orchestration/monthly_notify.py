@@ -27,7 +27,7 @@ from parakh.notify.monthly import (
     calendar_entries,
     thesis_alerts,
 )
-from parakh.notify.templates import render_monthly_summary
+from parakh.notify.templates import Message, render_monthly_summary
 from parakh.orchestration.watch_jobs import WatchDeps, _dispatcher, _send_failure
 
 log = structlog.get_logger(__name__)
@@ -66,6 +66,8 @@ def notify_monthly(
     allowed_symbols: set[str] | None = None,
     calendar_source: CalendarSource | None = None,
     today: dt.date | None = None,
+    watchlist_line: str | None = None,
+    suggestions: Message | None = None,
 ) -> MonthlyNotice:
     from parakh.agents.monthly_reviewer import AGENT_ID, review_message, run_review
     from parakh.agents.roster import agent_enabled
@@ -95,6 +97,7 @@ def notify_monthly(
                     inbox_items=inbox_items,
                     governance=governance_line(deps, snapshots),
                     review_pending=review_expected,
+                    watchlist_line=watchlist_line,
                     link=link,
                 )
                 d = _dispatcher(deps, ctx)
@@ -102,6 +105,10 @@ def notify_monthly(
                     render_monthly_summary(v), code="MONTHLY.SUMMARY", severity="Medium"
                 )
                 notice.telegram_ok = delivery.ok
+                if (
+                    suggestions is not None
+                ):  # the cards follow the summary; a failure never hides it
+                    d.send_message(suggestions, code="WATCHLIST.SUGGESTIONS", severity="Low")
                 step.record_output(
                     delivered=delivery.ok, upgrades=len(v.upgrades), downgrades=len(v.downgrades)
                 )
@@ -161,7 +168,7 @@ def notify_monthly(
                 with audited_step(ctx, "email") as step:
                     attachments: list[tuple[str, bytes, str]] = []
                     if calendar_source is not None:
-                        secs = [s for s in deps.bundle.universe.pilot]
+                        secs = [s for s in deps.bundle.universe.active]
                         entries, errs = calendar_entries(calendar_source, secs, today or asof)
                         notice.errors.update({f"calendar:{k}": e for k, e in errs.items()})
                         notice.calendar_entries = len(entries)

@@ -3,24 +3,29 @@ alerts:
   # why: shadow mode until the UAT-2 go-live gate (plan 09 Phase 3).
   dry_run: true
 watchlist:
-  # why: the watchlist engine lands in Phase 4 (F14).
-  enabled: false
+  # why: the watchlist engine, CLI and agent proposals shipped in Phase 4 (F14).
+  enabled: true
 qualitative:
-  # why: the qualitative agent lands in Phase 4 (F06); quantitative only until then.
+  # why: the agent is built (Phase 4) but off until the first priced run on the eval set (plan 14 §4.6)
   enabled: false
 llm:
   # why: no LLM calls before Phase 3; set from the first measured monthly cost (PRD §5).
   budget_tokens: 0
 ui:
-  # why: Streamlit pages land in Phase 4 (ADR-006).
-  enabled: false
+  # why: the Streamlit pages shipped in Phase 4 (ADR-006).
+  enabled: true
 mcp:
-  # Toolsets exposed by parakh-mcp (plan 15 §4.2). R-tier only before Phase 3; Phase 3 adds notify.queue (N) and data.get_document (R).
+  # Toolsets exposed by parakh-mcp (plan 15 §4.2). Phase 3 added notify.queue (N) and data.get_document (R); Phase 4 adds portfolio (R, P) and jobs (J).
   toolsets:
     audit: true
     reports: true
     analytics: true
     data: true
-    portfolio: false
+    portfolio: true
     notify: true
-    jobs: false
+    jobs: true
+jobs:
+  # why: plan 15 §4.2 and AC-F25.4, a single-stock refresh is cheap but an agent must not loop on it
+  refresh_daily_cap: 5
+  # why: a transcript older than a quarter and a half is shown as stale to the qualitative agent
+  transcript_max_age_days: 135

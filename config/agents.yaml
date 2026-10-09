@@ -2,6 +2,15 @@
 # tools only (AG-01), checked by the config schema and a contract test.
 # why dry_run=true: agent output goes to logs/agents_shadow.md until UAT-2 (plan 09 Phase 3).
 dry_run: true
+# P4 (plan 13): a Telegram warning at the end of a run when the LLM layer misbehaves. A budget stop, a turn-limit
+# stop or a suspected prompt injection alerts on the first one; the two rates need min_runs to mean anything.
+alerts:
+  # why: plan 13 P4, more than 1 in 10 outputs failing the schema means the prompt or the model drifted
+  validation_fail_pct: 10
+  # why: plan 13 P4, a fifth of quotes not found in the document means the read cannot be trusted
+  unverified_citation_pct: 20
+  # why: three runs is the least that makes a percentage more than one bad call
+  min_runs: 3
 defaults:
   # why: pinned for reproducibility; a model change passes the L7 eval gate (plan 10 §7).
   model_id: claude-sonnet-5
@@ -15,8 +24,8 @@ agents:
     first_phase: 3
     enabled: true
     prompt_id: monthly_reviewer.v1
-    # why: the plan 15 §5 list, minus the portfolio and data.quality tools that arrive in Phase 4;
-    # positions reach the agent only as the masked weight and P&L the reports already carry
+    # why: the plan 15 §5 list; positions reach the agent only as the masked weight and P&L the
+    # reports already carry (portfolio.positions refuses detail for agents, AG-07)
     max_turns: 10
     allowed_tools:
       - mcp__parakh__reports_what_changed
@@ -24,28 +33,63 @@ agents:
       - mcp__parakh__reports_segment_summary
       - mcp__parakh__reports_get_history
       - mcp__parakh__analytics_explain_verdict
+      - mcp__parakh__portfolio_positions
+      - mcp__parakh__data_quality
       - mcp__parakh__notify_queue
   AGENT.event_triage:
     description: Triages new corporate events into severity and a queued notification
     first_phase: 3
     enabled: true
     prompt_id: event_triage.v1
-    # why: jobs.request_refresh is a Phase 4 tool; until then the rules queue the refresh (cap 5 a day)
+    # why: request_refresh queues one refresh (cap 5 a day, none during a monthly run; AC-F25.4)
     max_turns: 6
     token_budget: 20000
     allowed_tools:
       - mcp__parakh__data_get_document
       - mcp__parakh__reports_get_stock
+      - mcp__parakh__portfolio_get_thesis
+      - mcp__parakh__jobs_request_refresh
       - mcp__parakh__notify_queue
   AGENT.qualitative:
     description: Reads concall transcripts against the thesis; flags only (D13)
     first_phase: 4
-    allowed_tools: []
+    enabled: true
+    prompt_id: qualitative.v1
+    # why: a transcript is long; the cap per stock keeps a monthly run of 500 stocks inside the
+    # LLM budget, and a stock over it shows "qualitative pending" (plan 10 §7)
+    max_turns: 6
+    token_budget: 30000
+    allowed_tools:
+      - mcp__parakh__data_get_document
+      - mcp__parakh__portfolio_get_thesis
+      - mcp__parakh__reports_get_stock
+      - mcp__parakh__data_quality
   AGENT.devils_advocate:
     description: Writes the strongest case against the current verdict
     first_phase: 4
-    allowed_tools: []
+    enabled: true
+    prompt_id: devils_advocate.v1
+    # why: three counter-points from the stock's own numbers need no more than a few reads
+    max_turns: 5
+    token_budget: 15000
+    allowed_tools:
+      - mcp__parakh__reports_get_stock
+      - mcp__parakh__analytics_explain_verdict
+      - mcp__parakh__data_get_fundamentals
+      - mcp__parakh__data_get_prices
+      - mcp__parakh__portfolio_get_thesis
   AGENT.watchlist_curator:
     description: Proposes watchlist adds and removals for your approval (plan 06)
     first_phase: 4
-    allowed_tools: []
+    enabled: true
+    prompt_id: watchlist_curator.v1
+    # why: the curator reads rankings and the open queue, and may only propose (AG-03)
+    max_turns: 8
+    token_budget: 30000
+    allowed_tools:
+      - mcp__parakh__reports_segment_summary
+      - mcp__parakh__reports_get_stock
+      - mcp__parakh__portfolio_pending_approvals
+      - mcp__parakh__portfolio_propose_watchlist
+      - mcp__parakh__portfolio_propose_thesis_flag
+      - mcp__parakh__portfolio_propose_journal_entry

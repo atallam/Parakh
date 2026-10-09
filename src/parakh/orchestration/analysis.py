@@ -63,6 +63,10 @@ class MonthlyResult:
         return [s.snapshot for s in self.stocks if s.snapshot is not None]
 
 
+def _as_date(i) -> dt.date:  # type: ignore[no-untyped-def]
+    return i.date() if hasattr(i, "date") else i
+
+
 def _regimes(
     bundle: ConfigBundle, data: AnalysisData, asof: dt.date, context: MarketContext | None = None
 ) -> tuple[dict, dict]:
@@ -122,7 +126,7 @@ def run_monthly(
         config_hash=ctx.config_hash,
         now=dt.datetime.now(dt.UTC),
     )
-    sec_list = securities or bundle.universe.pilot
+    sec_list = securities or bundle.universe.active
     with run_lifecycle(ctx, sink) as outcome:
         result.outcome = outcome
         with audited_step(ctx, "regime") as step:
@@ -139,7 +143,16 @@ def run_monthly(
                     closes[isin] = float(f.sort_values("trade_date")["close"].iloc[-1])
             except (KeyError, ValueError, TypeError):
                 continue  # a broken price frame is reported for that stock below, not for the run
-        positions = positions_from_lots(data.open_lots(), closes, asof, bundle.portfolio.tax)
+        sec_cap = {sec.isin: sec.cap for sec in sec_list}
+        bench_series = {
+            cap: {_as_date(i): float(v) for i, v in b.dropna().items()}
+            for cap, b in benches.items()
+            if b is not None and len(b)
+        }
+        positions = positions_from_lots(
+            data.open_lots(), closes, asof, bundle.portfolio.tax,
+            cap_of=sec_cap, bench_series=bench_series,
+        )  # fmt: skip
 
         for sec in sec_list:
             so = StockOutcome(sec.symbol, sec.isin)

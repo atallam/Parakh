@@ -224,7 +224,7 @@ def _reference_load(store: str, amfi_file: str | None) -> int:
     print(f"run {ctx.run_id} · {outcome.status} · AMFI list to {report.amfi_period_end}")
     caps = {c["isin"]: c for c in report.caps}
     print(f"{'SYMBOL':11} {'RANK':>5}  {'AMFI':6} {'CONFIG':6}  INDICES")
-    for sec in bundle.universe.pilot:
+    for sec in bundle.universe.active:
         c = caps.get(sec.isin)
         print(
             f"{sec.symbol:11} {c['amfi_rank'] if c else '-':>5}  {c['bucket'] if c else '-':6} {sec.cap:6}  "
@@ -309,7 +309,7 @@ def _dq_scorecard() -> int:
     repo = _supabase_repo()
     if repo is None:
         return 2
-    symbols = {s.isin: s.symbol for s in load_all().universe.pilot}
+    symbols = {s.isin: s.symbol for s in load_all().universe.active}
     card = scorecard(repo.dq_rows(), symbols)
     if not card.rows:
         print("no data-quality results stored yet")
@@ -422,7 +422,7 @@ def _prices_load(symbols: list[str] | None, store_kind: str, use_exchange: bool)
     from parakh.storage.prices import LocalBlobs, ParquetPriceStore, SupabaseBlobs
 
     bundle = load_all()
-    pilot = [s for s in bundle.universe.pilot if not symbols or s.symbol in symbols]
+    pilot = [s for s in bundle.universe.active if not symbols or s.symbol in symbols]
     if not pilot:
         print(f"no pilot stock matches {symbols}", file=sys.stderr)
         return 2
@@ -435,7 +435,7 @@ def _prices_load(symbols: list[str] | None, store_kind: str, use_exchange: bool)
     else:
         blobs = LocalBlobs(state_dir() / "prices")
     store = ParquetPriceStore(blobs, state_dir() / "cache" / "prices")
-    resolve = {p.isin: s.isin for s in bundle.universe.pilot for p in s.previous_isins}
+    resolve = {p.isin: s.isin for s in bundle.universe.active for p in s.previous_isins}
     api = NseApi()
 
     def actions_for(isin: str):  # type: ignore[no-untyped-def]
@@ -767,6 +767,43 @@ def build_parser() -> argparse.ArgumentParser:
     p_find = sub.add_parser("find", help="every alert for a signal or rule code (e.g. M03)")
     p_find.add_argument("code")
 
+    p_un = sub.add_parser("universe", help="stock universe: stage, import (Phase 4 scale-up)")
+    p_un.add_argument("action", choices=["stage", "import"])
+    p_un.add_argument("--cap", choices=["large", "mid", "small"])
+    p_un.add_argument("--csv")
+
+    p_pr = sub.add_parser("prompts", help="prompt pins: roll back or promote a version (P3)")
+    p_pr.add_argument("action", choices=["rollback", "promote"])
+    p_pr.add_argument("name")
+    p_pr.add_argument("--to", help="version to pin, e.g. v1 (promote needs it)")
+    p_pr.add_argument("--reason", required=True)
+
+    p_jb = sub.add_parser("jobs", help="queued jobs: drain refresh requests")
+    p_jb.add_argument("action", choices=["drain"])
+    p_jb.add_argument("--store", choices=["local", "supabase"], default="supabase")
+
+    p_wl = sub.add_parser(
+        "watchlist", help="watchlist: pending, approve, reject, add, remove, review"
+    )
+    p_wl.add_argument(
+        "action",
+        choices=[
+            "pending",
+            "list",
+            "approve",
+            "reject",
+            "snooze",
+            "add",
+            "remove",
+            "review",
+            "ingest",
+        ],
+    )
+    p_wl.add_argument("args", nargs="*", help="suggestion ids, or a symbol for add/remove")
+    p_wl.add_argument("--reason", help="required for add/remove; optional note for reject/approve")
+    p_wl.add_argument("--target", type=float, help="target entry price in rupees (add/approve)")
+    p_wl.add_argument("--note", help="decision note (approve)")
+
     p_sum = sub.add_parser("summarize", help="scaffold sample agent: summarise a text file")
     p_sum.add_argument("path")
     return parser
@@ -887,6 +924,22 @@ def _dispatch(argv: list[str] | None) -> int:
             from parakh.cli_watch import integrity
 
             return integrity()
+        case "universe":
+            from parakh.cli_watchlist import universe
+
+            return universe(args.action, args.cap, args.csv)
+        case "prompts":
+            from parakh.cli_watchlist import prompts_pin
+
+            return prompts_pin(args.action, args.name, args.to, args.reason)
+        case "jobs":
+            from parakh.cli_watchlist import jobs_drain
+
+            return jobs_drain(args.store)
+        case "watchlist":
+            from parakh.cli_watchlist import run as watchlist
+
+            return watchlist(args.action, args.args, args.reason, args.target, args.note)
         case "summarize":
             return _summarize(args.path)
     parser.print_help(sys.stdout)

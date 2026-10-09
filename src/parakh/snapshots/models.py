@@ -53,6 +53,7 @@ class Snapshot(BaseModel):
     thesis: dict[str, Any]
     checks: list[dict[str, Any]] = Field(default_factory=list)  # tri-state (UX-05)
     qualitative: dict[str, Any]
+    devils_advocate: dict[str, Any] | None = None  # F07 overlay, added after the monthly run
     events: dict[str, Any]
     data_quality: dict[str, Any]
     lineage: dict[str, Any]

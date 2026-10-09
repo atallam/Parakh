@@ -2,6 +2,17 @@
 
 All notable changes. Framework and lens versions follow SemVer; tool schemas are versioned per toolset (plan 15 §4.4).
 
+## [Unreleased] – Phase 4 (qualitative, watchlist and UI), 2026-10-10
+
+### Added
+- Qualitative and Devil's-advocate agents, Watchlist Curator, post-monthly step under the monthly lock, LLM failure alerts, prompt promote and rollback.
+- Watchlist engine, service, Telegram approvals and queue-only Edge Function; full MCP `portfolio.*`, `jobs.*`, `data.*` toolsets.
+- Streamlit app (six pages plus components), thesis and lot editors, XIRR, drawdown and HHI in the segment dashboard.
+- Staged universe (`rollout`, `universe stage|import`), `jobs drain`, 500-stock load test.
+
+### Changed
+- `universe.active` replaces pilot-only lookups; the `qualitative` flag ships off until the first priced eval run.
+
 ## [Unreleased] – Phase 3 (automation and shadow mode), 2026-10-04
 
 ### Added

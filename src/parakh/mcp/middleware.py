@@ -101,6 +101,7 @@ class Gateway:
             raise self._deny(spec, call, reason)
         start = time.perf_counter()
         status, result, error = "ok", None, None
+        denied = False
         try:
             params = spec.input_model.model_validate(args)
             result = spec.fn(params, call)
@@ -109,6 +110,11 @@ class Gateway:
                     f"{spec.id} returned {type(result).__name__}, not {spec.output_model.__name__}"
                 )
             return result
+        except ToolDenied as exc:
+            # a tool refused on policy (for example an agent asking for holdings detail): one
+            # AUD.MCP.TOOL_DENIED and no TOOL_CALL (AC-F24.4)
+            denied = True
+            raise self._deny(spec, call, str(exc)) from exc
         except ValidationError as exc:
             status, error = "invalid_input", exc
             raise ToolFailed(f"{spec.id}: invalid input: {exc.error_count()} error(s)") from exc
@@ -117,30 +123,31 @@ class Gateway:
             raise ToolFailed(f"{spec.id} failed: {type(exc).__name__}") from exc
         finally:
             latency_ms = round((time.perf_counter() - start) * 1000, 2)
-            self.sink.emit(
-                self.ctx,
-                AUD.MCP_TOOL_CALL,
-                channel="mcp",
-                entity_type="tool",
-                entity_id=spec.id,
-                reason=scrub_text(str(error))[:300] if error else None,
-                details={
-                    "tool_id": spec.id,
-                    "tier": spec.tier,
-                    "client": self.client,
-                    "mcp_call_id": call.mcp_call_id,
-                    "args_hash": _hash(args),
-                    "result_hash": _hash(result.model_dump(mode="json"))
-                    if result is not None
-                    else None,
-                    "latency_ms": latency_ms,
-                    "status": status,
-                },
-            )
-            log.info(
-                "mcp.call",
-                tool_id=spec.id,
-                client=self.client,
-                status=status,
-                latency_ms=latency_ms,
-            )
+            if not denied:
+                self.sink.emit(
+                    self.ctx,
+                    AUD.MCP_TOOL_CALL,
+                    channel="mcp",
+                    entity_type="tool",
+                    entity_id=spec.id,
+                    reason=scrub_text(str(error))[:300] if error else None,
+                    details={
+                        "tool_id": spec.id,
+                        "tier": spec.tier,
+                        "client": self.client,
+                        "mcp_call_id": call.mcp_call_id,
+                        "args_hash": _hash(args),
+                        "result_hash": _hash(result.model_dump(mode="json"))
+                        if result is not None
+                        else None,
+                        "latency_ms": latency_ms,
+                        "status": status,
+                    },
+                )
+                log.info(
+                    "mcp.call",
+                    tool_id=spec.id,
+                    client=self.client,
+                    status=status,
+                    latency_ms=latency_ms,
+                )
