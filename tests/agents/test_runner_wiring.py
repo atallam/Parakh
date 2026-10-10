@@ -59,3 +59,12 @@ def test_cli_parses_new_commands(monkeypatch) -> None:  # type: ignore[no-untype
     main(["agents", "eval", "--symbol", "INDIGO", "--no-devils-advocate"])
     assert got["c"] == ["INDIGO", "M&M"]
     assert got["e"] == (["INDIGO"], False)
+
+
+def test_failure_reason_carries_a_scrubbed_message() -> None:
+    from parakh.agents.roster import _why
+
+    msg = _why(RuntimeError("cannot start claude\nsecond line"))
+    assert msg == "RuntimeError: cannot start claude"
+    assert _why(RuntimeError("")) == "RuntimeError"
+    assert len(_why(RuntimeError("x" * 500))) < 200

@@ -141,7 +141,7 @@ def _run_audited(
             agent_run_id=task.task_id,
             agent_id=spec.agent_id,
             status="failed",
-            reason=f"{type(exc).__name__}",
+            reason=_why(exc),
         )
     if result.reason and "validation" in result.reason:
         sink.emit(  # counts toward the P4 validation-failure rate
@@ -190,6 +190,14 @@ def _sync[T](coro: Awaitable[T]) -> T:
         return await coro
 
     return asyncio.run(wrap())
+
+
+def _why(exc: Exception) -> str:
+    """'CLIConnectionError: <first line, scrubbed, 160 chars>': enough to see why, never a secret."""
+    from parakh.observability.logging import scrub_text
+
+    first = (str(exc).strip().splitlines() or [""])[0]
+    return f"{type(exc).__name__}: {scrub_text(first)[:160]}" if first else type(exc).__name__
 
 
 def sdk_runner(*prompt_names: str) -> AgentRunner:  # pragma: no cover - needs the SDK and a key
