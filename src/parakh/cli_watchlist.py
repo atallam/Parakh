@@ -196,7 +196,7 @@ def jobs_drain(store_kind: str) -> int:
     from parakh.cli_watch import build_deps
     from parakh.orchestration.refresh import drain
 
-    deps = build_deps(store_kind, need_data=False)
+    deps = build_deps(store_kind, need_data=False, need_agents=True)
     if deps is None:
         return 2
     from parakh.adapters.concalls import ScreenerConcallsProvider

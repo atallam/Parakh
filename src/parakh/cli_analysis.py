@@ -64,7 +64,7 @@ def monthly(
     if notify:
         from parakh.cli_watch import build_deps
 
-        deps = build_deps(store_kind, need_feeds=True)
+        deps = build_deps(store_kind, need_feeds=True, need_agents=True)
     try:
         res = run_monthly(bundle, data, when, securities=secs)
     except Exception as exc:

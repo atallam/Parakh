@@ -13,9 +13,16 @@ def today_ist() -> dt.date:
     return dt.datetime.now(IST).date()
 
 
-def build_deps(store_kind: str = "supabase", *, need_data: bool = True, need_feeds: bool = False):  # type: ignore[no-untyped-def]
+def build_deps(  # type: ignore[no-untyped-def]
+    store_kind: str = "supabase",
+    *,
+    need_data: bool = True,
+    need_feeds: bool = False,
+    need_agents: bool = False,
+):
     """Wire the real adapters from the environment. Secrets are read, never printed."""
     from parakh.adapters.nse_events import NseFeeds
+    from parakh.agents.runtime.factory import build_runner
     from parakh.cli_analysis import _data
     from parakh.config import get_settings
     from parakh.configs import load_all
@@ -50,6 +57,7 @@ def build_deps(store_kind: str = "supabase", *, need_data: bool = True, need_fee
         button_key=derive_key(token) if token else None,
         logs_root=logs_dir(),
         ntfy=ntfy,
+        runner=build_runner(bundle) if need_agents else None,
         trigger="cron",
     )
 
@@ -106,7 +114,7 @@ def watch(asof: str | None, store: str, symbols: list[str] | None) -> int:
 def events(asof: str | None, store: str) -> int:
     from parakh.orchestration.watch_jobs import daily_events
 
-    deps = build_deps(store, need_feeds=True)
+    deps = build_deps(store, need_feeds=True, need_agents=True)
     return 2 if deps is None else _report(daily_events(deps, session_asof(asof)))
 
 

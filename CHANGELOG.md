@@ -5,6 +5,8 @@ All notable changes. Framework and lens versions follow SemVer; tool schemas are
 ## [Unreleased] – Phase 4 (qualitative, watchlist and UI), 2026-10-10
 
 ### Added
+- `parakh concalls fetch --symbol X` caches the latest concall transcript; `parakh agents eval --symbol X` runs the Qualitative and Devil's-advocate agents on real documents with the real model, prints status, unverified quotes and tokens, and writes `logs/agents_shadow.md`.
+- `agents/runtime/factory.build_runner`: the real Claude Agent SDK runner, built only with `ANTHROPIC_API_KEY` and `uv sync --extra agents`.
 - `parakh universe import --amfi FILE` fills large, mid and small from one AMFI half-yearly list (small = ranks 251+, default 250; BSE-only stocks skipped). Directory CSVs for the 30 Jun 2026 list: 100 large, 148 mid, 250 small.
 - Qualitative and Devil's-advocate agents, Watchlist Curator, post-monthly step under the monthly lock, LLM failure alerts, prompt promote and rollback.
 - Watchlist engine, service, Telegram approvals and queue-only Edge Function; full MCP `portfolio.*`, `jobs.*`, `data.*` toolsets.
@@ -12,6 +14,7 @@ All notable changes. Framework and lens versions follow SemVer; tool schemas are
 - Staged universe (`rollout`, `universe stage|import`), `jobs drain`, 500-stock load test.
 
 ### Changed
+- Scheduled jobs (events, monthly with `--notify`, `jobs drain`) now get the real agent runner when a key is present; before, they ran with `runner=None` and skipped every agent step. Output stays in shadow (`agents.dry_run: true`); Qualitative stays off by flag.
 - `universe.active` replaces pilot-only lookups; the `qualitative` flag ships off until the first priced eval run.
 
 ## [Unreleased] – Phase 3 (automation and shadow mode), 2026-10-04
