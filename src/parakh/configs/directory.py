@@ -69,3 +69,36 @@ def import_rows(src: Path, cap: Cap, dest_root: Path) -> int:
         for s in sorted(rows, key=lambda x: x.symbol):
             w.writerow([s.symbol, s.isin, s.name, s.sector or "", s.profile, s.listed_on or ""])
     return len(rows)
+
+
+def import_amfi(src: Path, dest_root: Path, *, small_count: int) -> dict[str, int]:
+    """Split one AMFI half-yearly list into the three directory files (plan 13 D9, amended).
+
+    Large and Mid are the stocks AMFI itself marks Large Cap (ranks 1-100) and Mid Cap (101-250).
+    Small is AMFI's next `small_count` ranks (251 onward). Only NSE-listed stocks are kept, since
+    prices and filings come from NSE; a stock listed only on BSE is skipped and counted.
+    """
+    from parakh.adapters.reference import parse_amfi_list
+    from parakh.configs.models import isin_check_digit_ok
+
+    amfi = parse_amfi_list(src.read_bytes())
+    dest_root.mkdir(parents=True, exist_ok=True)
+    counts: dict[str, int] = {}
+    seen: set[str] = set()
+    for cap in ("large", "mid", "small"):
+        rows = [r for r in sorted(amfi.rows, key=lambda r: r.rank) if r.bucket == cap]
+        picked = []
+        for r in rows:
+            if r.nse_symbol is None or r.isin in seen or not isin_check_digit_ok(r.isin):
+                continue
+            picked.append(r)
+            seen.add(r.isin)
+            if cap == "small" and len(picked) == small_count:
+                break
+        with (dest_root / f"{cap}.csv").open("w", encoding="utf-8", newline="") as fh:
+            w = csv.writer(fh)
+            w.writerow(COLUMNS)
+            for r in sorted(picked, key=lambda x: x.nse_symbol or ""):
+                w.writerow([r.nse_symbol, r.isin, r.name, "", "standard", ""])
+        counts[cap] = len(picked)
+    return counts

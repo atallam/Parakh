@@ -5,6 +5,7 @@ All notable changes. Framework and lens versions follow SemVer; tool schemas are
 ## [Unreleased] – Phase 4 (qualitative, watchlist and UI), 2026-10-10
 
 ### Added
+- `parakh universe import --amfi FILE` fills large, mid and small from one AMFI half-yearly list (small = ranks 251+, default 250; BSE-only stocks skipped). Directory CSVs for the 30 Jun 2026 list: 100 large, 148 mid, 250 small.
 - Qualitative and Devil's-advocate agents, Watchlist Curator, post-monthly step under the monthly lock, LLM failure alerts, prompt promote and rollback.
 - Watchlist engine, service, Telegram approvals and queue-only Edge Function; full MCP `portfolio.*`, `jobs.*`, `data.*` toolsets.
 - Streamlit app (six pages plus components), thesis and lot editors, XIRR, drawdown and HHI in the segment dashboard.

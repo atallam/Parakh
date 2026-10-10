@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from parakh.configs import load_all
@@ -53,3 +55,62 @@ def test_a_rollout_stage_widens_active_but_never_drops_the_pilot(tmp_path, monke
     symbols = {s.symbol for s in wide.active}
     assert {s.symbol for s in base.pilot} <= symbols and "TATAPOWER" in symbols
     assert wide.by_isin("INE245A01021") is not None
+
+
+def _amfi_xlsx(path: Path) -> None:
+    import openpyxl
+
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    assert ws is not None
+    ws.title = "FINAL"
+    ws.append(
+        [
+            "Average Market Capitalization of listed companies during the six months ended 30 June 2026"
+        ]
+    )
+    ws.append(
+        [
+            "Sr. No.",
+            "Company name",
+            "ISIN",
+            "BSE Symbol",
+            "BSE Avg",
+            "NSE Symbol",
+            "NSE Avg",
+            "MSEI Symbol",
+            "MSEI Avg",
+            "Average of All Exchanges (Rs. Cr.)",
+            "Categorization as per SEBI Circular dated Oct 6, 2017",
+        ]
+    )
+    rows = [
+        ("Reliance Industries Ltd", "INE002A01018", "RELIANCE", "Large Cap"),
+        ("HDFC Bank Ltd.", "INE040A01034", "HDFCBANK", "Large Cap"),
+        ("Bse Only Ltd", "INE745G01043", "-", "Mid Cap"),
+        ("Cipla Ltd.", "INE059A01026", "CIPLA", "Mid Cap"),
+        ("Small One Ltd", "INE177A01018", "SMALL1", "Small Cap"),
+        ("Small Two Ltd", "INE616N01034", "SMALL2", "Small Cap"),
+        ("Small Three Ltd", "INE903U01023", "SMALL3", "Small Cap"),
+    ]
+    for i, (name, isin, nse, cat) in enumerate(rows, start=1):
+        ws.append([i, name, isin, nse, 1000.0 - i, nse, 1000.0 - i, "-", None, 1000.0 - i, cat])
+    wb.save(path)
+
+
+def test_one_amfi_file_fills_all_three_caps_and_skips_bse_only_stocks(tmp_path: Path) -> None:
+    from parakh.configs.directory import import_amfi
+
+    src = tmp_path / "amfi.xlsx"
+    _amfi_xlsx(src)
+    counts = import_amfi(src, tmp_path / "dir", small_count=2)
+    assert counts == {
+        "large": 2,
+        "mid": 1,
+        "small": 2,
+    }  # the BSE-only mid is skipped, small is capped
+    assert [s.symbol for s in read_cap(tmp_path / "dir" / "small.csv", "small")] == [
+        "SMALL1",
+        "SMALL2",
+    ]
+    assert "INE745G01043" not in (tmp_path / "dir" / "mid.csv").read_text(encoding="utf-8")
