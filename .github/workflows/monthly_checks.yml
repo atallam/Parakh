@@ -1,0 +1,65 @@
+name: monthly-checks
+
+# 5th of every month, 09:30 IST (04:00 UTC), after the monthly run (2nd): governance checks (plan 10 §5,
+# §8, §11; plan 14 L6). Replay determinism, drift monitoring and the backup restore test each run as a
+# separate job so one failure does not hide the others. A failure sends the usual ❌ message.
+on:
+  schedule:
+    - cron: "0 4 5 * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  id-token: write
+
+# one writer of the state branch at a time
+concurrency:
+  group: parakh-state
+  cancel-in-progress: false
+
+env:
+  AWS_ROLE_ARN: ${{ vars.AWS_ROLE_ARN }}
+  AWS_REGION: ${{ vars.AWS_REGION }}
+  # why: GitHub repository secrets are the recorded fallback to SSM (ADR-009); a name left unset
+  # stays empty and the code treats it as "not configured"
+  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+  SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+  SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+  # the age PRIVATE key for the restore test; without it that job reports "not configured" and fails
+  BACKUP_AGE_IDENTITY: ${{ secrets.BACKUP_AGE_IDENTITY }}
+  SMTP_USER: ${{ secrets.SMTP_USER }}
+  SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+  MAIL_TO: ${{ secrets.MAIL_TO }}
+
+jobs:
+  replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/parakh-job
+        with:
+          job-name: "Monthly replay determinism"
+          command: "calibrate replay"
+
+  drift:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/parakh-job
+        with:
+          job-name: "Monthly drift check"
+          command: "calibrate drift"
+
+  restore:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/parakh-job
+        with:
+          job-name: "Backup restore test"
+          command: "calibrate restore-test"

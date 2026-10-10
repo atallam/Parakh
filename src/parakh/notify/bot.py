@@ -27,6 +27,7 @@ from parakh.notify.log import AlertsLog
 from parakh.notify.routing import AlertState
 from parakh.notify.telegram import Notifier, escape
 from parakh.notify.tokens import TokenError, verify
+from parakh.services.alert_feedback import record_alert_feedback
 
 log = structlog.get_logger(__name__)
 
@@ -205,28 +206,10 @@ class Bot:
         isin, code = row.get("isin"), row.get("code")
         if action in ("u", "n"):
             useful = action == "u"
-            self.alerts_log.record(
-                {
-                    **{
-                        k: row.get(k)
-                        for k in ("asof", "isin", "symbol", "code", "kind", "severity", "source")
-                    },
-                    "alert_id": alert_id,
-                    "run_id": self.ctx.run_id,
-                    "decision": "feedback",
-                    "reason": "useful" if useful else "noise",
-                    "payload_hash": row.get("payload_hash", ""),
-                }
-            )
-            self.sink.emit(
-                self.ctx,
-                AUD.ALERT_FEEDBACK,
-                channel="telegram",
-                entity_type="alert",
-                entity_id=alert_id,
-                isin=isin,
-                details={"verdict": "useful" if useful else "noise", "code": code},
-            )
+            record_alert_feedback(
+                self.alerts_log, self.sink, self.ctx, self.bundle.calibration.alerts, alert_id,
+                useful=useful, channel="telegram", row=row,
+            )  # fmt: skip
             return "Thanks, noted as " + ("useful" if useful else "noise")
         if action == "m":
             until = self.today + dt.timedelta(days=self.bundle.notify.bot.mute_days)

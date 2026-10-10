@@ -1,0 +1,123 @@
+# Calibration, scorecards and drift (F17; plan 04 §2, plan 06 §6, plan 10 §5). Thresholds only here.
+# Starting points, to be confirmed or changed by the first quarterly calibration report.
+# why version: bump when any threshold below changes, so a report says which settings produced it
+version: "1.0.0"
+
+backtest:
+  # why: the Nifty 500 covers large, mid and small together, so one benchmark fits a mixed universe
+  benchmark: NIFTY 500
+  # why: roughly the 10-year G-sec yield; only the Sharpe ratio uses it. Confirm each April.
+  risk_free_pct: 6.5
+  # why: the momentum lens is informational below 126 sessions and capped at Med below 252 (plan 02 §3.9)
+  min_history_sessions: 252
+  # why: without point-in-time membership the test would use today's index members for the past
+  # (survivorship bias, AC-F17.1). The report refuses headline numbers until membership history
+  # covers the test window; `--allow-proxy` runs it anyway and labels every number as biased.
+  require_membership_history: true
+  membership_indices:
+    large: NIFTY 100
+    mid: NIFTY MIDCAP 150
+    small: NIFTY SMALLCAP 250
+  portfolio:
+    # why: plan 02 §7 holds the top fifth of the ranked universe; the walk-forward may move it
+    top_pct: 20
+    # why: plan 02 §6, a momentum score under 60 is not a STRONG view
+    min_score: 60
+    # why: plan 02 rank buffer, a holder is kept while it stays in the top 30%, which cuts churn
+    buffer_pct: 30
+    # why: below 5 names the equal-weight book is a handful of bets, so the month is held in cash
+    min_names: 5
+    # why: an existing name is traded back to equal weight only when it drifts a quarter off target
+    rebalance_band_pct: 25
+    # why: sizes the ₹1.25 lakh LTCG exemption realistically against gains; a personal-size book
+    initial_capital_inr: 1000000
+    # why: the signal is known at the close of the month-end session, so the trade is the next close
+    execution_lag_sessions: 1
+  costs:
+    # why: delivery equity. STT 0.10% each side; stamp duty 0.015% on buy; exchange and SEBI fees
+    # about 0.003%. Brokerage is zero at a discount broker. Statutory rates change: confirm each April.
+    statutory_buy_bps: 11.8
+    statutory_sell_bps: 10.3
+    # why: spread plus impact for a personal-size order; wider in smaller caps (starting values)
+    impact_bps: {large: 5, mid: 15, small: 40}
+  walk_forward:
+    # why: plan 04 §2 tunes on the earlier years and validates on later ones
+    train_years: 5
+    test_years: 1
+    step_years: 1
+    # why: two knobs and three values each, small enough that the grid cannot memorise the sample
+    grid:
+      top_pct: [10, 20, 30]
+      min_score: [50, 60, 70]
+    select_by: after_cost_sharpe
+    # why: plan 04 §2 caps the number of tunable parameters
+    max_tunable_parameters: 2
+
+outcomes:
+  # why: plan 04 §2 forward 1M and 3M returns per signal, in trading sessions
+  horizons_trading_days: {1M: 21, 3M: 63}
+  # why: under 20 observations a hit rate moves by 5 points per observation, so it is not a finding
+  min_observations: 20
+  # why: a price series that stops this many days before the horizon is a delisting, not missing data
+  delisted_gap_days: 15
+
+quintiles:
+  # why: plan 04 §2 calibration dashboard, forward 3M, 6M and 12M returns
+  horizons_months: [3, 6, 12]
+  buckets: 5
+  # why: five buckets need at least five names each to mean anything
+  min_stocks_per_period: 25
+  # why: two years of month-ends before a spread is called a finding
+  min_periods: 24
+  # why: a rank-IC t-statistic of 2 is the usual bar for a signal that is not luck
+  min_ic_t_stat: 2.0
+  primary_horizon_months: 6
+
+alerts:
+  # why: ten rated alerts per signal before a precision figure is shown as more than an anecdote
+  min_rated: 10
+  # why: plan 09 go-live gate for live alerts, at most 30% judged noise
+  target_precision_pct: 70
+  feedback_tags: [late, duplicate, wrong_data, already_knew, too_minor]
+
+scorecard:
+  # why: plan 06 §6 forward 3M, 6M and 12M returns by add source
+  horizons_months: [3, 6, 12]
+  # why: a source with under 8 entries has no hit rate worth reading
+  min_entries: 8
+
+journal:
+  # why: plan 04 §2, a decision is judged at the next quarter, not next week
+  default_review_months: 3
+  # why: three short lines (reason, expected outcome, review date), not an essay
+  max_field_chars: 300
+  actions: [buy, add, trim, sell, hold, skip]
+
+drift:
+  # why: compare the latest month with the six months before it
+  baseline_months: 6
+  # why: a population stability index on fewer than 20 names is noise
+  min_stocks: 20
+  bins: 5
+  # why: the usual PSI bands, under 0.10 stable, 0.10–0.25 shifting, above 0.25 a real shift
+  psi_warn: 0.10
+  psi_alert: 0.25
+  # why: a verdict's share moving by more than 20 points in a month is worth a look
+  verdict_mix_shift_pct: 20
+  # why: a month with under half or over twice the usual fired signals suggests a data or rule change
+  signal_rate_ratio_low: 0.5
+  signal_rate_ratio_high: 2.0
+
+replay:
+  # why: a replay on the same inputs should match to rounding; 0.05 points allows float noise only
+  score_tolerance: 0.05
+  # why: a stored close that moved by more than 0.01% since the run means the data was revised
+  price_tolerance_pct: 0.01
+  # why: these must reproduce exactly or the run was not deterministic
+  fields: [verdict, rule_id, confidence, profile, history_class]
+
+restore:
+  # why: backups are weekly (config/backup.yaml); a newer-than-10-days backup means one was not missed
+  max_backup_age_days: 10
+  # why: a restore that returns under 99.9% of the manifest's rows has lost data
+  min_rows_ratio: 0.999

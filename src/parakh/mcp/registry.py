@@ -31,7 +31,9 @@ TIER_MEANING = {
     "N": "notify (queued through routing policy)",
     "J": "job request (bounded, rate-limited)",
 }
-TOOLSETS = ("reports", "analytics", "data", "portfolio", "notify", "jobs", "audit")
+TOOLSETS = (
+    "reports", "analytics", "data", "portfolio", "notify", "jobs", "audit", "calibration",
+)  # fmt: skip
 TOOL_ID = re.compile(rf"^TOOL\.({'|'.join(TOOLSETS)})\.[a-z][a-z0-9_]*$")
 # Verbs that change your state. They stay with you in Streamlit, Telegram or the CLI (AG-03).
 FORBIDDEN_VERBS = (

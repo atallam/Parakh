@@ -815,6 +815,39 @@ def build_parser() -> argparse.ArgumentParser:
     p_wl.add_argument("--target", type=float, help="target entry price in rupees (add/approve)")
     p_wl.add_argument("--note", help="decision note (approve)")
 
+    p_cal = sub.add_parser(
+        "calibrate", help="calibration (F17): backtest, outcomes, quintiles; governance checks"
+    )
+    p_cal.add_argument(
+        "action",
+        choices=["membership-import", "panel", "report", "drift", "replay", "restore-test"],
+    )
+    p_cal.add_argument("file", nargs="?", help="membership-import: the constituents CSV")
+    p_cal.add_argument("--store", choices=["local", "supabase"], default="supabase")
+    p_cal.add_argument("--years", type=int, default=10)
+    p_cal.add_argument("--quarter", help="report label, e.g. 2026-Q4 (default: this quarter)")
+    p_cal.add_argument(
+        "--allow-proxy",
+        action="store_true",
+        help="run the backtest on today's members, labelled biased",
+    )
+    p_cal.add_argument("--rebuild", action="store_true", help="panel: re-score everything")
+    p_cal.add_argument(
+        "--write", action="store_true", help="report: write docs/calibration and the review"
+    )
+    p_cal.add_argument("--asof", help="replay: month-end to replay, or drift: period YYYY-MM")
+    p_cal.add_argument("--output", help="folder of stored snapshots (default: the output folder)")
+
+    p_j = sub.add_parser("journal", help="decision journal: add, list, due, review")
+    p_j.add_argument("action", choices=["add", "list", "due", "review"])
+    p_j.add_argument("args", nargs="*", help="add: SYMBOL · review: ENTRY_ID")
+    p_j.add_argument("--action", dest="kind", help="buy, add, trim, sell, hold or skip")
+    p_j.add_argument("--reason")
+    p_j.add_argument("--expected")
+    p_j.add_argument("--review-on", dest="when", help="YYYY-MM-DD (default: 3 months)")
+    p_j.add_argument("--verdict", choices=["right", "wrong", "mixed", "too_early"])
+    p_j.add_argument("--note")
+
     p_sum = sub.add_parser("summarize", help="scaffold sample agent: summarise a text file")
     p_sum.add_argument("path")
     return parser
@@ -955,6 +988,34 @@ def _dispatch(argv: list[str] | None) -> int:
             from parakh.cli_watchlist import jobs_drain
 
             return jobs_drain(args.store)
+        case "calibrate":
+            from parakh import cli_calibration as cc
+
+            match args.action:
+                case "membership-import":
+                    if not args.file:
+                        print("usage: parakh calibrate membership-import FILE.csv", file=sys.stderr)
+                        return 2
+                    return cc.membership_import(args.file)
+                case "panel":
+                    return cc.panel(args.store, args.years, args.rebuild)
+                case "report":
+                    return cc.report(
+                        args.store, args.years, args.quarter, args.allow_proxy, args.write
+                    )
+                case "drift":
+                    return cc.drift(args.output, args.asof)
+                case "replay":
+                    return cc.replay_check(args.store, args.asof, args.output)
+                case _:
+                    return cc.restore_check()
+        case "journal":
+            from parakh.cli_calibration import journal
+
+            return journal(
+                args.action, args.args, args.reason, args.expected, args.when,
+                args.verdict, args.note, args.kind,
+            )  # fmt: skip
         case "watchlist":
             from parakh.cli_watchlist import run as watchlist
 

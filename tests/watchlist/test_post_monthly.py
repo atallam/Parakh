@@ -129,3 +129,41 @@ def test_without_a_runner_only_the_rule_based_review_runs(tmp_path) -> None:
         load_all(), None, ctx(), get_sink(), period="2026-10", today=TODAY, snaps=[], store=StateStore(tmp_path)
     )  # fmt: skip
     assert out.curator_status == "skipped" and out.watchlist_line.startswith("🗂 Watchlist review")
+
+
+@pytest.mark.ac("AC-F17.4")
+def test_journal_reviews_that_are_due_appear_in_the_monthly_summary(tmp_path) -> None:  # type: ignore[no-untyped-def]
+    from parakh.calibration.journal import JournalStore
+    from parakh.services.journal import JournalService
+
+    store, c = StateStore(tmp_path), ctx()
+    svc = JournalService(JournalStore(store), load_all(), c)
+    svc.add(
+        PILOT.symbol,
+        action="buy",
+        reason="order book up",
+        expected="beats index",
+        today=dt.date(2026, 7, 1),
+    )
+    svc.add(
+        PILOT.symbol,
+        action="hold",
+        reason="thesis intact",
+        expected="margins recover",
+        today=dt.date(2026, 10, 1),
+    )
+    out = pm.post_monthly(
+        load_all(), None, c, get_sink(), period="2026-10", today=TODAY, snaps=[], store=store
+    )
+    assert "📓 1 journal review due" in out.watchlist_line and "buy, 01 Jul" in out.watchlist_line
+    quiet = pm.post_monthly(
+        load_all(),
+        None,
+        c,
+        get_sink(),
+        period="2026-10",
+        today=dt.date(2026, 7, 2),
+        snaps=[],
+        store=StateStore(tmp_path / "x"),
+    )
+    assert "journal" not in quiet.watchlist_line
