@@ -7,7 +7,7 @@ watchlist:
   enabled: true
 qualitative:
   # why: the agent is built (Phase 4) but off until the first priced run on the eval set (plan 14 §4.6)
-  enabled: false
+  enabled: true
 llm:
   # why: no LLM calls before Phase 3; set from the first measured monthly cost (PRD §5).
   budget_tokens: 0
