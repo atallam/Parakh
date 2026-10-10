@@ -28,6 +28,28 @@ def isolated_settings(monkeypatch: pytest.MonkeyPatch):
     config.get_settings.cache_clear()
 
 
+def _hide_repo_directory(mp: pytest.MonkeyPatch) -> None:
+    """Most tests are frozen to the 7 pilot stocks. The committed `rollout` (config/universe.yaml)
+    moves with the staged scale-up, so the repo's own directory CSVs are hidden from `active`;
+    tests that exercise the directory point `config_dir` at their own folder."""
+    from parakh.configs import directory
+
+    real = directory.load_directory
+    repo_dir = (config.config_dir() / "universe_directory").resolve()  # before a test patches it
+
+    def load_directory(root, stage):  # type: ignore[no-untyped-def]
+        if root.resolve() == repo_dir:
+            return []
+        return real(root, stage)
+
+    mp.setattr(directory, "load_directory", load_directory)
+
+
+@pytest.fixture(autouse=True)
+def pilot_universe_in_tests(monkeypatch: pytest.MonkeyPatch):
+    _hide_repo_directory(monkeypatch)
+
+
 @pytest.fixture(autouse=True)
 def isolated_state(monkeypatch: pytest.MonkeyPatch, tmp_path_factory: pytest.TempPathFactory):
     """Every test gets its own state dir (audit outbox, run manifests); config stays the repo's."""
@@ -54,6 +76,7 @@ def module_isolation(tmp_path_factory: pytest.TempPathFactory):
     mp.setattr(config, "env_file", lambda: None)
     mp.setenv("APP_ENV", "test")
     mp.setenv("PARAKH_STATE_DIR", str(tmp_path_factory.mktemp("module_state")))
+    _hide_repo_directory(mp)
     config.get_settings.cache_clear()
     reset_sink()
     tokens.cache_clear()
