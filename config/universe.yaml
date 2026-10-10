@@ -1,7 +1,11 @@
 # Stock universe (plan 05 §1). Everything is keyed on ISIN, never the ticker (plan 04 §4 #1).
 # why mode=pilot: plan 09 §1 rollout step 1 (7 stocks) until M2; then cap, then all.
 mode: pilot
-# why: plan 13 D9, small caps are the Nifty Smallcap 250 only.
+# why rollout=mid: plan 09 Phase 4 staged scale-up, Mid first (about 150 stocks); Large and Small
+# follow only after the previous stage ran clean (pilot | mid | mid_large | all)
+rollout: mid
+# why: plan 13 D9 as amended in v1.26, small caps are AMFI ranks 251-500; the Nifty index below is
+# kept only for the index-membership reference check
 small_cap_index: NIFTY SMALLCAP 250
 
 # Pilot (plan 13 D3). Cap buckets from the AMFI July 2026 list (confirmed for all seven in
