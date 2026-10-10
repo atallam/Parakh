@@ -1,0 +1,90 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M4KKHWQ089D0FQ21MP0H25HY",
+  "mode": "monthly-notify",
+  "env": "prod",
+  "asof": "2026-10-11",
+  "trigger": "cron",
+  "triggered_by": "scheduler:monthly-notify",
+  "status": "SUCCESS",
+  "started_at": "2026-10-10T19:10:06.049995Z",
+  "finished_at": "2026-10-10T19:13:07.001760Z",
+  "code_version": "94b2df6881d9",
+  "config_hash": "sha256:f483c7acb0df857d0603770b61c2f93c6e72073cdd5cce462eec118913f6b811",
+  "framework_version": "0.1.0",
+  "lens_versions": {},
+  "policy_version": null,
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M4KKHWQ089D0FQ21MP0H25HY.summary.01",
+      "name": "summary",
+      "seq": 1,
+      "status": "ok",
+      "started_at": "2026-10-10T19:10:06.987561Z",
+      "ended_at": "2026-10-10T19:10:07.618032Z",
+      "duration_ms": 630.5,
+      "inputs": {},
+      "outputs": {
+        "delivered": true,
+        "upgrades": 0,
+        "downgrades": 0
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KKHWQ089D0FQ21MP0H25HY.thesis_changes.02",
+      "name": "thesis_changes",
+      "seq": 2,
+      "status": "ok",
+      "started_at": "2026-10-10T19:10:07.618233Z",
+      "ended_at": "2026-10-10T19:10:07.618445Z",
+      "duration_ms": 0.2,
+      "inputs": {},
+      "outputs": {
+        "alerts": 0,
+        "sent": 0
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KKHWQ089D0FQ21MP0H25HY.review.03",
+      "name": "review",
+      "seq": 3,
+      "status": "ok",
+      "started_at": "2026-10-10T19:10:07.618640Z",
+      "ended_at": "2026-10-10T19:10:07.619113Z",
+      "duration_ms": 0.5,
+      "inputs": {},
+      "outputs": {
+        "status": "ok",
+        "reason": "nothing to review"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KKHWQ089D0FQ21MP0H25HY.email.04",
+      "name": "email",
+      "seq": 4,
+      "status": "ok",
+      "started_at": "2026-10-10T19:10:07.619332Z",
+      "ended_at": "2026-10-10T19:13:05.518437Z",
+      "duration_ms": 177899.1,
+      "inputs": {},
+      "outputs": {
+        "delivered": true,
+        "ics_entries": 79
+      },
+      "error": null
+    }
+  ],
+  "audit_events": 3,
+  "audit_pending": 0,
+  "audit_chain_head": "sha256:c9f3a7f9571f7364b008eae1fce352b5064cde58917596dd8384fdb88ac71980",
+  "audit_sink": "supabase",
+  "llm_tokens": 0,
+  "alerts_sent": 1,
+  "alerts_suppressed": 0,
+  "agent_runs": 0,
+  "failed_steps": 0
+}

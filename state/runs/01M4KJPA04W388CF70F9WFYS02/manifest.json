@@ -1,0 +1,2673 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M4KJPA04W388CF70F9WFYS02",
+  "mode": "monthly",
+  "env": "prod",
+  "asof": "2026-10-11",
+  "trigger": "manual",
+  "triggered_by": "user:avinash",
+  "status": "SUCCESS",
+  "started_at": "2026-10-10T18:55:02.149834Z",
+  "finished_at": "2026-10-10T19:09:41.929371Z",
+  "code_version": "94b2df6881d9",
+  "config_hash": "sha256:f483c7acb0df857d0603770b61c2f93c6e72073cdd5cce462eec118913f6b811",
+  "framework_version": "0.1.0",
+  "lens_versions": {
+    "value": "1.0.0",
+    "momentum": "1.0.0"
+  },
+  "policy_version": "1.0.0",
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.regime.01",
+      "name": "regime",
+      "seq": 1,
+      "status": "ok",
+      "started_at": "2026-10-10T18:55:03.272264Z",
+      "ended_at": "2026-10-10T18:55:24.854390Z",
+      "duration_ms": 21582.1,
+      "inputs": {},
+      "outputs": {
+        "large": "Risk-Off",
+        "mid": "Neutral",
+        "small": "Risk-On"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.02",
+      "name": "analyse_stock",
+      "seq": 2,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:03.275885Z",
+      "ended_at": "2026-10-10T19:08:05.277017Z",
+      "duration_ms": 2001.1,
+      "inputs": {
+        "isin": "INE646L01027",
+        "symbol": "INDIGO"
+      },
+      "outputs": {
+        "verdict": "SELL",
+        "snapshot": "sha256:5cb05f8683a1784b0c9dbfc8b1251e1ee3172fd449d260a47f8491101efaa8dd"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.03",
+      "name": "analyse_stock",
+      "seq": 3,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:05.277212Z",
+      "ended_at": "2026-10-10T19:08:06.185434Z",
+      "duration_ms": 908.2,
+      "inputs": {
+        "isin": "INE101A01026",
+        "symbol": "M&M"
+      },
+      "outputs": {
+        "verdict": "REDUCE",
+        "snapshot": "sha256:f5c148d1b3dccb59998431fbbc339c13b9ed38f926fdb721be9103a2a0d78131"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.04",
+      "name": "analyse_stock",
+      "seq": 4,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:06.185563Z",
+      "ended_at": "2026-10-10T19:08:06.934590Z",
+      "duration_ms": 749.0,
+      "inputs": {
+        "isin": "INE040A01034",
+        "symbol": "HDFCBANK"
+      },
+      "outputs": {
+        "verdict": "REDUCE",
+        "snapshot": "sha256:3cde7ca27a87769762a819a07bed8ec8ee37b443d63fb39d27523016db14898d"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.05",
+      "name": "analyse_stock",
+      "seq": 5,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:06.934781Z",
+      "ended_at": "2026-10-10T19:08:08.186051Z",
+      "duration_ms": 1251.3,
+      "inputs": {
+        "isin": "INE0HOQ01053",
+        "symbol": "GROWW"
+      },
+      "outputs": {
+        "verdict": "AVOID",
+        "snapshot": "sha256:c4f7e41db1a225d725a8d5b3d5418a472b928d838c3dae01d0f4c220d86740f6"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.06",
+      "name": "analyse_stock",
+      "seq": 6,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:08.186240Z",
+      "ended_at": "2026-10-10T19:08:08.914260Z",
+      "duration_ms": 728.0,
+      "inputs": {
+        "isin": "INE249Z01020",
+        "symbol": "MAZDOCK"
+      },
+      "outputs": {
+        "verdict": "ACCUMULATE",
+        "snapshot": "sha256:aae0ef686e02ae9e5edb3a5855e65d7da05427b654237d9d16ba1ef2aed96a70"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.07",
+      "name": "analyse_stock",
+      "seq": 7,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:08.914447Z",
+      "ended_at": "2026-10-10T19:08:09.618573Z",
+      "duration_ms": 704.1,
+      "inputs": {
+        "isin": "INE0LEZ01016",
+        "symbol": "ATHERENERG"
+      },
+      "outputs": {
+        "verdict": "AVOID",
+        "snapshot": "sha256:3ca749ad8c5ab4feb508781d51c7f1753797282e0978910cc9d997a796d7a29b"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.08",
+      "name": "analyse_stock",
+      "seq": 8,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:09.618764Z",
+      "ended_at": "2026-10-10T19:08:10.310307Z",
+      "duration_ms": 691.5,
+      "inputs": {
+        "isin": "INE12UN01015",
+        "symbol": "SHADOWFAX"
+      },
+      "outputs": {
+        "verdict": "HOLD",
+        "snapshot": "sha256:dbade396fbacfcb9d12496124617cd1e4afa11e6b71ef65c048225e6d78600d0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.09",
+      "name": "analyse_stock",
+      "seq": 9,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:10.310499Z",
+      "ended_at": "2026-10-10T19:08:10.926648Z",
+      "duration_ms": 616.1,
+      "inputs": {
+        "isin": "INE466L01038",
+        "symbol": "360ONE"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.10",
+      "name": "analyse_stock",
+      "seq": 10,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:10.926865Z",
+      "ended_at": "2026-10-10T19:08:11.545871Z",
+      "duration_ms": 619.0,
+      "inputs": {
+        "isin": "INE470A01017",
+        "symbol": "3MINDIA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.11",
+      "name": "analyse_stock",
+      "seq": 11,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:11.546105Z",
+      "ended_at": "2026-10-10T19:08:12.159219Z",
+      "duration_ms": 613.1,
+      "inputs": {
+        "isin": "INE674K01013",
+        "symbol": "ABCAPITAL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.12",
+      "name": "analyse_stock",
+      "seq": 12,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:12.159439Z",
+      "ended_at": "2026-10-10T19:08:12.776884Z",
+      "duration_ms": 617.4,
+      "inputs": {
+        "isin": "INE212H01026",
+        "symbol": "AIAENG"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.13",
+      "name": "analyse_stock",
+      "seq": 13,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:12.777120Z",
+      "ended_at": "2026-10-10T19:08:13.402812Z",
+      "duration_ms": 625.7,
+      "inputs": {
+        "isin": "INE206F01022",
+        "symbol": "AIIL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.14",
+      "name": "analyse_stock",
+      "seq": 14,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:13.403040Z",
+      "ended_at": "2026-10-10T19:08:14.012880Z",
+      "duration_ms": 609.8,
+      "inputs": {
+        "isin": "INE031B01049",
+        "symbol": "AJANTPHARM"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.15",
+      "name": "analyse_stock",
+      "seq": 15,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:14.013111Z",
+      "ended_at": "2026-10-10T19:08:14.627291Z",
+      "duration_ms": 614.2,
+      "inputs": {
+        "isin": "INE540L01014",
+        "symbol": "ALKEM"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.16",
+      "name": "analyse_stock",
+      "seq": 16,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:14.627509Z",
+      "ended_at": "2026-10-10T19:08:15.235359Z",
+      "duration_ms": 607.9,
+      "inputs": {
+        "isin": "INE0CZ201020",
+        "symbol": "ANTHEM"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.17",
+      "name": "analyse_stock",
+      "seq": 17,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:15.235575Z",
+      "ended_at": "2026-10-10T19:08:15.850216Z",
+      "duration_ms": 614.6,
+      "inputs": {
+        "isin": "INE372A01015",
+        "symbol": "APARINDS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.18",
+      "name": "analyse_stock",
+      "seq": 18,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:15.850429Z",
+      "ended_at": "2026-10-10T19:08:16.465447Z",
+      "duration_ms": 615.0,
+      "inputs": {
+        "isin": "INE702C01027",
+        "symbol": "APLAPOLLO"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.19",
+      "name": "analyse_stock",
+      "seq": 19,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:16.465664Z",
+      "ended_at": "2026-10-10T19:08:17.061030Z",
+      "duration_ms": 595.4,
+      "inputs": {
+        "isin": "INE208A01029",
+        "symbol": "ASHOKLEY"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.20",
+      "name": "analyse_stock",
+      "seq": 20,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:17.061246Z",
+      "ended_at": "2026-10-10T19:08:17.697294Z",
+      "duration_ms": 636.0,
+      "inputs": {
+        "isin": "INE914M01019",
+        "symbol": "ASTERDM"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.21",
+      "name": "analyse_stock",
+      "seq": 21,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:17.697507Z",
+      "ended_at": "2026-10-10T19:08:18.309982Z",
+      "duration_ms": 612.5,
+      "inputs": {
+        "isin": "INE006I01046",
+        "symbol": "ASTRAL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.22",
+      "name": "analyse_stock",
+      "seq": 22,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:18.310197Z",
+      "ended_at": "2026-10-10T19:08:18.941644Z",
+      "duration_ms": 631.4,
+      "inputs": {
+        "isin": "INE399L01023",
+        "symbol": "ATGL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.23",
+      "name": "analyse_stock",
+      "seq": 23,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:18.941862Z",
+      "ended_at": "2026-10-10T19:08:19.556139Z",
+      "duration_ms": 614.3,
+      "inputs": {
+        "isin": "INE949L01017",
+        "symbol": "AUBANK"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.24",
+      "name": "analyse_stock",
+      "seq": 24,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:19.556365Z",
+      "ended_at": "2026-10-10T19:08:20.170417Z",
+      "duration_ms": 614.1,
+      "inputs": {
+        "isin": "INE406A01037",
+        "symbol": "AUROPHARMA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.25",
+      "name": "analyse_stock",
+      "seq": 25,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:20.170639Z",
+      "ended_at": "2026-10-10T19:08:21.280550Z",
+      "duration_ms": 1109.9,
+      "inputs": {
+        "isin": "INE2OVN25015",
+        "symbol": "BAGMANE"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.26",
+      "name": "analyse_stock",
+      "seq": 26,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:21.280770Z",
+      "ended_at": "2026-10-10T19:08:21.919688Z",
+      "duration_ms": 638.9,
+      "inputs": {
+        "isin": "INE377Y01014",
+        "symbol": "BAJAJHFL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.27",
+      "name": "analyse_stock",
+      "seq": 27,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:21.919908Z",
+      "ended_at": "2026-10-10T19:08:22.548511Z",
+      "duration_ms": 628.6,
+      "inputs": {
+        "isin": "INE787D01026",
+        "symbol": "BALKRISIND"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.28",
+      "name": "analyse_stock",
+      "seq": 28,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:22.548730Z",
+      "ended_at": "2026-10-10T19:08:23.145988Z",
+      "duration_ms": 597.3,
+      "inputs": {
+        "isin": "INE084A01016",
+        "symbol": "BANKINDIA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.29",
+      "name": "analyse_stock",
+      "seq": 29,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:23.146206Z",
+      "ended_at": "2026-10-10T19:08:23.767520Z",
+      "duration_ms": 621.3,
+      "inputs": {
+        "isin": "INE171Z01026",
+        "symbol": "BDL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.30",
+      "name": "analyse_stock",
+      "seq": 30,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:23.767762Z",
+      "ended_at": "2026-10-10T19:08:24.342086Z",
+      "duration_ms": 574.3,
+      "inputs": {
+        "isin": "INE463A01038",
+        "symbol": "BERGEPAINT"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.31",
+      "name": "analyse_stock",
+      "seq": 31,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:24.342303Z",
+      "ended_at": "2026-10-10T19:08:24.950677Z",
+      "duration_ms": 608.4,
+      "inputs": {
+        "isin": "INE465A01025",
+        "symbol": "BHARATFORG"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.32",
+      "name": "analyse_stock",
+      "seq": 32,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:24.950896Z",
+      "ended_at": "2026-10-10T19:08:25.559475Z",
+      "duration_ms": 608.6,
+      "inputs": {
+        "isin": "INE343G01021",
+        "symbol": "BHARTIHEXA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.33",
+      "name": "analyse_stock",
+      "seq": 33,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:25.559692Z",
+      "ended_at": "2026-10-10T19:08:26.169735Z",
+      "duration_ms": 610.0,
+      "inputs": {
+        "isin": "INE376G01013",
+        "symbol": "BIOCON"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.34",
+      "name": "analyse_stock",
+      "seq": 34,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:26.169965Z",
+      "ended_at": "2026-10-10T19:08:26.784200Z",
+      "duration_ms": 614.2,
+      "inputs": {
+        "isin": "INE472A01039",
+        "symbol": "BLUESTARCO"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.35",
+      "name": "analyse_stock",
+      "seq": 35,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:26.784414Z",
+      "ended_at": "2026-10-10T19:08:27.409069Z",
+      "duration_ms": 624.7,
+      "inputs": {
+        "isin": "INE323A01026",
+        "symbol": "BOSCHLTD"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.36",
+      "name": "analyse_stock",
+      "seq": 36,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:27.409286Z",
+      "ended_at": "2026-10-10T19:08:28.028209Z",
+      "duration_ms": 618.9,
+      "inputs": {
+        "isin": "INE704P01025",
+        "symbol": "COCHINSHIP"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.37",
+      "name": "analyse_stock",
+      "seq": 37,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:28.028424Z",
+      "ended_at": "2026-10-10T19:08:28.673732Z",
+      "duration_ms": 645.3,
+      "inputs": {
+        "isin": "INE591G01025",
+        "symbol": "COFORGE"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.38",
+      "name": "analyse_stock",
+      "seq": 38,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:28.673966Z",
+      "ended_at": "2026-10-10T19:08:29.293683Z",
+      "duration_ms": 619.7,
+      "inputs": {
+        "isin": "INE259A01022",
+        "symbol": "COLPAL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.39",
+      "name": "analyse_stock",
+      "seq": 39,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:29.293897Z",
+      "ended_at": "2026-10-10T19:08:29.909332Z",
+      "duration_ms": 615.4,
+      "inputs": {
+        "isin": "INE111A01025",
+        "symbol": "CONCOR"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.40",
+      "name": "analyse_stock",
+      "seq": 40,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:29.909555Z",
+      "ended_at": "2026-10-10T19:08:30.551027Z",
+      "duration_ms": 641.5,
+      "inputs": {
+        "isin": "INE169A01031",
+        "symbol": "COROMANDEL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.41",
+      "name": "analyse_stock",
+      "seq": 41,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:30.551241Z",
+      "ended_at": "2026-10-10T19:08:31.167897Z",
+      "duration_ms": 616.7,
+      "inputs": {
+        "isin": "INE016A01026",
+        "symbol": "DABUR"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.42",
+      "name": "analyse_stock",
+      "seq": 42,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:31.168130Z",
+      "ended_at": "2026-10-10T19:08:31.778547Z",
+      "duration_ms": 610.4,
+      "inputs": {
+        "isin": "INE00R701025",
+        "symbol": "DALBHARAT"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.43",
+      "name": "analyse_stock",
+      "seq": 43,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:31.778766Z",
+      "ended_at": "2026-10-10T19:08:32.391792Z",
+      "duration_ms": 613.0,
+      "inputs": {
+        "isin": "INE935N01020",
+        "symbol": "DIXON"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.44",
+      "name": "analyse_stock",
+      "seq": 44,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:32.392025Z",
+      "ended_at": "2026-10-10T19:08:32.986939Z",
+      "duration_ms": 594.9,
+      "inputs": {
+        "isin": "INE089A01031",
+        "symbol": "DRREDDY"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.45",
+      "name": "analyse_stock",
+      "seq": 45,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:32.987160Z",
+      "ended_at": "2026-10-10T19:08:33.598680Z",
+      "duration_ms": 611.5,
+      "inputs": {
+        "isin": "INE041025011",
+        "symbol": "EMBASSY"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.46",
+      "name": "analyse_stock",
+      "seq": 46,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:33.598898Z",
+      "ended_at": "2026-10-10T19:08:34.201995Z",
+      "duration_ms": 603.1,
+      "inputs": {
+        "isin": "INE913H01037",
+        "symbol": "ENDURANCE"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.47",
+      "name": "analyse_stock",
+      "seq": 47,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:34.202208Z",
+      "ended_at": "2026-10-10T19:08:34.811419Z",
+      "duration_ms": 609.2,
+      "inputs": {
+        "isin": "INE1NPP01017",
+        "symbol": "ENRIN"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.48",
+      "name": "analyse_stock",
+      "seq": 48,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:34.811636Z",
+      "ended_at": "2026-10-10T19:08:35.425040Z",
+      "duration_ms": 613.4,
+      "inputs": {
+        "isin": "INE042A01014",
+        "symbol": "ESCORTS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.49",
+      "name": "analyse_stock",
+      "seq": 49,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:35.425254Z",
+      "ended_at": "2026-10-10T19:08:36.037315Z",
+      "duration_ms": 612.1,
+      "inputs": {
+        "isin": "INE188A01015",
+        "symbol": "FACT"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.50",
+      "name": "analyse_stock",
+      "seq": 50,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:36.037529Z",
+      "ended_at": "2026-10-10T19:08:36.658227Z",
+      "duration_ms": 620.7,
+      "inputs": {
+        "isin": "INE171A01029",
+        "symbol": "FEDERALBNK"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.51",
+      "name": "analyse_stock",
+      "seq": 51,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:36.658440Z",
+      "ended_at": "2026-10-10T19:08:37.269899Z",
+      "duration_ms": 611.5,
+      "inputs": {
+        "isin": "INE09N301011",
+        "symbol": "FLUOROCHEM"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.52",
+      "name": "analyse_stock",
+      "seq": 52,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:37.270132Z",
+      "ended_at": "2026-10-10T19:08:37.854585Z",
+      "duration_ms": 584.5,
+      "inputs": {
+        "isin": "INE061F01013",
+        "symbol": "FORTIS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.53",
+      "name": "analyse_stock",
+      "seq": 53,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:37.854802Z",
+      "ended_at": "2026-10-10T19:08:38.436078Z",
+      "duration_ms": 581.3,
+      "inputs": {
+        "isin": "INE481Y01014",
+        "symbol": "GICRE"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.54",
+      "name": "analyse_stock",
+      "seq": 54,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:38.436295Z",
+      "ended_at": "2026-10-10T19:08:39.027640Z",
+      "duration_ms": 591.3,
+      "inputs": {
+        "isin": "INE159A01016",
+        "symbol": "GLAXO"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.55",
+      "name": "analyse_stock",
+      "seq": 55,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:39.027859Z",
+      "ended_at": "2026-10-10T19:08:39.653781Z",
+      "duration_ms": 625.9,
+      "inputs": {
+        "isin": "INE935A01035",
+        "symbol": "GLENMARK"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.56",
+      "name": "analyse_stock",
+      "seq": 56,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:39.654012Z",
+      "ended_at": "2026-10-10T19:08:40.268340Z",
+      "duration_ms": 614.3,
+      "inputs": {
+        "isin": "INE776C01039",
+        "symbol": "GMRAIRPORT"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.57",
+      "name": "analyse_stock",
+      "seq": 57,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:40.268561Z",
+      "ended_at": "2026-10-10T19:08:40.860151Z",
+      "duration_ms": 591.6,
+      "inputs": {
+        "isin": "INE260B01028",
+        "symbol": "GODFRYPHLP"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.58",
+      "name": "analyse_stock",
+      "seq": 58,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:40.860370Z",
+      "ended_at": "2026-10-10T19:08:41.475212Z",
+      "duration_ms": 614.8,
+      "inputs": {
+        "isin": "INE233A01035",
+        "symbol": "GODREJIND"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.59",
+      "name": "analyse_stock",
+      "seq": 59,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:41.475427Z",
+      "ended_at": "2026-10-10T19:08:42.089005Z",
+      "duration_ms": 613.6,
+      "inputs": {
+        "isin": "INE484J01027",
+        "symbol": "GODREJPROP"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.60",
+      "name": "analyse_stock",
+      "seq": 60,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:42.089217Z",
+      "ended_at": "2026-10-10T19:08:42.680112Z",
+      "duration_ms": 590.9,
+      "inputs": {
+        "isin": "INE200A01026",
+        "symbol": "GVT&D"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.61",
+      "name": "analyse_stock",
+      "seq": 61,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:42.680330Z",
+      "ended_at": "2026-10-10T19:08:43.294483Z",
+      "duration_ms": 614.2,
+      "inputs": {
+        "isin": "INE176B01034",
+        "symbol": "HAVELLS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.62",
+      "name": "analyse_stock",
+      "seq": 62,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:43.294708Z",
+      "ended_at": "2026-10-10T19:08:43.912479Z",
+      "duration_ms": 617.8,
+      "inputs": {
+        "isin": "INE756I01012",
+        "symbol": "HDBFS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.63",
+      "name": "analyse_stock",
+      "seq": 63,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:43.912691Z",
+      "ended_at": "2026-10-10T19:08:44.541113Z",
+      "duration_ms": 628.4,
+      "inputs": {
+        "isin": "INE158A01026",
+        "symbol": "HEROMOTOCO"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.64",
+      "name": "analyse_stock",
+      "seq": 64,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:44.541338Z",
+      "ended_at": "2026-10-10T19:08:45.158847Z",
+      "duration_ms": 617.5,
+      "inputs": {
+        "isin": "INE531E01026",
+        "symbol": "HINDCOPPER"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.65",
+      "name": "analyse_stock",
+      "seq": 65,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:45.159077Z",
+      "ended_at": "2026-10-10T19:08:45.777327Z",
+      "duration_ms": 618.2,
+      "inputs": {
+        "isin": "INE094A01015",
+        "symbol": "HINDPETRO"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.66",
+      "name": "analyse_stock",
+      "seq": 66,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:45.777544Z",
+      "ended_at": "2026-10-10T19:08:46.393263Z",
+      "duration_ms": 615.7,
+      "inputs": {
+        "isin": "INE031A01017",
+        "symbol": "HUDCO"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.67",
+      "name": "analyse_stock",
+      "seq": 67,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:46.393476Z",
+      "ended_at": "2026-10-10T19:08:47.010654Z",
+      "duration_ms": 617.2,
+      "inputs": {
+        "isin": "INE765G01017",
+        "symbol": "ICICIGI"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.68",
+      "name": "analyse_stock",
+      "seq": 68,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:47.010868Z",
+      "ended_at": "2026-10-10T19:08:47.623783Z",
+      "duration_ms": 612.9,
+      "inputs": {
+        "isin": "INE726G01019",
+        "symbol": "ICICIPRULI"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.69",
+      "name": "analyse_stock",
+      "seq": 69,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:47.624011Z",
+      "ended_at": "2026-10-10T19:08:48.216951Z",
+      "duration_ms": 592.9,
+      "inputs": {
+        "isin": "INE008A01015",
+        "symbol": "IDBI"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.70",
+      "name": "analyse_stock",
+      "seq": 70,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:48.217169Z",
+      "ended_at": "2026-10-10T19:08:48.826719Z",
+      "duration_ms": 609.6,
+      "inputs": {
+        "isin": "INE092T01019",
+        "symbol": "IDFCFIRSTB"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.71",
+      "name": "analyse_stock",
+      "seq": 71,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:48.826951Z",
+      "ended_at": "2026-10-10T19:08:49.441568Z",
+      "duration_ms": 614.6,
+      "inputs": {
+        "isin": "INE053A01029",
+        "symbol": "INDHOTEL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.72",
+      "name": "analyse_stock",
+      "seq": 72,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:49.441787Z",
+      "ended_at": "2026-10-10T19:08:50.118282Z",
+      "duration_ms": 676.5,
+      "inputs": {
+        "isin": "INE095A01012",
+        "symbol": "INDUSINDBK"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.73",
+      "name": "analyse_stock",
+      "seq": 73,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:50.118500Z",
+      "ended_at": "2026-10-10T19:08:50.733649Z",
+      "duration_ms": 615.1,
+      "inputs": {
+        "isin": "INE565A01014",
+        "symbol": "IOB"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.74",
+      "name": "analyse_stock",
+      "seq": 74,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:50.733863Z",
+      "ended_at": "2026-10-10T19:08:51.346999Z",
+      "duration_ms": 613.1,
+      "inputs": {
+        "isin": "INE571A01038",
+        "symbol": "IPCALAB"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.75",
+      "name": "analyse_stock",
+      "seq": 75,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:51.347218Z",
+      "ended_at": "2026-10-10T19:08:51.936620Z",
+      "duration_ms": 589.4,
+      "inputs": {
+        "isin": "INE335Y01020",
+        "symbol": "IRCTC"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.76",
+      "name": "analyse_stock",
+      "seq": 76,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:51.936835Z",
+      "ended_at": "2026-10-10T19:08:52.550080Z",
+      "duration_ms": 613.2,
+      "inputs": {
+        "isin": "INE202E01016",
+        "symbol": "IREDA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.77",
+      "name": "analyse_stock",
+      "seq": 77,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:52.550294Z",
+      "ended_at": "2026-10-10T19:08:53.139469Z",
+      "duration_ms": 589.2,
+      "inputs": {
+        "isin": "INE379A01028",
+        "symbol": "ITCHOTELS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.78",
+      "name": "analyse_stock",
+      "seq": 78,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:53.139686Z",
+      "ended_at": "2026-10-10T19:08:53.741148Z",
+      "duration_ms": 601.5,
+      "inputs": {
+        "isin": "INE823G01014",
+        "symbol": "JKCEMENT"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.79",
+      "name": "analyse_stock",
+      "seq": 79,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:53.741359Z",
+      "ended_at": "2026-10-10T19:08:54.329557Z",
+      "duration_ms": 588.2,
+      "inputs": {
+        "isin": "INE220G01021",
+        "symbol": "JSL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.80",
+      "name": "analyse_stock",
+      "seq": 80,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:54.329776Z",
+      "ended_at": "2026-10-10T19:08:54.960283Z",
+      "duration_ms": 630.5,
+      "inputs": {
+        "isin": "INE121E01018",
+        "symbol": "JSWENERGY"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.81",
+      "name": "analyse_stock",
+      "seq": 81,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:54.960497Z",
+      "ended_at": "2026-10-10T19:08:55.574530Z",
+      "duration_ms": 614.0,
+      "inputs": {
+        "isin": "INE880J01026",
+        "symbol": "JSWINFRA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.82",
+      "name": "analyse_stock",
+      "seq": 82,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:55.574745Z",
+      "ended_at": "2026-10-10T19:08:56.187757Z",
+      "duration_ms": 613.0,
+      "inputs": {
+        "isin": "INE303R01014",
+        "symbol": "KALYANKJIL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.83",
+      "name": "analyse_stock",
+      "seq": 83,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:56.187983Z",
+      "ended_at": "2026-10-10T19:08:56.810010Z",
+      "duration_ms": 622.0,
+      "inputs": {
+        "isin": "INE878B01027",
+        "symbol": "KEI"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.84",
+      "name": "analyse_stock",
+      "seq": 84,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:56.810226Z",
+      "ended_at": "2026-10-10T19:08:57.423627Z",
+      "duration_ms": 613.4,
+      "inputs": {
+        "isin": "INE1JAR25012",
+        "symbol": "KRT"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.85",
+      "name": "analyse_stock",
+      "seq": 85,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:57.423844Z",
+      "ended_at": "2026-10-10T19:08:58.026467Z",
+      "duration_ms": 602.6,
+      "inputs": {
+        "isin": "INE947Q01028",
+        "symbol": "LAURUSLABS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.86",
+      "name": "analyse_stock",
+      "seq": 86,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:58.026689Z",
+      "ended_at": "2026-10-10T19:08:58.638185Z",
+      "duration_ms": 611.5,
+      "inputs": {
+        "isin": "INE956O01016",
+        "symbol": "LENSKART"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.87",
+      "name": "analyse_stock",
+      "seq": 87,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:58.638399Z",
+      "ended_at": "2026-10-10T19:08:59.244620Z",
+      "duration_ms": 606.2,
+      "inputs": {
+        "isin": "INE324D01010",
+        "symbol": "LGEINDIA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.88",
+      "name": "analyse_stock",
+      "seq": 88,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:59.244840Z",
+      "ended_at": "2026-10-10T19:08:59.857514Z",
+      "duration_ms": 612.7,
+      "inputs": {
+        "isin": "INE473A01011",
+        "symbol": "LINDEINDIA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.89",
+      "name": "analyse_stock",
+      "seq": 89,
+      "status": "ok",
+      "started_at": "2026-10-10T19:08:59.857737Z",
+      "ended_at": "2026-10-10T19:09:00.486477Z",
+      "duration_ms": 628.7,
+      "inputs": {
+        "isin": "INE281B01032",
+        "symbol": "LLOYDSME"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.90",
+      "name": "analyse_stock",
+      "seq": 90,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:00.486693Z",
+      "ended_at": "2026-10-10T19:09:01.099710Z",
+      "duration_ms": 613.0,
+      "inputs": {
+        "isin": "INE670K01029",
+        "symbol": "LODHA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.91",
+      "name": "analyse_stock",
+      "seq": 91,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:01.100366Z",
+      "ended_at": "2026-10-10T19:09:01.713130Z",
+      "duration_ms": 612.8,
+      "inputs": {
+        "isin": "INE498L01015",
+        "symbol": "LTF"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.92",
+      "name": "analyse_stock",
+      "seq": 92,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:01.713343Z",
+      "ended_at": "2026-10-10T19:09:02.319099Z",
+      "duration_ms": 605.8,
+      "inputs": {
+        "isin": "INE010V01017",
+        "symbol": "LTTS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.93",
+      "name": "analyse_stock",
+      "seq": 93,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:02.319326Z",
+      "ended_at": "2026-10-10T19:09:02.932415Z",
+      "duration_ms": 613.1,
+      "inputs": {
+        "isin": "INE326A01037",
+        "symbol": "LUPIN"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.94",
+      "name": "analyse_stock",
+      "seq": 94,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:02.932628Z",
+      "ended_at": "2026-10-10T19:09:03.522698Z",
+      "duration_ms": 590.1,
+      "inputs": {
+        "isin": "INE774D01024",
+        "symbol": "M&MFIN"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.95",
+      "name": "analyse_stock",
+      "seq": 95,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:03.522918Z",
+      "ended_at": "2026-10-10T19:09:04.135828Z",
+      "duration_ms": 612.9,
+      "inputs": {
+        "isin": "INE457A01014",
+        "symbol": "MAHABANK"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.96",
+      "name": "analyse_stock",
+      "seq": 96,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:04.136056Z",
+      "ended_at": "2026-10-10T19:09:04.751169Z",
+      "duration_ms": 615.1,
+      "inputs": {
+        "isin": "INE634S01028",
+        "symbol": "MANKIND"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.97",
+      "name": "analyse_stock",
+      "seq": 97,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:04.751382Z",
+      "ended_at": "2026-10-10T19:09:05.377174Z",
+      "duration_ms": 625.8,
+      "inputs": {
+        "isin": "INE196A01026",
+        "symbol": "MARICO"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.98",
+      "name": "analyse_stock",
+      "seq": 98,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:05.377378Z",
+      "ended_at": "2026-10-10T19:09:05.991971Z",
+      "duration_ms": 614.6,
+      "inputs": {
+        "isin": "INE027H01010",
+        "symbol": "MAXHEALTH"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.99",
+      "name": "analyse_stock",
+      "seq": 99,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:05.992179Z",
+      "ended_at": "2026-10-10T19:09:06.606387Z",
+      "duration_ms": 614.2,
+      "inputs": {
+        "isin": "INE0VDM01015",
+        "symbol": "MEESHO"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.100",
+      "name": "analyse_stock",
+      "seq": 100,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:06.606598Z",
+      "ended_at": "2026-10-10T19:09:07.226154Z",
+      "duration_ms": 619.6,
+      "inputs": {
+        "isin": "INE180A01020",
+        "symbol": "MFSL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.101",
+      "name": "analyse_stock",
+      "seq": 101,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:07.226360Z",
+      "ended_at": "2026-10-10T19:09:07.836414Z",
+      "duration_ms": 610.1,
+      "inputs": {
+        "isin": "INE338I01027",
+        "symbol": "MOTILALOFS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.102",
+      "name": "analyse_stock",
+      "seq": 102,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:07.836624Z",
+      "ended_at": "2026-10-10T19:09:08.481376Z",
+      "duration_ms": 644.8,
+      "inputs": {
+        "isin": "INE356A01018",
+        "symbol": "MPHASIS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.103",
+      "name": "analyse_stock",
+      "seq": 103,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:08.481583Z",
+      "ended_at": "2026-10-10T19:09:09.089605Z",
+      "duration_ms": 608.0,
+      "inputs": {
+        "isin": "INE883A01011",
+        "symbol": "MRF"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.104",
+      "name": "analyse_stock",
+      "seq": 104,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:09.089819Z",
+      "ended_at": "2026-10-10T19:09:09.710259Z",
+      "duration_ms": 620.4,
+      "inputs": {
+        "isin": "INE298J01013",
+        "symbol": "NAM-INDIA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.105",
+      "name": "analyse_stock",
+      "seq": 105,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:09.710466Z",
+      "ended_at": "2026-10-10T19:09:10.315200Z",
+      "duration_ms": 604.7,
+      "inputs": {
+        "isin": "INE139A01034",
+        "symbol": "NATIONALUM"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.106",
+      "name": "analyse_stock",
+      "seq": 106,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:10.315413Z",
+      "ended_at": "2026-10-10T19:09:10.951299Z",
+      "duration_ms": 635.9,
+      "inputs": {
+        "isin": "INE663F01032",
+        "symbol": "NAUKRI"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.107",
+      "name": "analyse_stock",
+      "seq": 107,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:10.951515Z",
+      "ended_at": "2026-10-10T19:09:11.573440Z",
+      "duration_ms": 621.9,
+      "inputs": {
+        "isin": "INE410P01011",
+        "symbol": "NH"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.108",
+      "name": "analyse_stock",
+      "seq": 108,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:11.573644Z",
+      "ended_at": "2026-10-10T19:09:12.189220Z",
+      "duration_ms": 615.6,
+      "inputs": {
+        "isin": "INE848E01016",
+        "symbol": "NHPC"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.109",
+      "name": "analyse_stock",
+      "seq": 109,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:12.189429Z",
+      "ended_at": "2026-10-10T19:09:12.824785Z",
+      "duration_ms": 635.4,
+      "inputs": {
+        "isin": "INE589A01014",
+        "symbol": "NLCINDIA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.110",
+      "name": "analyse_stock",
+      "seq": 110,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:12.825014Z",
+      "ended_at": "2026-10-10T19:09:13.434674Z",
+      "duration_ms": 609.7,
+      "inputs": {
+        "isin": "INE584A01023",
+        "symbol": "NMDC"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.111",
+      "name": "analyse_stock",
+      "seq": 111,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:13.434885Z",
+      "ended_at": "2026-10-10T19:09:14.050536Z",
+      "duration_ms": 615.7,
+      "inputs": {
+        "isin": "INE0ONG01011",
+        "symbol": "NTPCGREEN"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.112",
+      "name": "analyse_stock",
+      "seq": 112,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:14.050754Z",
+      "ended_at": "2026-10-10T19:09:14.640835Z",
+      "duration_ms": 590.1,
+      "inputs": {
+        "isin": "INE388Y01029",
+        "symbol": "NYKAA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.113",
+      "name": "analyse_stock",
+      "seq": 113,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:14.641108Z",
+      "ended_at": "2026-10-10T19:09:15.233275Z",
+      "duration_ms": 592.2,
+      "inputs": {
+        "isin": "INE093I01010",
+        "symbol": "OBEROIRLTY"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.114",
+      "name": "analyse_stock",
+      "seq": 114,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:15.233486Z",
+      "ended_at": "2026-10-10T19:09:15.852432Z",
+      "duration_ms": 618.9,
+      "inputs": {
+        "isin": "INE881D01027",
+        "symbol": "OFSS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.115",
+      "name": "analyse_stock",
+      "seq": 115,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:15.852641Z",
+      "ended_at": "2026-10-10T19:09:16.466432Z",
+      "duration_ms": 613.8,
+      "inputs": {
+        "isin": "INE274J01014",
+        "symbol": "OIL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.116",
+      "name": "analyse_stock",
+      "seq": 116,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:16.466643Z",
+      "ended_at": "2026-10-10T19:09:17.081845Z",
+      "duration_ms": 615.2,
+      "inputs": {
+        "isin": "INE761H01022",
+        "symbol": "PAGEIND"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.117",
+      "name": "analyse_stock",
+      "seq": 117,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:17.082071Z",
+      "ended_at": "2026-10-10T19:09:17.695423Z",
+      "duration_ms": 613.4,
+      "inputs": {
+        "isin": "INE619A01035",
+        "symbol": "PATANJALI"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.118",
+      "name": "analyse_stock",
+      "seq": 118,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:17.695632Z",
+      "ended_at": "2026-10-10T19:09:18.282628Z",
+      "duration_ms": 587.0,
+      "inputs": {
+        "isin": "INE982J01020",
+        "symbol": "PAYTM"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.119",
+      "name": "analyse_stock",
+      "seq": 119,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:18.282838Z",
+      "ended_at": "2026-10-10T19:09:18.867282Z",
+      "duration_ms": 584.4,
+      "inputs": {
+        "isin": "INE262H01021",
+        "symbol": "PERSISTENT"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.120",
+      "name": "analyse_stock",
+      "seq": 120,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:18.867488Z",
+      "ended_at": "2026-10-10T19:09:19.476307Z",
+      "duration_ms": 608.8,
+      "inputs": {
+        "isin": "INE347G01014",
+        "symbol": "PETRONET"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.121",
+      "name": "analyse_stock",
+      "seq": 121,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:19.476520Z",
+      "ended_at": "2026-10-10T19:09:20.109975Z",
+      "duration_ms": 633.5,
+      "inputs": {
+        "isin": "INE179A01014",
+        "symbol": "PGHH"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.122",
+      "name": "analyse_stock",
+      "seq": 122,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:20.110152Z",
+      "ended_at": "2026-10-10T19:09:20.724821Z",
+      "duration_ms": 614.7,
+      "inputs": {
+        "isin": "INE211B01039",
+        "symbol": "PHOENIXLTD"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.123",
+      "name": "analyse_stock",
+      "seq": 123,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:20.725042Z",
+      "ended_at": "2026-10-10T19:09:21.343343Z",
+      "duration_ms": 618.3,
+      "inputs": {
+        "isin": "INE603J01030",
+        "symbol": "PIIND"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.124",
+      "name": "analyse_stock",
+      "seq": 124,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:21.343553Z",
+      "ended_at": "2026-10-10T19:09:21.931285Z",
+      "duration_ms": 587.7,
+      "inputs": {
+        "isin": "INE202B01038",
+        "symbol": "PIRAMALFIN"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.125",
+      "name": "analyse_stock",
+      "seq": 125,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:21.931495Z",
+      "ended_at": "2026-10-10T19:09:22.553652Z",
+      "duration_ms": 622.2,
+      "inputs": {
+        "isin": "INE417T01026",
+        "symbol": "POLICYBZR"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.126",
+      "name": "analyse_stock",
+      "seq": 126,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:22.553864Z",
+      "ended_at": "2026-10-10T19:09:23.168876Z",
+      "duration_ms": 615.0,
+      "inputs": {
+        "isin": "INE511C01022",
+        "symbol": "POONAWALLA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.127",
+      "name": "analyse_stock",
+      "seq": 127,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:23.169100Z",
+      "ended_at": "2026-10-10T19:09:23.783623Z",
+      "duration_ms": 614.5,
+      "inputs": {
+        "isin": "INE0BS701011",
+        "symbol": "PREMIERENE"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.128",
+      "name": "analyse_stock",
+      "seq": 128,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:23.783820Z",
+      "ended_at": "2026-10-10T19:09:24.399819Z",
+      "duration_ms": 616.0,
+      "inputs": {
+        "isin": "INE811K01011",
+        "symbol": "PRESTIGE"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.129",
+      "name": "analyse_stock",
+      "seq": 129,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:24.400045Z",
+      "ended_at": "2026-10-10T19:09:25.013370Z",
+      "duration_ms": 613.3,
+      "inputs": {
+        "isin": "INE944F01028",
+        "symbol": "RADICO"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.130",
+      "name": "analyse_stock",
+      "seq": 130,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:25.013579Z",
+      "ended_at": "2026-10-10T19:09:25.623609Z",
+      "duration_ms": 610.0,
+      "inputs": {
+        "isin": "INE020B01018",
+        "symbol": "RECLTD"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.131",
+      "name": "analyse_stock",
+      "seq": 131,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:25.623838Z",
+      "ended_at": "2026-10-10T19:09:26.245768Z",
+      "duration_ms": 621.9,
+      "inputs": {
+        "isin": "INE415G01027",
+        "symbol": "RVNL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.132",
+      "name": "analyse_stock",
+      "seq": 132,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:26.245990Z",
+      "ended_at": "2026-10-10T19:09:26.859783Z",
+      "duration_ms": 613.8,
+      "inputs": {
+        "isin": "INE114A01011",
+        "symbol": "SAIL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.133",
+      "name": "analyse_stock",
+      "seq": 133,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:26.860005Z",
+      "ended_at": "2026-10-10T19:09:27.468576Z",
+      "duration_ms": 608.6,
+      "inputs": {
+        "isin": "INE018E01016",
+        "symbol": "SBICARD"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.134",
+      "name": "analyse_stock",
+      "seq": 134,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:27.468786Z",
+      "ended_at": "2026-10-10T19:09:28.076891Z",
+      "duration_ms": 608.1,
+      "inputs": {
+        "isin": "INE513A01022",
+        "symbol": "SCHAEFFLER"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.135",
+      "name": "analyse_stock",
+      "seq": 135,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:28.077116Z",
+      "ended_at": "2026-10-10T19:09:28.688310Z",
+      "duration_ms": 611.2,
+      "inputs": {
+        "isin": "INE070A01015",
+        "symbol": "SHREECEM"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.136",
+      "name": "analyse_stock",
+      "seq": 136,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:28.688522Z",
+      "ended_at": "2026-10-10T19:09:29.282810Z",
+      "duration_ms": 594.3,
+      "inputs": {
+        "isin": "INE073K01018",
+        "symbol": "SONACOMS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.137",
+      "name": "analyse_stock",
+      "seq": 137,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:29.283034Z",
+      "ended_at": "2026-10-10T19:09:29.875040Z",
+      "duration_ms": 592.0,
+      "inputs": {
+        "isin": "INE647A01010",
+        "symbol": "SRF"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.138",
+      "name": "analyse_stock",
+      "seq": 138,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:29.875248Z",
+      "ended_at": "2026-10-10T19:09:30.492190Z",
+      "duration_ms": 616.9,
+      "inputs": {
+        "isin": "INE660A01013",
+        "symbol": "SUNDARMFIN"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.139",
+      "name": "analyse_stock",
+      "seq": 139,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:30.492397Z",
+      "ended_at": "2026-10-10T19:09:31.102261Z",
+      "duration_ms": 609.9,
+      "inputs": {
+        "isin": "INE195A01028",
+        "symbol": "SUPREMEIND"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.140",
+      "name": "analyse_stock",
+      "seq": 140,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:31.102467Z",
+      "ended_at": "2026-10-10T19:09:31.749840Z",
+      "duration_ms": 647.4,
+      "inputs": {
+        "isin": "INE040H01021",
+        "symbol": "SUZLON"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.141",
+      "name": "analyse_stock",
+      "seq": 141,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:31.750067Z",
+      "ended_at": "2026-10-10T19:09:32.349707Z",
+      "duration_ms": 599.6,
+      "inputs": {
+        "isin": "INE00H001014",
+        "symbol": "SWIGGY"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.142",
+      "name": "analyse_stock",
+      "seq": 142,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:32.349915Z",
+      "ended_at": "2026-10-10T19:09:32.960845Z",
+      "duration_ms": 610.9,
+      "inputs": {
+        "isin": "INE151A01013",
+        "symbol": "TATACOMM"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.143",
+      "name": "analyse_stock",
+      "seq": 143,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:32.961067Z",
+      "ended_at": "2026-10-10T19:09:33.545690Z",
+      "duration_ms": 584.6,
+      "inputs": {
+        "isin": "INE152A01029",
+        "symbol": "THERMAX"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.144",
+      "name": "analyse_stock",
+      "seq": 144,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:33.545901Z",
+      "ended_at": "2026-10-10T19:09:34.156772Z",
+      "duration_ms": 610.9,
+      "inputs": {
+        "isin": "INE974X01010",
+        "symbol": "TIINDIA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.145",
+      "name": "analyse_stock",
+      "seq": 145,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:34.157002Z",
+      "ended_at": "2026-10-10T19:09:34.767038Z",
+      "duration_ms": 610.0,
+      "inputs": {
+        "isin": "INE813H01021",
+        "symbol": "TORNTPOWER"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.146",
+      "name": "analyse_stock",
+      "seq": 146,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:34.767304Z",
+      "ended_at": "2026-10-10T19:09:35.378866Z",
+      "duration_ms": 611.6,
+      "inputs": {
+        "isin": "INE686F01025",
+        "symbol": "UBL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.147",
+      "name": "analyse_stock",
+      "seq": 147,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:35.379087Z",
+      "ended_at": "2026-10-10T19:09:36.023600Z",
+      "duration_ms": 644.5,
+      "inputs": {
+        "isin": "INE691A01018",
+        "symbol": "UCOBANK"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.148",
+      "name": "analyse_stock",
+      "seq": 148,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:36.023807Z",
+      "ended_at": "2026-10-10T19:09:36.647436Z",
+      "duration_ms": 623.6,
+      "inputs": {
+        "isin": "INE854D01024",
+        "symbol": "UNITDSPR"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.149",
+      "name": "analyse_stock",
+      "seq": 149,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:36.647646Z",
+      "ended_at": "2026-10-10T19:09:37.260014Z",
+      "duration_ms": 612.4,
+      "inputs": {
+        "isin": "INE405E01023",
+        "symbol": "UNOMINDA"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.150",
+      "name": "analyse_stock",
+      "seq": 150,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:37.260222Z",
+      "ended_at": "2026-10-10T19:09:37.866508Z",
+      "duration_ms": 606.3,
+      "inputs": {
+        "isin": "INE628A01036",
+        "symbol": "UPL"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.151",
+      "name": "analyse_stock",
+      "seq": 151,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:37.866718Z",
+      "ended_at": "2026-10-10T19:09:38.461604Z",
+      "duration_ms": 594.9,
+      "inputs": {
+        "isin": "INE01EA01019",
+        "symbol": "VMM"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.152",
+      "name": "analyse_stock",
+      "seq": 152,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:38.461815Z",
+      "ended_at": "2026-10-10T19:09:39.054012Z",
+      "duration_ms": 592.2,
+      "inputs": {
+        "isin": "INE226A01021",
+        "symbol": "VOLTAS"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.153",
+      "name": "analyse_stock",
+      "seq": 153,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:39.054221Z",
+      "ended_at": "2026-10-10T19:09:39.668937Z",
+      "duration_ms": 614.7,
+      "inputs": {
+        "isin": "INE377N01017",
+        "symbol": "WAAREEENER"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.154",
+      "name": "analyse_stock",
+      "seq": 154,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:39.669146Z",
+      "ended_at": "2026-10-10T19:09:40.288275Z",
+      "duration_ms": 619.1,
+      "inputs": {
+        "isin": "INE528G01035",
+        "symbol": "YESBANK"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4KJPA04W388CF70F9WFYS02.analyse_stock.155",
+      "name": "analyse_stock",
+      "seq": 155,
+      "status": "ok",
+      "started_at": "2026-10-10T19:09:40.288491Z",
+      "ended_at": "2026-10-10T19:09:40.878322Z",
+      "duration_ms": 589.8,
+      "inputs": {
+        "isin": "INE010B01027",
+        "symbol": "ZYDUSLIFE"
+      },
+      "outputs": {
+        "error": "IndexError: index -1 is out of bounds for axis 0 with size 0"
+      },
+      "error": null
+    }
+  ],
+  "audit_events": 18,
+  "audit_pending": 0,
+  "audit_chain_head": "sha256:a6c59deae15e0aa35ca98653fc701badcc1f60579d824b19196376aa56220b4b",
+  "audit_sink": "supabase",
+  "llm_tokens": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 0,
+  "agent_runs": 0,
+  "failed_steps": 0
+}
