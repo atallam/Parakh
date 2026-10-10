@@ -19,6 +19,7 @@ PAGES = [
     "pages/3_Segment_Dashboard.py",
     "pages/4_Stock_Detail.py",
     "pages/5_Audit_Governance.py",
+    "pages/6_Calibration.py",
     "pages/99_Components.py",
 ]
 
@@ -118,3 +119,35 @@ def test_stock_detail_sections_follow_the_plan_order(env) -> None:
     order = ["Why", "Action box", "Scores", "Thesis", "Checks", "Upcoming events", "Timeline"]
     idx = [next(i for i, h in enumerate(heads) if name in h) for name in order]
     assert idx == sorted(idx)
+
+
+@pytest.mark.ac("AC-F17.4")
+@pytest.mark.ac("AC-F17.5")
+def test_calibration_page_saves_a_journal_entry_and_rates_an_alert(env) -> None:
+    from parakh.configs import load_all
+    from parakh.notify.log import AlertsLog
+    from parakh.services import app_api
+
+    AlertsLog(app_api.watch_store().root / "alerts").record(
+        {
+            "alert_id": "a1",
+            "code": "M01",
+            "decision": "sent",
+            "kind": "signal",
+            "isin": "X",
+            "symbol": "TCS",
+            "asof": "2026-10-01",
+        }
+    )
+    at = run("pages/6_Calibration.py")
+    assert not at.exception
+    form = at.text_input
+    sym = load_all().universe.pilot[0].symbol
+    form[0].set_value(sym)
+    form[1].set_value("order book up")
+    form[2].set_value("beats the index")
+    next(b for b in at.button if b.label == "Save").click().run()
+    assert not at.exception
+    assert len(app_api.journal_service().entries()) == 1
+    next(b for b in at.button if "Useful" in b.label).click().run()
+    assert app_api.calibration_view().precision["rated"] == 1

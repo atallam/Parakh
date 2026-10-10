@@ -24,6 +24,7 @@ mcp:
     portfolio: true
     notify: true
     jobs: true
+    calibration: true
 jobs:
   # why: plan 15 §4.2 and AC-F25.4, a single-stock refresh is cheap but an agent must not loop on it
   refresh_daily_cap: 5

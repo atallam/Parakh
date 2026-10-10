@@ -390,3 +390,75 @@ def segment_full(
     if path is None or not path.exists():
         return None
     return json.loads(path.read_text(encoding="utf-8"))  # type: ignore[no-any-return]
+
+
+# -- calibration page (F17; plan 12) --------------------------------------------------------------
+@dataclass
+class CalibrationView:
+    due: list[Any] = field(default_factory=list)
+    entries: list[Any] = field(default_factory=list)
+    journal_stats: dict[str, Any] = field(default_factory=dict)
+    alerts_to_rate: list[dict[str, Any]] = field(default_factory=list)
+    precision: dict[str, Any] = field(default_factory=dict)
+    report_quarter: str | None = None
+    report_markdown: str = ""
+    tags: list[str] = field(default_factory=list)
+    actions: list[str] = field(default_factory=list)
+
+
+def journal_service(store: StateStore | None = None) -> Any:
+    from parakh.calibration.journal import JournalStore
+    from parakh.services.journal import JournalService
+
+    ctx = RunContext.create(mode="streamlit", actor_type="user", actor_id="owner")
+    return JournalService(JournalStore(store or watch_store()), load_all(), ctx)
+
+
+def latest_calibration_report(root: Path | None = None) -> tuple[str | None, str]:
+    from parakh.config import REPO_ROOT
+
+    folder = (root or REPO_ROOT) / "docs" / "calibration"
+    files = sorted(folder.glob("*.md")) if folder.exists() else []
+    return (files[-1].stem, files[-1].read_text(encoding="utf-8")) if files else (None, "")
+
+
+def calibration_view(store: StateStore | None = None, root: Path | None = None) -> CalibrationView:
+    from parakh.calibration.feedback import alert_precision, latest_feedback
+    from parakh.notify.log import AlertsLog
+
+    store = store or watch_store()
+    bundle = load_all()
+    svc = journal_service(store)
+    log = AlertsLog(store.root / "alerts")
+    rows = log.rows()
+    rated = set(latest_feedback(rows))
+    seen: dict[str, dict[str, Any]] = {}
+    for r in rows:
+        if r.get("alert_id") and r.get("decision") in ("sent", "shadow", "digest_sent"):
+            seen.setdefault(r["alert_id"], r)
+    quarter, md = latest_calibration_report(root)
+    return CalibrationView(
+        due=svc.due(),
+        entries=svc.entries(),
+        journal_stats=svc.stats(),
+        alerts_to_rate=[r for k, r in list(seen.items())[::-1] if k not in rated][:10],
+        precision=alert_precision(rows, bundle.calibration.alerts).as_dict(),
+        report_quarter=quarter,
+        report_markdown=md,
+        tags=list(bundle.calibration.alerts.feedback_tags),
+        actions=list(bundle.calibration.journal.actions),
+    )
+
+
+def rate_alert(
+    alert_id: str, useful: bool, tag: str | None = None, store: StateStore | None = None
+) -> None:
+    from parakh.notify.log import AlertsLog
+    from parakh.services.alert_feedback import record_alert_feedback
+
+    store = store or watch_store()
+    ctx = RunContext.create(mode="streamlit", actor_type="user", actor_id="owner")
+    record_alert_feedback(
+        AlertsLog(store.root / "alerts"), get_sink(), ctx, load_all().calibration.alerts,
+        alert_id, useful=useful, channel="streamlit", tag=tag,
+    )  # fmt: skip

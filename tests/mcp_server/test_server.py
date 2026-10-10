@@ -83,7 +83,16 @@ def test_stdio_end_to_end_with_a_real_client(isolated_state: Path) -> None:
             assert {"audit_get_run", "reports_get_stock", "analytics_explain_verdict"} <= names
             assert all(
                 n.split("_", 1)[0]
-                in {"audit", "reports", "analytics", "data", "notify", "portfolio", "jobs"}
+                in {
+                    "audit",
+                    "reports",
+                    "analytics",
+                    "data",
+                    "notify",
+                    "portfolio",
+                    "jobs",
+                    "calibration",
+                }
                 for n in names
             )
             result = await session.call_tool("audit_get_run", {"run_id": "latest"})

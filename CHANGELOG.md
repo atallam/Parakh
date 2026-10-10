@@ -2,6 +2,23 @@
 
 All notable changes. Framework and lens versions follow SemVer; tool schemas are versioned per toolset (plan 15 §4.4).
 
+## [Unreleased] – Phase 5 (calibration and stabilisation), 2026-10-11
+
+### Added
+- `config/calibration.yaml` (every threshold with a `# why:`) and `src/parakh/calibration/`: point-in-time index membership, a cached month-end momentum panel scored with the real lens, a price-only backtest (statutory costs, impact costs by cap, FIFO lots, STCG/LTCG tax by financial year, walk-forward parameter choice on a three-by-three grid), signal-outcome tracker (1M and 3M forward returns, hit rate, lift over the average stock-month), score-quintile calibration per lens, alert precision per signal with a Wilson lower bound, watchlist scorecard v1, decision journal, and the quarterly report with a CONFIRM / REVIEW / INSUFFICIENT recommendation per lens.
+- The backtest **refuses** to run unless index membership history covers the window; `--allow-proxy` runs it labelled as survivorship-biased.
+- Decision journal (`parakh journal add|list|due|review`, Calibration page); due reviews appear in the monthly summary. Alert ratings from Telegram and Streamlit go through one service (`services/alert_feedback.py`) with optional reason tags.
+- Governance: replay determinism, drift monitoring (PSI, verdict mix, signal rate) and a backup restore test, run by the new `monthly-checks` workflow; `parakh calibrate drift|replay|restore-test`; a quarterly governance review template under `governance/reviews/`.
+- Streamlit page **Calibration**; MCP toolset `calibration` (read-only: `report_summary`, `alert_precision`); audit events `AUD.JOURNAL.REVIEWED`, `AUD.BACKUP.RESTORE_TESTED`, `AUD.CALIBRATION.REPORT`, `AUD.REPLAY.CHECKED`, `AUD.DRIFT.CHECKED`.
+- ADR-012 review brief and `docs/uat/UAT-5_prep.md`.
+
+### Fixed
+- `agents eval` in `cli_agents.py` carried a duplicated half-block from a merge and failed to import; the suite was red on `main`.
+
+### Notes
+- Nothing here changes a score, weight or verdict (AG-03). No framework version bump: that happens only if the calibration review changes weights.
+- Verified on synthetic worlds only. The live backtest needs historical constituents and ten years of prices that this repo does not yet hold.
+
 ## [Unreleased] – Phase 4 (qualitative, watchlist and UI), 2026-10-10
 
 ### Added

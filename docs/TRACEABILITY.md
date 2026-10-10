@@ -2,7 +2,7 @@
 
 # Traceability: acceptance criteria → tests
 
-141 of 179 acceptance criteria have tests; 60 are due now (tools/traceability_due.txt).
+146 of 179 acceptance criteria have tests; 60 are due now (tools/traceability_due.txt).
 
 | AC | Feature | Due | Tests | Last result |
 |---|---|---|---|---|
@@ -124,11 +124,11 @@
 | AC-F16.2 | F16 |  | `tests/unit/test_regime.py::test_top_decile_market_raises_required_mos_by_5_points` | — |
 | AC-F16.3 | F16 |  | `tests/unit/test_regime.py::test_a_vix_spike_downgrades_one_level` | — |
 | AC-F16.4 | F16 |  | `tests/unit/test_reports.py::test_segment_summary` | — |
-| AC-F17.1 | F17 |  | — | — |
-| AC-F17.2 | F17 |  | — | — |
-| AC-F17.3 | F17 |  | — | — |
-| AC-F17.4 | F17 |  | — | — |
-| AC-F17.5 | F17 |  | — | — |
+| AC-F17.1 | F17 |  | `tests/unit/test_calibration_backtest.py::test_panel_only_holds_constituents_valid_on_each_date` | — |
+| AC-F17.2 | F17 |  | `tests/unit/test_calibration_backtest.py::test_gross_after_cost_after_tax_are_ordered_and_reported`<br>`tests/unit/test_calibration_backtest.py::test_run_backtest_reports_all_three_returns_and_the_walk_forward` | — |
+| AC-F17.3 | F17 |  | `tests/unit/test_calibration_analysis.py::test_predictive_scores_give_a_positive_top_minus_bottom_spread`<br>`tests/unit/test_calibration_analysis.py::test_scores_that_are_noise_are_not_confirmed`<br>`tests/unit/test_calibration_analysis.py::test_reversed_scores_are_called_reversed`<br>`tests/unit/test_calibration_analysis.py::test_too_few_stocks_is_insufficient_not_a_finding`<br>`tests/unit/test_calibration_report.py::test_recommendation_follows_the_primary_horizon_only`<br>`tests/unit/test_calibration_report.py::test_nothing_calibrated_is_insufficient_not_a_confirmation` | — |
+| AC-F17.4 | F17 |  | `tests/app/test_pages.py::test_calibration_page_saves_a_journal_entry_and_rates_an_alert`<br>`tests/unit/test_journal.py::test_an_entry_is_captured_audited_and_due_after_its_review_date`<br>`tests/unit/test_journal.py::test_reviewing_closes_the_entry_and_it_stops_being_due`<br>`tests/watchlist/test_post_monthly.py::test_journal_reviews_that_are_due_appear_in_the_monthly_summary` | — |
+| AC-F17.5 | F17 |  | `tests/app/test_pages.py::test_calibration_page_saves_a_journal_entry_and_rates_an_alert`<br>`tests/unit/test_calibration_analysis.py::test_precision_per_signal_from_telegram_and_streamlit`<br>`tests/unit/test_calibration_analysis.py::test_latest_rating_wins_and_system_alerts_are_excluded`<br>`tests/unit/test_calibration_report.py::test_markdown_carries_precision_per_signal_and_the_backtest_table`<br>`tests/unit/test_journal.py::test_feedback_from_streamlit_and_telegram_reach_the_precision_report` | — |
 | AC-F18.1 | F18 |  | — | — |
 | AC-F18.2 | F18 | ✅ | `tests/contract/test_lens_contract.py::test_every_lens_honours_the_contract` | — |
 | AC-F18.3 | F18 |  | — | — |

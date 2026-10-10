@@ -9,6 +9,8 @@ Tiers: **R** read-only · **P** propose (writes a proposal row only) · **N** no
 | `TOOL.analytics.explain_verdict` | `mcp__parakh__analytics_explain_verdict` | R | 0.1.0 | symbol_or_isin, period | ExplainLookup | Return the lineage of one verdict: the policy rule that decided it, the value and |
 | `TOOL.analytics.list_catalogue` | `mcp__parakh__analytics_list_catalogue` | R | 0.1.0 | kind | CatalogueLookup | List the registered metrics (MET.*), momentum signals (M##), rules (RULE.*) or lenses, |
 | `TOOL.audit.get_run` | `mcp__parakh__audit_get_run` | R | 0.1.0 | run_id | RunLookup | Return one Parakh run: mode, as-of date, status, the code and config it ran on, each |
+| `TOOL.calibration.alert_precision` | `mcp__parakh__calibration_alert_precision` | R | 0.1.0 | — | AlertPrecisionOut | Return, for each signal ID, how many alerts were sent, how many the owner rated, and the |
+| `TOOL.calibration.report_summary` | `mcp__parakh__calibration_report_summary` | R | 0.1.0 | — | ReportSummaryOut | Return the verdict of the latest quarterly calibration report: for each lens, whether its |
 | `TOOL.data.get_document` | `mcp__parakh__data_get_document` | R | 0.2.0 | document_id, isin, doc_type, offset | DocumentOut | Return the exchange's text for one filing the Event Watcher has seen, with its source link, |
 | `TOOL.data.get_fundamentals` | `mcp__parakh__data_get_fundamentals` | R | 0.2.0 | symbol_or_isin, metrics, as_of | FundamentalsOut | Return the fundamental metrics the value lens used for one stock, each with its value, source and |
 | `TOOL.data.get_prices` | `mcp__parakh__data_get_prices` | R | 0.2.0 | symbol_or_isin, start, end | PricesOut | Return daily adjusted closes in ₹ with the 50- and 200-day moving averages for the snapshot's |

@@ -52,6 +52,19 @@ class PostMonthly:
     errors: list[str] = field(default_factory=list)
 
 
+def journal_due_line(store: StateStore, today: dt.date, show: int = 3) -> str:
+    """One line naming the decision-journal entries whose review date has come (AC-F17.4)."""
+    from parakh.calibration.journal import JournalStore
+
+    due = JournalStore(store).due(today)
+    if not due:
+        return ""
+    names = ", ".join(f"{e.symbol} ({e.action}, {e.decided_on:%d %b})" for e in due[:show])
+    more = f" and {len(due) - show} more" if len(due) > show else ""
+    noun = "review" if len(due) == 1 else "reviews"
+    return f"📓 {len(due)} journal {noun} due: {names}{more}"
+
+
 def _bump(d: dict[str, int], key: str) -> None:
     d[key] = d.get(key, 0) + 1
 
@@ -155,6 +168,9 @@ def post_monthly(
             )
     finally:
         jobs.lock_monthly(False)
+    due = journal_due_line(store, today)
+    if due:  # AC-F17.4: reviews that have come due ride in the monthly summary
+        out.watchlist_line = "\n".join(x for x in (out.watchlist_line, due) if x)
     if runner is not None:
         out.llm_alert = render_llm_alert(
             llm_health(sink.events_for_run(ctx.run_id), bundle.agents.alerts)

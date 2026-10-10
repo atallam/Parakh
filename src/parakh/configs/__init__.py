@@ -9,6 +9,7 @@ import yaml
 from pydantic import BaseModel, ValidationError
 
 from parakh.config import config_dir
+from parakh.configs.calibration_models import CalibrationConfig
 from parakh.configs.lens_models import (
     IndicesConfig,
     MomentumConfig,
@@ -53,6 +54,7 @@ FILES: dict[str, type[BaseModel]] = {
     "notify.yaml": NotifyConfig,
     "events.yaml": EventsConfig,
     "watchlist.yaml": WatchlistConfig,
+    "calibration.yaml": CalibrationConfig,
 }
 
 
@@ -104,6 +106,7 @@ class ConfigBundle:
     notify: NotifyConfig
     events: EventsConfig
     watchlist: WatchlistConfig
+    calibration: CalibrationConfig
     sources: list[str] = field(default_factory=list)
 
 
@@ -204,5 +207,6 @@ def load_all(root: Path | None = None) -> ConfigBundle:
         notify=loaded["notify.yaml"],  # type: ignore[arg-type]
         events=loaded["events.yaml"],  # type: ignore[arg-type]
         watchlist=loaded["watchlist.yaml"],  # type: ignore[arg-type]
+        calibration=loaded["calibration.yaml"],  # type: ignore[arg-type]
         sources=list(FILES),
     )
