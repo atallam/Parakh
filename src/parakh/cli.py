@@ -774,6 +774,15 @@ def build_parser() -> argparse.ArgumentParser:
     p_un.add_argument("--amfi", help="AMFI half-yearly .xlsx: writes large, mid and small at once")
     p_un.add_argument("--small", type=int, default=250, help="small caps to take (AMFI ranks 251+)")
 
+    p_cc = sub.add_parser("concalls", help="concall transcripts: fetch the latest per stock")
+    p_cc.add_argument("action", choices=["fetch"])
+    p_cc.add_argument("--symbol", action="append", help="repeat for several; default is all")
+
+    p_ag = sub.add_parser("agents", help="agents: run the priced eval on real documents")
+    p_ag.add_argument("action", choices=["eval"])
+    p_ag.add_argument("--symbol", action="append", help="repeat for several; default is all")
+    p_ag.add_argument("--no-devils-advocate", action="store_true")
+
     p_pr = sub.add_parser("prompts", help="prompt pins: roll back or promote a version (P3)")
     p_pr.add_argument("action", choices=["rollback", "promote"])
     p_pr.add_argument("name")
@@ -930,6 +939,14 @@ def _dispatch(argv: list[str] | None) -> int:
             from parakh.cli_watchlist import universe
 
             return universe(args.action, args.cap, args.csv, args.amfi, args.small)
+        case "concalls":
+            from parakh.cli_agents import concalls_fetch
+
+            return concalls_fetch(args.symbol)
+        case "agents":
+            from parakh.cli_agents import agents_eval
+
+            return agents_eval(args.symbol, not args.no_devils_advocate)
         case "prompts":
             from parakh.cli_watchlist import prompts_pin
 
