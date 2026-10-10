@@ -95,6 +95,16 @@ def agents_eval(symbols: list[str] | None, devils_advocate: bool) -> int:
     secs = _pick(bundle, symbols)
     if not secs:
         return 2
+    sink, store, docs = get_sink(), StateStore(), TranscriptStore()
+    ctx = RunContext.create(mode="agent-eval", actor_type="user", actor_id="agents-eval")
+    shadow = ShadowLog("agents_shadow.md")
+    for s in secs:
+        lines: list[str] = []
+        doc = docs.get(s.isin)
+        # a fresh cache key per eval: the eval must spend tokens, never replay an old answer
+        q = run_qualitative(
+            runner, bundle, ctx, sink, isin=s.isin, symbol=s.symbol, doc=doc,
+            previous=docs.get(s.isin, previous=True), store=StateStore(store.root / "eval"),
     sink, docs = get_sink(), TranscriptStore()
     ctx = RunContext.create(mode="agent-eval", actor_type="user", actor_id="agents-eval")
     shadow = ShadowLog("agents_shadow.md")
