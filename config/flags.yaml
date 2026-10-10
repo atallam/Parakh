@@ -29,3 +29,5 @@ jobs:
   refresh_daily_cap: 5
   # why: a transcript older than a quarter and a half is shown as stale to the qualitative agent
   transcript_max_age_days: 135
+  # why: the first priced eval showed the agent seeing only the cover letter of a 54,000-character transcript; parts of this size stay under the agent runtime's tool-output limit
+  document_part_chars: 15000
