@@ -68,3 +68,76 @@ def test_failure_reason_carries_a_scrubbed_message() -> None:
     assert msg == "RuntimeError: cannot start claude"
     assert _why(RuntimeError("")) == "RuntimeError"
     assert len(_why(RuntimeError("x" * 500))) < 200
+
+
+def test_qualitative_task_tells_the_agent_how_to_fetch_the_transcript() -> None:
+    """The first priced eval failed because the agent got a hash, not isin + doc_type."""
+    from parakh.agents.qualitative import run_qualitative  # noqa: F401
+    from parakh.agents.runtime.base import AgentTask
+
+    seen: list[AgentTask] = []
+
+    class Spy:
+        def run(self, spec, task, ctx):  # type: ignore[no-untyped-def]
+            from parakh.agents.runtime.base import AgentResult
+
+            seen.append(task)
+            return AgentResult(agent_run_id=task.task_id, agent_id=spec.agent_id, status="failed")
+
+    import dataclasses
+
+    from parakh.audit.context import RunContext
+    from parakh.audit.emit import get_sink
+    from parakh.services.documents import CachedDoc
+
+    bundle = load_all()
+    bundle = dataclasses.replace(
+        bundle,
+        flags=bundle.flags.model_copy(
+            update={"qualitative": bundle.flags.qualitative.model_copy(update={"enabled": True})}
+        ),
+    )
+    doc = CachedDoc(
+        isin="X",
+        symbol="X",
+        period="2026-07",
+        source_url="u",
+        sha256="sha256:ab",
+        fetched_on="2026-10-10",
+        pages=1,
+        text="t",
+        notes=[],
+    )  # type: ignore[call-arg]
+    ctx = RunContext.create(mode="t", actor_type="system", actor_id="t")
+    run_qualitative(Spy(), bundle, ctx, get_sink(), isin="X", symbol="X", doc=doc)  # type: ignore[arg-type]
+    assert seen and seen[0].inputs["doc_type"] == "transcript"
+
+
+def test_long_transcript_comes_in_parts_that_cover_all_text(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    from parakh.mcp.toolsets import data
+
+    text = "".join(f"line {i} of the call. " for i in range(3000))
+    doc = type(
+        "D",
+        (),
+        {
+            "text": text,
+            "sha256": "sha256:abcdefabcdef1234",
+            "source_url": "u",
+            "period": "2026-07",
+            "is_stale": lambda self, *a: False,
+        },
+    )()
+    monkeypatch.setattr(
+        data.docs_service.TranscriptStore, "get", lambda self, isin, previous=False: doc
+    )
+    got, offset, parts = "", 0, 0
+    while True:
+        out = data._transcript(data.GetDocumentIn(isin="X", doc_type="transcript", offset=offset))
+        assert out.untrusted_content is not None
+        got += out.untrusted_content.text
+        parts += 1
+        if out.next_offset is None:
+            break
+        offset = out.next_offset
+    assert got == text and parts > 1
