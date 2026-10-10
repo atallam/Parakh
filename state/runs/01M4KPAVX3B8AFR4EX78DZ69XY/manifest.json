@@ -1,0 +1,41 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M4KPAVX3B8AFR4EX78DZ69XY",
+  "mode": "bot",
+  "env": "prod",
+  "asof": "2026-10-11",
+  "trigger": "cron",
+  "triggered_by": "scheduler:bot-poll",
+  "status": "FAILED",
+  "started_at": "2026-10-10T19:58:41.572996Z",
+  "finished_at": "2026-10-10T19:58:41.993655Z",
+  "code_version": "92a16dae8fd0",
+  "config_hash": "sha256:d976a7be6269485648436bead6be9f3c7a83757869b952c0076241c0e60cf130",
+  "framework_version": "0.1.0",
+  "lens_versions": {},
+  "policy_version": null,
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M4KPAVX3B8AFR4EX78DZ69XY.poll.01",
+      "name": "poll",
+      "seq": 1,
+      "status": "failed",
+      "started_at": "2026-10-10T19:58:41.573747Z",
+      "ended_at": "2026-10-10T19:58:41.990200Z",
+      "duration_ms": 416.5,
+      "inputs": {},
+      "outputs": {},
+      "error": "TelegramError: HTTP 409: Conflict: can't use getUpdates method while webhook is active; use deleteWebhook to delete the webhook first"
+    }
+  ],
+  "audit_events": 2,
+  "audit_pending": 2,
+  "audit_chain_head": "sha256:8b3cd22574367f43a73db1891faaebdc3a281a0670214b68bab50463e3f1873d",
+  "audit_sink": "none (Supabase flush arrives in Phase 1)",
+  "llm_tokens": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 0,
+  "agent_runs": 0,
+  "failed_steps": 1
+}
