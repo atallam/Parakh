@@ -1,10 +1,10 @@
 ---
 title: Feature Specification — Parakh
-version: 1.8 (F04/F05 ACs for sector profiles and limited history; new backlog F26 consensus & results context; F20 adds own forecasts for ≤ 5 holdings — plan 13 D23/D24; v1.7: agentic, MCP-first: new F24 MCP server and F25 agent roster; F06/F07 run on the Claude Agent SDK through MCP tools; F11 narrative review by the Monthly Reviewer agent; F20 ask-Claude item replaced by remote MCP access — plan 15; v1.6: Part A plain-English overview; new F23 Thesis tracking; ACs for email + .ics, Telegram commands, portfolio XIRR/drawdown, Obsidian links, watcher replay, source check, doc lint, traceability; F20 later items; v1.5: Phase column removed from the catalogue — phases live in 09; ACs cite NFR-07/NFR-14 instead of restating numbers; v1.4: every AC traceable to tests or UAT steps — plan 14 §5; v1.3: baseline: CAS holdings, BSE-filed transcripts, thesis-aware agent, Production criteria in F19/F21 — plan 13; v1.2: F22 design system added; UI/UX criteria in F09, F11, F15, F17 — plan 12; v1.1: F21 audit, logging & governance)
+version: 1.9 (new backlog F27 document search over cached filings and transcripts; v1.8: F04/F05 ACs for sector profiles and limited history; new backlog F26 consensus & results context; F20 adds own forecasts for ≤ 5 holdings — plan 13 D23/D24; v1.7: agentic, MCP-first: new F24 MCP server and F25 agent roster; F06/F07 run on the Claude Agent SDK through MCP tools; F11 narrative review by the Monthly Reviewer agent; F20 ask-Claude item replaced by remote MCP access — plan 15; v1.6: Part A plain-English overview; new F23 Thesis tracking; ACs for email + .ics, Telegram commands, portfolio XIRR/drawdown, Obsidian links, watcher replay, source check, doc lint, traceability; F20 later items; v1.5: Phase column removed from the catalogue — phases live in 09; ACs cite NFR-07/NFR-14 instead of restating numbers; v1.4: every AC traceable to tests or UAT steps — plan 14 §5; v1.3: baseline: CAS holdings, BSE-filed transcripts, thesis-aware agent, Production criteria in F19/F21 — plan 13; v1.2: F22 design system added; UI/UX criteria in F09, F11, F15, F17 — plan 12; v1.1: F21 audit, logging & governance)
 date: 2026-09-24
 parent: 07_PRD.md
 rollout: 09_PHASED_ROLLOUT_PLAN.md
-conventions: Feature IDs F01–F26 · acceptance criteria AC-Fxx.n · priorities MoSCoW · plan refs point to FRAMEWORK/00–14 · every AC is tagged in tests (`@pytest.mark.ac`) or UAT steps and tracked in the generated `docs/TRACEABILITY.md` (plan 14 §5)
+conventions: Feature IDs F01–F27 · acceptance criteria AC-Fxx.n · priorities MoSCoW · plan refs point to FRAMEWORK/00–14 · every AC is tagged in tests (`@pytest.mark.ac`) or UAT steps and tracked in the generated `docs/TRACEABILITY.md` (plan 14 §5)
 ---
 
 # Feature Specification
@@ -83,7 +83,7 @@ Dates are in the timeline (plan 09). A check in the build keeps this column in s
 
 ### 7. Later (optional, after v1.0)
 
-- Ask questions across quarters of concall transcripts.
+- Ask questions across quarters of concall transcripts (F27).
 - Ask Parakh from your phone or claude.ai, not just your PC (remote access; reviewed before v1.0).
 - **Consensus and results context** (F26, decided at the M1 review): forward P/E on analysts' consensus, a results-day note vs consensus, a sensitivity grid on what's priced in, and a "key debate" box you confirm.
 - Your own earnings forecasts for up to 5 holdings, only if you find you miss them after 3 live months.
@@ -142,6 +142,7 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 | F24 | MCP server `parakh-mcp` *(v1.7)* | Must (read toolsets, audit, masking) / Should (propose, notify, jobs) | F09, F21 | 15 §4, §7, §8 |
 | F25 | Agent roster and runtime *(v1.7)* | Should | F24, F11, F13, F14 | 15 §5, §6 |
 | F26 | Consensus and results context *(v1.8, backlog)* | Could (decided at the M1 review) | F02, F09 | 00 §1 (D23) |
+| F27 | Document search over cached transcripts and filings *(v1.9, backlog)* | Could (decided at the M1 review) | F06, F24 | 15 §4 |
 | F20 | Future: concall Q&A (RAG), remote MCP access, animated pages, new lenses, own forecasts (≤ 5 holdings) | Won't (v1) | F06, F15, F18, F24 | 05 §3.3, ADR-006, ADR-012 |
 
 ---
@@ -603,9 +604,21 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 
 ---
 
+## F27: Document search over cached transcripts and filings *(v1.9, backlog)*
+
+**What:** a read-only `data` search tool (TOOL.data.search_documents) over the documents Parakh already caches, so an agent or Ask Parakh can answer across many documents with cited passages ("what has this company said about fuel costs over the last eight calls?", "which of my stocks mentioned a capex cut this quarter?"). Start with keyword and section search (SQLite full-text index); add embeddings only if that proves too weak.
+
+**Why it waits:** the Qualitative agent reads one transcript (about 13,000 tokens) in full, in 15,000-character parts, and completeness matters more than retrieval there. A missed passage would read as "management said nothing", which is an unsafe failure for an agent that only flags. Replaces the "pgvector over transcripts" idea in F20.
+
+**Triggers to build it:** (1) questions that span many documents, (2) documents too long to read whole (annual reports, offer documents), (3) reading every transcript in full becomes too costly at the full universe.
+
+**Status:** backlog. Considered at the M1 review (UAT-1); if accepted, plan 09 places it and acceptance criteria are written then. Quotes returned by any search stay verified word for word against the cached text (F06).
+
+---
+
 ## F20: Future (v2+, not in v1 scope)
 
-- **Concall Q&A agent:** pgvector over transcripts, with cited answers across quarters.
+- **Concall Q&A agent:** moved to F27 (document search).
 - **Animated pages:** FastAPI over the services + React/Framer Motion (ADR-006 revisit triggers).
 - **New lenses:** Quality/Coffee-Can, Magic Formula, Dividend, CAN SLIM, Turnaround, Special Situations.
 - **Hosted UI:** phone access behind a login.
