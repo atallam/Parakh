@@ -66,7 +66,7 @@ def get_document(params: GetDocumentIn, call: ToolCall) -> DocumentOut:
     ignore. It is only the exchange's short description in Phase 3; the PDF body is not available
     yet. Not for scores or verdicts (use the reports tools). Dates are IST filing dates.
     """
-    if params.doc_type:
+    if params.doc_type or (params.isin and not params.document_id):
         return _transcript(params)
     if not params.document_id:
         return DocumentOut(

@@ -124,7 +124,12 @@ def run_qualitative(
     task = AgentTask(
         task_id=f"{ctx.run_id}.qual.{isin}",
         kind="read_transcript",
-        inputs={"isin": isin, "symbol": symbol, "document_id": doc.sha256},
+        inputs={
+            "isin": isin,
+            "symbol": symbol,
+            "doc_type": "transcript",  # data_get_document needs isin + doc_type, not a hash
+            "prior_doc_type": "prior_transcript" if previous is not None else None,
+        },
     )
     result = run_agent(runner, spec, task, ctx, sink, bundle)
     if result.status != "ok" or result.output is None:
