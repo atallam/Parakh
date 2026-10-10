@@ -36,6 +36,11 @@ class GetDocumentIn(BaseModel):
         default=None,
         description="'transcript' is the newest filed concall; 'prior_transcript' is the one before it, for the tone comparison.",
     )
+    offset: int = Field(
+        default=0,
+        ge=0,
+        description="Character offset to continue from. Long texts come in parts; use the next_offset of the previous part.",
+    )
 
 
 class UntrustedContent(BaseModel):
@@ -54,6 +59,8 @@ class DocumentOut(BaseModel):
     rule: str | None = None
     untrusted_content: UntrustedContent | None = None
     message: str = ""
+    total_chars: int | None = None
+    next_offset: int | None = None  # set while more text remains: call again with this offset
 
 
 @DATA.tool("get_document", tier="R", title="A filing's text (untrusted)")
@@ -109,6 +116,10 @@ def _transcript(params: GetDocumentIn) -> DocumentOut:
         )
     import datetime as dt
 
+    size = cfg.flags.jobs.document_part_chars
+    start = min(params.offset, len(doc.text))
+    end = min(start + size, len(doc.text))
+    part = doc.text[start:end]
     stale = doc.is_stale(dt.date.today(), cfg.flags.jobs.transcript_max_age_days)
     return DocumentOut(
         found=True,
@@ -117,9 +128,17 @@ def _transcript(params: GetDocumentIn) -> DocumentOut:
         sha256=doc.sha256,
         filed=doc.period,
         rule="TRANSCRIPT" + (" (stale)" if stale else ""),
-        untrusted_content=UntrustedContent(text=doc.text),
+        untrusted_content=UntrustedContent(text=part),
         message="Newest filed transcript."
-        + (" It is older than expected; treat it as stale." if stale else ""),
+        + (" It is older than expected; treat it as stale." if stale else "")
+        + (
+            f" Part {start}-{end} of {len(doc.text)} characters. More remains: call again with"
+            f" offset={end} until next_offset is empty, and read every part before you answer."
+            if end < len(doc.text)
+            else ""
+        ),
+        total_chars=len(doc.text),
+        next_offset=end if end < len(doc.text) else None,
     )
 
 

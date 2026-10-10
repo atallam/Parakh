@@ -111,3 +111,33 @@ def test_qualitative_task_tells_the_agent_how_to_fetch_the_transcript() -> None:
     ctx = RunContext.create(mode="t", actor_type="system", actor_id="t")
     run_qualitative(Spy(), bundle, ctx, get_sink(), isin="X", symbol="X", doc=doc)  # type: ignore[arg-type]
     assert seen and seen[0].inputs["doc_type"] == "transcript"
+
+
+def test_long_transcript_comes_in_parts_that_cover_all_text(monkeypatch) -> None:  # type: ignore[no-untyped-def]
+    from parakh.mcp.toolsets import data
+
+    text = "".join(f"line {i} of the call. " for i in range(3000))
+    doc = type(
+        "D",
+        (),
+        {
+            "text": text,
+            "sha256": "sha256:abcdefabcdef1234",
+            "source_url": "u",
+            "period": "2026-07",
+            "is_stale": lambda self, *a: False,
+        },
+    )()
+    monkeypatch.setattr(
+        data.docs_service.TranscriptStore, "get", lambda self, isin, previous=False: doc
+    )
+    got, offset, parts = "", 0, 0
+    while True:
+        out = data._transcript(data.GetDocumentIn(isin="X", doc_type="transcript", offset=offset))
+        assert out.untrusted_content is not None
+        got += out.untrusted_content.text
+        parts += 1
+        if out.next_offset is None:
+            break
+        offset = out.next_offset
+    assert got == text and parts > 1

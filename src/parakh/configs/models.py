@@ -271,6 +271,7 @@ class McpFlags(Strict):
 class JobsFlags(Strict):
     refresh_daily_cap: int = Field(ge=0)  # jobs.request_refresh, per IST day (AC-F25.4)
     transcript_max_age_days: int = Field(ge=1)  # a cached transcript older than this is "stale"
+    document_part_chars: int = Field(ge=1000)  # data.get_document returns text in parts this long
 
 
 class FlagsConfig(Strict):
