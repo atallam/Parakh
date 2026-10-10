@@ -45,6 +45,7 @@ class AmfiRow:
     isin: str
     avg_mcap_cr: float | None
     bucket: Bucket
+    nse_symbol: str | None = None  # None when the stock is not listed on NSE
 
 
 @dataclass(frozen=True)
@@ -79,6 +80,7 @@ def parse_amfi_list(data: bytes) -> AmfiList:
     name_i = next(i for i, c in enumerate(cols) if c.lower().startswith("company"))
     cat_i = next(i for i, c in enumerate(cols) if c.lower().startswith("categorization"))
     avg_i = next((i for i, c in enumerate(cols) if c.lower().startswith("average of all")), None)
+    nse_i = next((i for i, c in enumerate(cols) if c.lower() == "nse symbol"), None)
     out = []
     for r in rows[header + 1 :]:
         if not r or not isinstance(r[0], int | float) or not r[isin_i]:
@@ -87,6 +89,7 @@ def parse_amfi_list(data: bytes) -> AmfiList:
         if bucket is None:
             continue
         avg = r[avg_i] if avg_i is not None else None
+        nse = str(r[nse_i] or "").strip() if nse_i is not None else ""
         out.append(
             AmfiRow(
                 int(r[0]),
@@ -94,6 +97,7 @@ def parse_amfi_list(data: bytes) -> AmfiList:
                 str(r[isin_i]).strip(),
                 float(avg) if isinstance(avg, int | float) else None,
                 bucket,
+                nse if nse and nse != "-" else None,
             )
         )
     if not out:

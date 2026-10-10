@@ -137,7 +137,9 @@ def run(
     return 0
 
 
-def universe(action: str, cap: str | None, csv_path: str | None) -> int:
+def universe(
+    action: str, cap: str | None, csv_path: str | None, amfi: str | None = None, small: int = 250
+) -> int:
     """`parakh universe stage | import --cap mid --csv file.csv` (F01 full)."""
     from pathlib import Path
 
@@ -153,6 +155,21 @@ def universe(action: str, cap: str | None, csv_path: str | None) -> int:
         print(
             f"rollout: {bundle.universe.rollout} · "
             + " · ".join(f"{k} {v}" for k, v in sorted(by_cap.items()))
+        )
+        return 0
+    if action == "import" and amfi:
+        from parakh.configs.directory import import_amfi
+
+        try:
+            counts = import_amfi(
+                Path(amfi), config_dir() / bundle.universe.directory, small_count=small
+            )
+        except (ValueError, OSError) as exc:
+            print(f"rejected: {exc}", file=sys.stderr)
+            return 1
+        print(
+            " · ".join(f"{k} {v}" for k, v in counts.items()),
+            f"written to {bundle.universe.directory}/",
         )
         return 0
     if action == "import":

@@ -771,6 +771,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_un.add_argument("action", choices=["stage", "import"])
     p_un.add_argument("--cap", choices=["large", "mid", "small"])
     p_un.add_argument("--csv")
+    p_un.add_argument("--amfi", help="AMFI half-yearly .xlsx: writes large, mid and small at once")
+    p_un.add_argument("--small", type=int, default=250, help="small caps to take (AMFI ranks 251+)")
 
     p_pr = sub.add_parser("prompts", help="prompt pins: roll back or promote a version (P3)")
     p_pr.add_argument("action", choices=["rollback", "promote"])
@@ -927,7 +929,7 @@ def _dispatch(argv: list[str] | None) -> int:
         case "universe":
             from parakh.cli_watchlist import universe
 
-            return universe(args.action, args.cap, args.csv)
+            return universe(args.action, args.cap, args.csv, args.amfi, args.small)
         case "prompts":
             from parakh.cli_watchlist import prompts_pin
 
