@@ -18,9 +18,21 @@ def test_stages_add_caps_in_order() -> None:
     assert STAGES["mid_large"] == ("mid", "large") and STAGES["all"] == ("mid", "large", "small")
 
 
-def test_the_default_rollout_is_the_pilot() -> None:
+def test_the_committed_rollout_is_a_known_stage_and_keeps_the_pilot() -> None:
     u = load_all().universe
-    assert u.rollout == "pilot" and u.active == u.pilot
+    assert u.rollout in STAGES
+    assert {s.isin for s in u.pilot} <= {s.isin for s in u.active}
+
+
+def test_the_committed_directory_files_are_valid_and_unique() -> None:
+    from parakh.config import config_dir
+
+    root = config_dir() / load_all().universe.directory
+    rows = load_directory(root, "all")
+    assert len({s.isin for s in rows}) == len(rows) and len({s.symbol for s in rows}) == len(rows)
+    by_cap = {c: sum(1 for s in rows if s.cap == c) for c in ("large", "mid", "small")}
+    assert by_cap["large"] <= 100 and by_cap["mid"] <= 150 and by_cap["small"] <= 250
+    assert sum(by_cap.values()) >= 400  # the 30 Jun 2026 AMFI split: 100 + 148 + 250
 
 
 def test_import_validates_and_round_trips(tmp_path) -> None:
