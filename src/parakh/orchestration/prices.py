@@ -19,7 +19,7 @@ from typing import Protocol
 import pandas as pd
 
 from parakh.adapters.corporate_actions import CorporateAction, back_adjust
-from parakh.adapters.prices import PriceSourceError, cross_check_closes
+from parakh.adapters.prices import PriceSourceError, apply_price_adjustments, cross_check_closes
 from parakh.audit.context import RunContext
 from parakh.audit.emit import AuditSink, get_sink
 from parakh.audit.events import AUD
@@ -188,6 +188,16 @@ def load_prices(
                 )
                 step.record_output(rows=len(frame), source=load.source)
 
+            if load.source == primary.source_id and cfg.manual_adjustments:
+                frame, notes = apply_price_adjustments(frame, sec.isin, cfg.manual_adjustments)
+                for note in notes:
+                    sink.emit(
+                        ctx,
+                        AUD.DATA_CORP_ACTION_APPLIED,
+                        isin=sec.isin,
+                        reason="manual price adjustment",
+                        details={"note": note},
+                    )
             with audited_step(ctx, "check_prices", isin=sec.isin) as step:
                 load.dq = check_prices(frame, sec.isin, today, sec.listed_on, actions, cfg)
                 if exchange is not None and not frame.empty:

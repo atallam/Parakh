@@ -120,7 +120,9 @@ def check_prices(
     closes = {
         d: float(c) for d, c in zip(frame["trade_date"], frame["close"], strict=True) if pd.notna(c)
     }
-    bad = unexplained(find_gaps(closes, actions, cfg.max_unexplained_move_ratio))
+    accepted = {(m.isin, m.day) for m in cfg.accepted_moves}
+    found = unexplained(find_gaps(closes, actions, cfg.max_unexplained_move_ratio))
+    bad = [g for g in found if (isin, g.day) not in accepted]
     results.append(
         DqResult(
             "DQ.prices.gaps",
@@ -129,7 +131,8 @@ def check_prices(
             {
                 "unexplained": [
                     {"day": g.day.isoformat(), "move": round(g.move_ratio, 3)} for g in bad[:5]
-                ]
+                ],
+                "accepted": len(found) - len(bad),
             },
         )
     )
