@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import _socket
 import socket
 from pathlib import Path
 
@@ -37,13 +38,13 @@ def env(output_root, monkeypatch, tmp_path):
     monkeypatch.setenv("PARAKH_WATCH_STATE_DIR", str(tmp_path / "watch"))
     config.get_settings.cache_clear()
 
-    real_connect = socket.socket.connect
-
     def no_network(self, *a, **k):  # AC-F15.11: nothing may open a connection while a page renders
         # why: on Windows asyncio's event loop connects a socketpair over 127.0.0.1 (same
-        # exemption as the global guard in tests/conftest.py); that is not network access
+        # exemption as the global guard in tests/conftest.py); that is not network access.
+        # Call the C-level connect: the global guard is already patched in and looks at its
+        # own caller's name, which here would be this function.
         if called_from_socketpair():
-            return real_connect(self, *a, **k)
+            return _socket.socket.connect(self, *a, **k)
         raise AssertionError("network access during render")
 
     monkeypatch.setattr(socket.socket, "connect", no_network)
@@ -158,3 +159,21 @@ def test_calibration_page_saves_a_journal_entry_and_rates_an_alert(env) -> None:
     assert len(app_api.journal_service().entries()) == 1
     next(b for b in at.button if "Useful" in b.label).click().run()
     assert app_api.calibration_view().precision["rated"] == 1
+
+
+def _fallback_socketpair(listener: socket.socket) -> socket.socket:
+    """Stands in for CPython's Windows socketpair emulation: the guards key on this name."""
+    c = socket.socket()
+    c.connect(listener.getsockname())
+    return c
+
+
+def test_the_render_guard_lets_a_loopback_socketpair_through(env) -> None:
+    """Windows asyncio builds its loop with a loopback connect from socket._fallback_socketpair.
+    Both guards (this one and the global one) must allow it, on any OS, and still block the rest."""
+    with socket.socket() as listener:
+        listener.bind(("127.0.0.1", 0))
+        listener.listen(1)
+        _fallback_socketpair(listener).close()
+    with socket.socket() as s, pytest.raises((AssertionError, RuntimeError)):
+        s.connect(("93.184.216.34", 80))
