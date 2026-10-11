@@ -163,7 +163,7 @@ def drift(output: str | None, period: str | None) -> int:
     bundle = load_all()
     rows = snapshot_rows(Path(output) if output else output_dir())
     if rows.empty:
-        print("no snapshots found; run `parakh monthly` first", file=sys.stderr)
+        print("no snapshots found; run `parakh run --mode monthly` first", file=sys.stderr)
         return 2
     rep = drift_report(rows, bundle.calibration.drift, period=period)
     for c in rep.checks:

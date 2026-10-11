@@ -35,7 +35,9 @@ env:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # why: the first run after a universe stage change backfills 10 years per new stock at about 25 s each
+    # (Mid = 147 stocks, about 1 hour); later daily runs take 3 to 5 minutes
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/parakh-job
