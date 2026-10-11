@@ -121,3 +121,14 @@ def test_lease_cost_needs_four_consecutive_quarters() -> None:
     ]
     values, reasons = profile_inputs_from(gap)
     assert "lease_cost_cr" not in values and "not consecutive" in reasons["lease_cost_cr"]
+
+
+def test_order_cover_is_order_book_over_ttm_sales() -> None:
+    """T-VAL-50: MAZDOCK style: 18,218 Cr book against TTM revenue; N/A without the book."""
+    from parakh.analytics.metrics.value import order_cover
+
+    v = _calc({"order_book_cr": 18218.0}, True)
+    sales = v.f.ttm("Sales")
+    assert sales is not None
+    assert order_cover(v).value == pytest.approx(18218.0 / sales)
+    assert order_cover(_calc({}, True)).value is None

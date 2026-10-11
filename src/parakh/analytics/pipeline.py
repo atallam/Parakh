@@ -23,6 +23,7 @@ import numpy as np
 import pandas as pd
 
 from parakh import __version__
+from parakh.analytics.document_inputs import document_inputs_for
 from parakh.analytics.fundamentals_view import Fundamentals
 from parakh.analytics.indicators import sma_series
 from parakh.analytics.momentum_build import momentum_context_parts, momentum_inputs
@@ -238,6 +239,15 @@ def analyse_stock(req: StockRequest, bundle: ConfigBundle, meta: RunMeta) -> Sto
 
     # -- value ---------------------------------------------------------------------------------
     inputs, reasons_in = profile_inputs_from(fund_rows)
+    # filed XBRL values win; a verified document value fills only what the filings do not give
+    doc_vals, doc_reasons, doc_lineage = document_inputs_for(bundle.document_inputs, sec.isin, asof)
+    for key, val in doc_vals.items():
+        if inputs.get(key) is None:
+            inputs[key] = val
+            reasons_in.pop(key, None)
+    for key, why in doc_reasons.items():
+        if inputs.get(key) is None:
+            reasons_in[key] = why
     register = bundle.profile_inputs.listed_stakes.get(sec.isin)
     stakes = stakes_from(fund_rows, register.investees) if register else []
     v_inp = build_inputs(
@@ -248,6 +258,8 @@ def analyse_stock(req: StockRequest, bundle: ConfigBundle, meta: RunMeta) -> Sto
     v_vals, v_reasons, v_extras = value_context_parts(v_inp, cfg_v)
     if archetype_ov:
         v_extras["archetype"] = archetype_ov.value
+    if doc_lineage:
+        v_extras["document_inputs"] = doc_lineage
     v_extras["avg_traded_value_cr"] = m_vals.get("MET.momentum.avg_traded_value_cr")
     v_ctx = StockContext(
         isin=sec.isin, symbol=sec.symbol, asof=asof, profile=profile, cap=sec.cap,

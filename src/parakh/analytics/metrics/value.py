@@ -905,15 +905,26 @@ for _id, _key, _unit, _meaning, _src in [
         "Cost-to-income ratio of a capital-market intermediary.",
         "filings; plan 01 §3",
     ),
-    (
-        P + "order_cover",
-        "order_cover_x",
-        "x",
-        "Order book divided by trailing revenue.",
-        "investor presentations; plan 01 §3",
-    ),
 ]:
     _input_metric(_id, _key, _unit, _meaning, _src)
+
+
+@value_metric(P + "order_cover", "x", ["profile_inputs.order_book_cr", "fundamentals.quarterly_pl"])
+def order_cover(v: VCalc) -> Measure:
+    """Order book divided by trailing revenue (years of work in hand).
+
+    Formula:   order book ÷ TTM sales
+    Meaning:   Below 1× the yard is working off its book faster than it is refilled.
+    Pitfalls:  The order book is an investor-presentation figure (document_inputs.yaml), used only once
+               verified; N/A until then, never estimated. A lumpy book makes one quarter a poor guide.
+    Source:    investor presentations; Screener export; plan 01 §3
+    """
+    ob, sales = v.inputs_value("order_book_cr"), v.f.ttm("Sales")
+    if ob.value is None:
+        return _na(ob.reason or "order book not supplied")
+    if sales is None or sales <= 0:
+        return _na("TTM sales unavailable")
+    return Measure(ob.value / sales)
 
 
 # -- growth ----------------------------------------------------------------------------------

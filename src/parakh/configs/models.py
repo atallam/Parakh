@@ -420,3 +420,49 @@ class ProfileInputsConfig(Strict):
     stake_quarters: int = Field(ge=1, le=20)
     filing_items: dict[str, FilingProfile] = Field(default_factory=dict)
     listed_stakes: dict[str, StakeRegister] = Field(default_factory=dict)
+
+
+# -- document_inputs.yaml (plan 09 Phase 2 "document work", plan 13 D24) --------------------------
+# Value-lens inputs that sit in PDFs (investor presentations, results releases), not in any
+# exchange feed. Each one keeps its source, trust tier and as-of date; nothing is used until the
+# owner has checked it against the source and set `verified: true`.
+DOCUMENT_INPUT_KEYS: frozenset[str] = frozenset(
+    {
+        "order_book_cr",
+        "gnpa_ratio",
+        "nnpa_ratio",
+        "nim_ratio",
+        "car_ratio",
+        "casa_ratio",
+        "cost_to_income_ratio",
+        "standalone_pat_cr",
+        "standalone_net_debt_cr",
+        "standalone_equity_cr",
+        "unlisted_book_cr",
+        "lease_liabilities_cr",
+        "lease_cost_cr",
+        "customer_advances_cr",
+    }
+)
+
+
+class DocumentValue(Strict):
+    value: float
+    as_of: dt.date
+    tier: Literal["T1", "T2"]  # T3 (convenience) sources are not accepted for a score input
+    source: str = Field(min_length=10)
+    verified: bool = False
+    note: str = ""
+
+
+class DocumentInputsConfig(Strict):
+    # ISIN → input key → value; null marks an input that is known to be open
+    inputs: dict[str, dict[str, DocumentValue | None]] = Field(default_factory=dict)
+
+    @model_validator(mode="after")
+    def _keys_known(self) -> DocumentInputsConfig:
+        for isin, items in self.inputs.items():
+            bad = sorted(set(items) - DOCUMENT_INPUT_KEYS)
+            if bad:
+                raise ValueError(f"{isin}: unknown document input(s) {', '.join(bad)}")
+        return self
