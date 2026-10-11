@@ -261,7 +261,7 @@ ADRs record *why* a choice was made, so future-you, or an AI coding assistant, d
 | ADR-009 *(v0.8)* | Secrets: **AWS SSM Parameter Store (SecureString)** read by GitHub Actions through **OIDC** (no long-lived AWS keys; GitHub holds only the role ARN); `.env` locally; CAS password and Supabase service key live there too. Recorded fallback if no AWS account: GitHub *environment* secrets with required reviewers (a documented deviation from the SCAIX standard) | ✅ Accepted 2026-09-24 (plan 13 P1) | Plan 13 §3 |
 | **ADR-010** *(v1.0)* | **MCP as the agent-facing interface over services:** one `parakh-mcp` server with namespaced toolsets; the only way agents reach data or state; agents propose, never change state; workflows stay code | ✅ Accepted 2026-09-27 (plan 13 D20) | Plan 15 §10 |
 | **ADR-011** *(v1.0)* | **Agent runtime: Claude Agent SDK** behind the `AgentRunner` interface; built-in tools disabled; recorded deviation from the SCAIX LangGraph default | ✅ Accepted 2026-09-27 (plan 13 D21) | Plan 15 §6, §10 |
-| **ADR-012** *(v1.0)* | **MCP transport: local stdio only** (PC and inside job runners); remote Streamable HTTP + OAuth revisited in Phase 5 | ✅ Accepted 2026-09-27 (plan 13 D22) | Plan 15 §7, §10 |
+| **ADR-012** *(v1.0)* | **MCP transport: local stdio only** (PC and inside job runners); remote Streamable HTTP + OAuth reviewed in Phase 5: kept local | ✅ Accepted 2026-09-27, review closed 2026-10-11 (plan 13 D22) | Plan 15 §7, §10 |
 
 ### 5.2 ADR-006: UI framework for the review app and dashboard
 

@@ -1,6 +1,6 @@
 # ADR-012: MCP transport: local stdio only (for now)
 
-- **Status:** Accepted; Phase 5 review prepared, **waiting for the owner's decision** (see "Phase 5 review")
+- **Status:** Accepted. Phase 5 review closed 2026-10-11: **keep local (stdio only)**
 - **Date:** 2026-09-27
 - **Deciders:** Avinash (owner)
 - **Detailed in:** plan 15 §7, §10; plan 13 D22 (docs/plan/)
@@ -30,4 +30,4 @@ The question: keep the MCP server local, or plan remote access (Ask Parakh from 
 
 **Recommendation:** keep it local for v1.0 GA. Nothing in Phase 5 needed remote access, the three away-from-PC actions already have a phone channel, and the first remote tool would be the largest attack surface in the system. Re-open it as a Phase 6 candidate only if, during the two months of real use, you notice yourself wanting to ask questions from the phone and not having an answer. If you do choose remote access, the least risky shape is a read-only `reports.*` and `calibration.*` toolset, with `portfolio.*` and every `P`, `N` and `J` tool left off the remote server.
 
-**To close the review:** reply with "keep local" or "plan remote"; the status above then becomes Accepted (decision date) and plan 13 D22 and plan 09 Phase 6 are updated to match.
+**Decision (2026-10-11, owner): keep local.** Plan 13 D22 and plan 09 Phase 6 are updated to match. Reopen only if the two months of real use show a wish to ask free-form questions away from the PC.
