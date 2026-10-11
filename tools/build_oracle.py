@@ -671,8 +671,14 @@ class Sheet:
             ).font = BOLD
             ws.cell(r, 1).fill = SUB
             labels = [
-                ("Lease liabilities, FY26, ₹ cr (non-current + current)", None),
-                ("Aircraft and engine rentals (short-term leases), FY26, ₹ cr", None),
+                (
+                    "Lease liabilities, latest balance sheet, ₹ cr (non-current + current); already inside Screener Borrowings",
+                    None,
+                ),
+                (
+                    "Aircraft and engine rentals (short-term leases), last 4 quarters (TTM), ₹ cr",
+                    None,
+                ),
             ]
             rows = {}
             for i, (lab, _) in enumerate(labels, start=1):
@@ -686,13 +692,13 @@ class Sheet:
             items = [
                 (
                     "MET.value.ev_ebitdar",
-                    f'=IF(AND(ISNUMBER({L}),ISNUMBER({RENT})),({mc}+{R}!K59+{L}-{R}!K69)/(SUM({R}!H50:K50)+{RENT}),"INPUT NEEDED")',
-                    "(mcap + borrowings + lease liabilities − cash) ÷ (TTM operating profit + lease cost)",
+                    f'=IF(AND(ISNUMBER({L}),ISNUMBER({RENT})),({mc}+{R}!K59-{R}!K69)/(SUM({R}!H50:K50)+{RENT}),"INPUT NEEDED")',
+                    "(mcap + borrowings − cash) ÷ (TTM operating profit + lease cost); Screener borrowings already include lease liabilities (Ind AS 116), so they are not added again",
                 ),
                 (
                     "MET.value.lease_adj_leverage",
-                    f'=IF(AND(ISNUMBER({L}),ISNUMBER({RENT})),({R}!K59+{L}-{R}!K69)/(SUM({R}!H50:K50)+{RENT}),"INPUT NEEDED")',
-                    "(borrowings + lease liabilities − cash) ÷ (TTM operating profit + lease cost)",
+                    f'=IF(AND(ISNUMBER({L}),ISNUMBER({RENT})),({R}!K59-{R}!K69)/(SUM({R}!H50:K50)+{RENT}),"INPUT NEEDED")',
+                    "(borrowings − cash) ÷ (TTM operating profit + lease cost); borrowings already include lease liabilities, so they are not added again",
                 ),
             ]
             for i, (ident, f, words) in enumerate(items):

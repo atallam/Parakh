@@ -6,7 +6,7 @@ Every lens and the verdict policy. Status is `active`, `informational` or `retir
 
 | ID | Version | Status | Owner | Config hash | Last validation | Last calibration | Card |
 |---|---|---|---|---|---|---|---|
-| `value` | 1.0.0 | active | Avinash Tallam | `a1ce6659` | pending (UAT-1) | pending (Phase 5) | [card](lenses/value.md) |
+| `value` | 1.0.0 | active | Avinash Tallam | `ff785ab0` | pending (UAT-1) | pending (Phase 5) | [card](lenses/value.md) |
 | `momentum` | 1.0.0 | active | Avinash Tallam | `151445aa` | pending (UAT-1) | pending (Phase 5) | [card](lenses/momentum.md) |
 | `verdict_policy` | 1.0.0 | active | Avinash Tallam | `72397dae` | pending (UAT-1) | pending (Phase 5) | [card](lenses/verdict_policy.md) |
 

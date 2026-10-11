@@ -25,7 +25,7 @@ Prepared: 2026-10-11 · Tester: Avinash · Framework: fill in at sign-off
 | 5 | Open `governance/reviews/<quarter>.md` and tick every item | |
 | 6 | Sample 10 stocks across the three caps; for each, read the report and say whether the verdict is one you would defend | |
 | 7 | Decide the weights: CONFIRMED, or CHANGED (PR, framework version bump, then re-run `parakh run --mode monthly --asof YYYY-MM-DD` for each past month so history is re-scored; there is no bulk re-score command yet) | |
-| 8 | Decide ADR-012 (see the ADR) | |
+| 8 | ADR-012: decided 11 Oct 2026, keep local (nothing to do) | ✅ |
 | 9 | PRD §13 release checklist complete; no open S1 or S2 | |
 
 ## Sign-off

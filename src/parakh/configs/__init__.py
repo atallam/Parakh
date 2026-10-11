@@ -23,6 +23,7 @@ from parakh.configs.models import (
     AgentsConfig,
     BackupConfig,
     DataQualityConfig,
+    DocumentInputsConfig,
     FlagsConfig,
     LensesConfig,
     ProfileInputsConfig,
@@ -43,6 +44,7 @@ FILES: dict[str, type[BaseModel]] = {
     "data_quality.yaml": DataQualityConfig,
     "backup.yaml": BackupConfig,
     "profile_inputs.yaml": ProfileInputsConfig,
+    "document_inputs.yaml": DocumentInputsConfig,
     "value.yaml": ValueConfig,
     "momentum.yaml": MomentumConfig,
     "regime.yaml": RegimeConfig,
@@ -95,6 +97,7 @@ class ConfigBundle:
     data_quality: DataQualityConfig
     backup: BackupConfig
     profile_inputs: ProfileInputsConfig
+    document_inputs: DocumentInputsConfig
     value: ValueConfig
     momentum: MomentumConfig
     regime: RegimeConfig
@@ -183,6 +186,11 @@ def load_all(root: Path | None = None) -> ConfigBundle:
     for isin in [*profile.filing_items, *profile.listed_stakes]:
         if isin not in known:
             problems.append(f"profile_inputs.yaml: {isin} is not in the universe")
+    documents = loaded["document_inputs.yaml"]
+    assert isinstance(documents, DocumentInputsConfig)
+    for isin in documents.inputs:
+        if isin not in known:
+            problems.append(f"document_inputs.yaml: {isin} is not in the universe")
     problems.extend(_cross_checks(loaded, universe))
     if problems:
         raise ConfigError(problems)
@@ -196,6 +204,7 @@ def load_all(root: Path | None = None) -> ConfigBundle:
         data_quality=loaded["data_quality.yaml"],  # type: ignore[arg-type]
         backup=loaded["backup.yaml"],  # type: ignore[arg-type]
         profile_inputs=profile,
+        document_inputs=documents,
         value=loaded["value.yaml"],  # type: ignore[arg-type]
         momentum=loaded["momentum.yaml"],  # type: ignore[arg-type]
         regime=loaded["regime.yaml"],  # type: ignore[arg-type]

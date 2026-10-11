@@ -32,6 +32,10 @@ informational_min_valuation_weight: 0.5
 # why: 10-year G-sec yield feeds earnings yield vs bonds; set when the macro feed (F16) lands
 g_sec_yield: null
 
+# why: Screener's Borrowings line includes Ind AS 116 lease liabilities (IndiGo, 31 Mar 2026: 77,749.2 Cr
+# borrowings against 75,942.9 Cr of leases from the filing), so EV and net debt must not add them again
+borrowings_include_leases: true
+
 # why: plan 01 §2.6 and §11 #2; cost of equity 12–13% for India, hurdle rate locked at 15% (D12)
 dcf:
   cost_of_equity: 0.125

@@ -66,7 +66,7 @@
 | `MET.value.nim` | ratio | profile_inputs.nim_ratio | LENS.value | Net interest margin of a bank. |
 | `MET.value.nnpa` | ratio | profile_inputs.nnpa_ratio | LENS.value | Net NPA ratio of a bank or NBFC. |
 | `MET.value.op_margin_trend_pp` | score | fundamentals.quarterly_pl | LENS.value | Operating-margin change: latest four quarters versus the four before, in percentage points. |
-| `MET.value.order_cover` | x | profile_inputs.order_cover_x | LENS.value | Order book divided by trailing revenue. |
+| `MET.value.order_cover` | x | profile_inputs.order_book_cr, fundamentals.quarterly_pl | LENS.value | Order book divided by trailing revenue (years of work in hand). |
 | `MET.value.other_income_share` | ratio | fundamentals.annual_pl | LENS.value | Other income as a share of profit before tax (a flag above 25% for non-financials). |
 | `MET.value.pb` | x | prices.close, fundamentals.balance_sheet | LENS.value | Price divided by book value per share. |
 | `MET.value.pb_discount_own_5y` | ratio | prices.close, fundamentals.balance_sheet | LENS.value | Discount of the current P/B to the stock's own 5-year median year-end P/B. |

@@ -1,0 +1,54 @@
+# Value-lens inputs that live in PDFs, not in any exchange feed (plan 09 Phase 2 "document work").
+# Rules:
+#   - every value carries its source, tier (T1 official, T2 reputable secondary) and as-of date;
+#   - `verified: false` (the default) means the number is NOT used: check it against the source
+#     document, then set `verified: true`;
+#   - filed XBRL values (profile_inputs.yaml) win over these;
+#   - `null` marks an input that is known to be open.
+# Collected 11 Oct 2026 (see ORACLE/UAT0_input_pack_2026-10-11.md). Nothing here is estimated.
+inputs:
+  INE249Z01020:   # MAZDOCK
+    order_book_cr:
+      value: 18218
+      as_of: 2026-06-30
+      tier: T2
+      source: "Q1 FY27 investor presentation, as quoted by ICICI Direct p.1; fetch the presentation to verify"
+      verified: false
+  INE040A01034:   # HDFCBANK, quarter ended 30 Jun 2026
+    gnpa_ratio:
+      {value: 0.0117, as_of: 2026-06-30, tier: T2, source: "Q1 FY27 results as reported by Angel One, Business Today and Arihant Capital", verified: false}
+    nnpa_ratio:
+      {value: 0.0041, as_of: 2026-06-30, tier: T2, source: "Q1 FY27 results as reported by Angel One, Business Today and Arihant Capital", verified: false}
+    nim_ratio:
+      value: 0.0340
+      as_of: 2026-06-30
+      tier: T2
+      source: "Q1 FY27 results as reported by Angel One and Arihant Capital"
+      verified: false
+      note: "on interest-earning assets; 3.26% on total assets. Pick one basis and keep it for every quarter."
+    car_ratio:
+      {value: 0.1960, as_of: 2026-06-30, tier: T2, source: "Business Today quoting the bank, Q1 FY27", verified: false}
+    casa_ratio:
+      value: 0.320
+      as_of: 2026-06-30
+      tier: T2
+      source: "Arihant Capital p.3; verify against the bank's own release"
+      verified: false
+      note: "a weak figure; confirm before it moves a score"
+  INE101A01026:   # M&M
+    standalone_pat_cr:
+      value: 15639
+      as_of: 2026-03-31
+      tier: T1
+      source: "M&M Q4 FY26 media release, Annexure 1 (standalone)"
+      verified: false
+      note: "includes investee dividends and exceptionals; adjust before use or the SOTP double counts the stakes"
+    unlisted_book_cr: null   # OPEN: from the standalone balance sheet in the annual report
+  INE646L01027:   # INDIGO
+    lease_cost_cr:
+      value: 2131.9
+      as_of: 2026-06-30
+      tier: T2
+      source: "FY26 20,847 mn - Q1 FY26 4,925 mn + Q1 FY27 5,397 mn, from IndiGo presentations via PL India p.4"
+      verified: false
+      note: "stand-in only; the four filed quarters of rentals replace it as soon as the filing loader has them"

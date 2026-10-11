@@ -235,6 +235,10 @@ class ValueConfig(Strict):
     g_sec_yield: float | None = (
         None  # 10-year G-sec, for earnings yield vs bonds (config until F16 feeds it)
     )
+    # Screener's Borrowings line already contains Ind AS 116 lease liabilities (IndiGo: 77,749 Cr
+    # against 75,943 Cr of leases). When true, the airline metrics do not add the filed lease
+    # liabilities a second time; they use them as a sanity check only.
+    borrowings_include_leases: bool = False
     flags: dict[str, float]
     archetype: Archetype
 
