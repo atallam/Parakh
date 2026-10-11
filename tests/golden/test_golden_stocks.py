@@ -5,12 +5,14 @@ Regression baselines on deterministic synthetic prices; see tests/fixtures/golde
 
 from __future__ import annotations
 
+import dataclasses
 import json
 from pathlib import Path
 
 import pytest
 
 from parakh.configs import load_all
+from parakh.configs.models import DocumentInputsConfig
 from parakh.orchestration.analysis import run_monthly
 from tests.helpers.pilot import END, pilot_data
 
@@ -38,7 +40,10 @@ def test_golden_facts_name_the_export_they_came_from() -> None:
 
 @pytest.fixture(scope="module")
 def snaps(tmp_path_factory, module_isolation):
-    bundle = load_all()
+    # why: the baselines are frozen against the committed Screener exports. The owner's verified
+    # document inputs (config/document_inputs.yaml) change live scores on purpose and must not
+    # move these baselines; they are covered by tests/unit/test_document_inputs.py.
+    bundle = dataclasses.replace(load_all(), document_inputs=DocumentInputsConfig(inputs={}))
     data = pilot_data(bundle)
     for isin, *_ in EXPECTED.values():
         data.fundamental_rows[isin] = _facts(isin)["rows"]
