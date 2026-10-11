@@ -21,13 +21,16 @@ def _cfg(verified: bool, as_of: dt.date = dt.date(2026, 6, 30)) -> DocumentInput
     return DocumentInputsConfig(inputs={ISIN: {"order_book_cr": item, "unlisted_book_cr": None}})
 
 
-def test_shipped_file_loads_and_uses_nothing_until_verified() -> None:
-    """The shipped values are all unverified, so no score moves until the owner checks them."""
+def test_shipped_file_only_ever_uses_verified_values() -> None:
+    """Whatever the owner has verified is used with lineage; everything else is withheld with a reason."""
     bundle = load_all()
-    for isin in bundle.document_inputs.inputs:
-        values, reasons, _ = document_inputs_for(bundle.document_inputs, isin, ASOF)
-        assert values == {}
-        assert reasons
+    for isin, items in bundle.document_inputs.inputs.items():
+        values, reasons, lineage = document_inputs_for(bundle.document_inputs, isin, ASOF)
+        for key, item in items.items():
+            if item is not None and item.verified and item.as_of <= ASOF:
+                assert key in values and key in lineage
+            else:
+                assert key not in values and reasons[key]
 
 
 def test_verified_value_is_used_with_lineage() -> None:
