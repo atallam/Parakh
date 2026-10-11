@@ -1,147 +1,146 @@
 symbol,isin,name,sector,profile,listed_on
-360ONE,INE466L01038,360 ONE WAM LIMITED,,standard,
-3MINDIA,INE470A01017,3M India Ltd.,,standard,
-ABCAPITAL,INE674K01013,Aditya Birla Capital Ltd,,standard,
-AIAENG,INE212H01026,AIA Engineering Ltd.,,standard,
-AIIL,INE206F01022,Authum Investment & Infrastructure Limited,,standard,
-AJANTPHARM,INE031B01049,Ajanta Pharma Ltd.,,standard,
-ALKEM,INE540L01014,Alkem Laboratories Limited,,standard,
-ANTHEM,INE0CZ201020,Anthem Biosciences Limited,,standard,
-APARINDS,INE372A01015,Apar Industries Ltd,,standard,
-APLAPOLLO,INE702C01027,APL Apollo Tubes Limited,,standard,
-ASHOKLEY,INE208A01029,Ashok Leyland Ltd.,,standard,
-ASTERDM,INE914M01019,Aster DM Healthcare Limited,,standard,
-ASTRAL,INE006I01046,ASTRAL LIMITED,,standard,
-ATGL,INE399L01023,ADANI TOTAL GAS LIMITED,,standard,
-AUBANK,INE949L01017,AU Small Finance Bank Limited,,standard,
-AUROPHARMA,INE406A01037,Aurobindo Pharma Ltd.,,standard,
-BAJAJHFL,INE377Y01014,Bajaj Housing Finance Limited,,standard,
-BALKRISIND,INE787D01026,Balkrishna Industries Ltd.,,standard,
-BANKINDIA,INE084A01016,Bank of India,,standard,
-BDL,INE171Z01026,Bharat Dynamics Limited,,standard,
-BERGEPAINT,INE463A01038,Berger Paints India Ltd,,standard,
-BHARATFORG,INE465A01025,Bharat Forge Ltd,,standard,
-BHARTIHEXA,INE343G01021,Bharti Hexacom Limited,,standard,
-BIOCON,INE376G01013,Biocon Ltd.,,standard,
-BLUESTARCO,INE472A01039,Blue Star Ltd,,standard,
-BOSCHLTD,INE323A01026,Bosch Ltd,,standard,
-COCHINSHIP,INE704P01025,Cochin Shipyard Limited,,standard,
-COFORGE,INE591G01025,COFORGE LIMITED,,standard,
-COLPAL,INE259A01022,Colgate-Palmolive (India) Ltd.,,standard,
-CONCOR,INE111A01025,Container Corporation Of India Ltd.,,standard,
-COROMANDEL,INE169A01031,Coromandel International Limited,,standard,
-DABUR,INE016A01026,Dabur India Ltd.,,standard,
-DALBHARAT,INE00R701025,DALMIA BHARAT LIMITED,,standard,
-DIXON,INE935N01020,Dixon Technologies (India) Limited,,standard,
-DRREDDY,INE089A01031,Dr. Reddy's Laboratories Ltd.,,standard,
-EMBASSY,INE041025011,EMBASSY OFFICE PARKS REIT,,standard,
-ENDURANCE,INE913H01037,Endurance Technologies Limited,,standard,
-ENRIN,INE1NPP01017,Siemens Energy India Limited,,standard,
-ESCORTS,INE042A01014,Escorts Kubota Limited,,standard,
-FACT,INE188A01015,Fertilizers and Chemicals Travancore Limited,,standard,
-FEDERALBNK,INE171A01029,Federal Bank Ltd.,,standard,
-FLUOROCHEM,INE09N301011,Gujarat Fluorochemicals Limited,,standard,
-FORTIS,INE061F01013,Fortis Healthcare Ltd,,standard,
-GICRE,INE481Y01014,General Insurance Corporation of India,,standard,
-GLAXO,INE159A01016,GlaxoSmithkline Pharmaceuticals Ltd.,,standard,
-GLENMARK,INE935A01035,Glenmark Pharmaceuticals ltd,,standard,
-GMRAIRPORT,INE776C01039,GMR Airports Limited,,standard,
-GODFRYPHLP,INE260B01028,Godfrey Phillips India Ltd.,,standard,
-GODREJIND,INE233A01035,Godrej Industries Ltd.,,standard,
-GODREJPROP,INE484J01027,Godrej Properties Limited,,standard,
-GVT&D,INE200A01026,GE Vernova T&D India Limited,,standard,
-HAVELLS,INE176B01034,Havells India Limited,,standard,
-HDBFS,INE756I01012,HDB FINANCIAL SERVICES LIMITED,,standard,
-HEROMOTOCO,INE158A01026,Hero MotoCorp Limited,,standard,
-HINDCOPPER,INE531E01026,Hindustan Copper Ltd.,,standard,
-HINDPETRO,INE094A01015,Hindustan Petroleum Corporation Ltd,,standard,
-HUDCO,INE031A01017,Housing &Urban Development Corporation Ltd.,,standard,
-ICICIGI,INE765G01017,ICICI Lombard General Insurance Company Limited,,standard,
-ICICIPRULI,INE726G01019,ICICI Prudential Life Insurance Company Limited,,standard,
-IDBI,INE008A01015,IDBI Bank Ltd,,standard,
-IDFCFIRSTB,INE092T01019,IDFC FIRST BANK LIMITED,,standard,
-INDHOTEL,INE053A01029,Indian Hotels Co. Ltd,,standard,
-INDUSINDBK,INE095A01012,IndusInd Bank Ltd.,,standard,
-IOB,INE565A01014,Indian Overseas Bank,,standard,
-IPCALAB,INE571A01038,Ipca Laboratories Ltd.,,standard,
-IRCTC,INE335Y01020,Indian Railway Catering & Tourism Corporation Ltd,,standard,
-IREDA,INE202E01016,Indian Renewable Energy Development Agency Limited,,standard,
-ITCHOTELS,INE379A01028,ITC Hotels Limited,,standard,
-JKCEMENT,INE823G01014,J.K. CEMENT LTD,,standard,
-JSL,INE220G01021,Jindal Stainless Limited,,standard,
-JSWENERGY,INE121E01018,JSW Energy Limited,,standard,
-JSWINFRA,INE880J01026,JSW Infrastructure Limited,,standard,
-KALYANKJIL,INE303R01014,Kalyan Jewellers India Limited,,standard,
-KEI,INE878B01027,KEI Industries Ltd.,,standard,
-LAURUSLABS,INE947Q01028,Laurus Labs Limited,,standard,
-LENSKART,INE956O01016,Lenskart Solutions Limited,,standard,
-LGEINDIA,INE324D01010,LG Electronics India Limited,,standard,
-LINDEINDIA,INE473A01011,Linde India Limited,,standard,
-LLOYDSME,INE281B01032,Lloyds Metals and Energy Limited,,standard,
-LODHA,INE670K01029,Lodha Developers Limited,,standard,
-LTF,INE498L01015,L&T Finance Limited,,standard,
-LTTS,INE010V01017,L&T Technology Services Limited,,standard,
-LUPIN,INE326A01037,Lupin Ltd,,standard,
-M&MFIN,INE774D01024,Mahindra & Mahindra Financial Services Limited,,standard,
-MAHABANK,INE457A01014,Bank of maharashtra,,standard,
-MANKIND,INE634S01028,Mankind Pharma Limited,,standard,
-MARICO,INE196A01026,Marico Limited,,standard,
-MAXHEALTH,INE027H01010,Max Healthcare Institute Limited,,standard,
-MAZDOCK,INE249Z01020,Mazagon Dock Shipbuilders Limited,,standard,
-MEESHO,INE0VDM01015,Meesho Limited,,standard,
-MFSL,INE180A01020,Max Financial Services Limited,,standard,
-MOTILALOFS,INE338I01027,Motilal Oswal Financial Services Limited,,standard,
-MPHASIS,INE356A01018,Mphasis Limited,,standard,
-MRF,INE883A01011,M.R.F. Ltd.,,standard,
-NAM-INDIA,INE298J01013,NIPPON LIFE INDIA ASSET MANAGEMENT LIMITED,,standard,
-NATIONALUM,INE139A01034,National Aluminium Co. Ltd.,,standard,
-NAUKRI,INE663F01032,Info Edge(India) Ltd.,,standard,
-NH,INE410P01011,Narayana Hrudayalaya Limited,,standard,
-NHPC,INE848E01016,NHPC Limited,,standard,
-NLCINDIA,INE589A01014,NLC India Limited,,standard,
-NMDC,INE584A01023,NMDC Ltd,,standard,
-NTPCGREEN,INE0ONG01011,NTPC GREEN ENERGY LIMITED,,standard,
-NYKAA,INE388Y01029,FSN E-Commerce Ventures Limited,,standard,
-OBEROIRLTY,INE093I01010,OBEROI REALTY LIMITED,,standard,
-OFSS,INE881D01027,Oracle Financial Services Software Limited,,standard,
-OIL,INE274J01014,Oil India Limited,,standard,
-PAGEIND,INE761H01022,Page Industries Ltd.,,standard,
-PATANJALI,INE619A01035,Patanjali Foods Limited,,standard,2020-01-27
-PAYTM,INE982J01020,One 97 Communications Limited,,standard,
-PERSISTENT,INE262H01021,Persistent Systems Limited,,standard,
-PETRONET,INE347G01014,PETRONET LNG LTD.,,standard,
-PGHH,INE179A01014,Procter & Gamble Hygiene & Health Care Ltd.,,standard,
-PHOENIXLTD,INE211B01039,The Phoenix Mills Ltd.,,standard,
-PIIND,INE603J01030,PI Industries Limited,,standard,
-PIRAMALFIN,INE202B01038,Piramal Finance Limited,,standard,
-POLICYBZR,INE417T01026,PB Fintech Limited,,standard,
-POONAWALLA,INE511C01022,POONAWALLA FINCORP LIMITED,,standard,
-PREMIERENE,INE0BS701011,Premier Energies Limited,,standard,
-PRESTIGE,INE811K01011,Prestige Estates Projects Limited,,standard,
-RADICO,INE944F01028,Radico Khaitan Ltd.,,standard,
-RECLTD,INE020B01018,REC LIMITED,,standard,
-RVNL,INE415G01027,Rail Vikas Nigam Limited,,standard,
-SAIL,INE114A01011,Steel Authority of India Ltd.,,standard,
-SBICARD,INE018E01016,SBI CARDS AND PAYMENT SERVICES LIMITED,,standard,
-SCHAEFFLER,INE513A01022,Schaeffler India Limited,,standard,
-SHREECEM,INE070A01015,Shree Cements Ltd.,,standard,
-SONACOMS,INE073K01018,Sona BLW Precision Forgings Limited,,standard,
-SRF,INE647A01010,SRF Ltd.,,standard,
-SUNDARMFIN,INE660A01013,SUNDARAM FINANCE LTD,,standard,
-SUPREMEIND,INE195A01028,Supreme Industries Ltd.,,standard,
-SUZLON,INE040H01021,SUZLON ENERGY LTD.,,standard,
-SWIGGY,INE00H001014,SWIGGY LIMITED,,standard,
-TATACOMM,INE151A01013,Tata Communications Limited,,standard,
-THERMAX,INE152A01029,Thermax Ltd.,,standard,
-TIINDIA,INE974X01010,Tube Investments of India Ltd,,standard,
-TORNTPOWER,INE813H01021,TORRENT POWER LIMITED,,standard,
-UBL,INE686F01025,United Breweries Ltd.,,standard,
-UCOBANK,INE691A01018,UCO Bank,,standard,
-UNITDSPR,INE854D01024,United Spirits Limited,,standard,
-UNOMINDA,INE405E01023,UNO Minda Limited,,standard,
-UPL,INE628A01036,UPL Limited,,standard,
-VMM,INE01EA01019,Vishal Mega Mart Limited,,standard,
-VOLTAS,INE226A01021,Voltas Ltd.,,standard,
-WAAREEENER,INE377N01017,Waaree Energies Limited,,standard,
-YESBANK,INE528G01035,Yes Bank Ltd.,,standard,
-ZYDUSLIFE,INE010B01027,Zydus Lifesciences Limited,,standard,
+360ONE,INE466L01038,360 ONE WAM LIMITED,,standard,2019-09-19
+3MINDIA,INE470A01017,3M India Ltd.,,standard,2004-08-13
+ABCAPITAL,INE674K01013,Aditya Birla Capital Ltd,,standard,2017-09-01
+AIAENG,INE212H01026,AIA Engineering Ltd.,,standard,2005-12-14
+AIIL,INE206F01022,Authum Investment & Infrastructure Limited,,standard,2024-04-23
+AJANTPHARM,INE031B01049,Ajanta Pharma Ltd.,,standard,2000-05-29
+ALKEM,INE540L01014,Alkem Laboratories Limited,,standard,2015-12-23
+ANTHEM,INE0CZ201020,Anthem Biosciences Limited,,standard,2025-07-21
+APARINDS,INE372A01015,Apar Industries Ltd,,standard,2004-07-12
+APLAPOLLO,INE702C01027,APL Apollo Tubes Limited,,standard,2011-12-14
+ASHOKLEY,INE208A01029,Ashok Leyland Ltd.,,standard,1995-05-25
+ASTERDM,INE914M01019,Aster DM Healthcare Limited,,standard,2018-02-26
+ASTRAL,INE006I01046,ASTRAL LIMITED,,standard,2007-03-20
+ATGL,INE399L01023,ADANI TOTAL GAS LIMITED,,standard,2018-11-05
+AUBANK,INE949L01017,AU Small Finance Bank Limited,,standard,2017-07-10
+AUROPHARMA,INE406A01037,Aurobindo Pharma Ltd.,,standard,2000-07-19
+BAJAJHFL,INE377Y01014,Bajaj Housing Finance Limited,,standard,2024-09-16
+BALKRISIND,INE787D01026,Balkrishna Industries Ltd.,,standard,2006-01-27
+BANKINDIA,INE084A01016,Bank of India,,standard,1997-04-30
+BDL,INE171Z01026,Bharat Dynamics Limited,,standard,2018-03-23
+BERGEPAINT,INE463A01038,Berger Paints India Ltd,,standard,1999-11-24
+BHARATFORG,INE465A01025,Bharat Forge Ltd,,standard,2003-04-04
+BHARTIHEXA,INE343G01021,Bharti Hexacom Limited,,standard,2024-04-12
+BIOCON,INE376G01013,Biocon Ltd.,,standard,2004-04-07
+BLUESTARCO,INE472A01039,Blue Star Ltd,,standard,2000-06-15
+BOSCHLTD,INE323A01026,Bosch Ltd,,standard,2003-05-12
+COCHINSHIP,INE704P01025,Cochin Shipyard Limited,,standard,2017-08-11
+COFORGE,INE591G01025,COFORGE LIMITED,,standard,2004-08-30
+COLPAL,INE259A01022,Colgate-Palmolive (India) Ltd.,,standard,2007-12-17
+CONCOR,INE111A01025,Container Corporation Of India Ltd.,,standard,1997-05-07
+COROMANDEL,INE169A01031,Coromandel International Limited,,standard,1995-05-31
+DABUR,INE016A01026,Dabur India Ltd.,,standard,1999-04-28
+DALBHARAT,INE00R701025,DALMIA BHARAT LIMITED,,standard,2019-01-22
+DIXON,INE935N01020,Dixon Technologies (India) Limited,,standard,2017-09-18
+DRREDDY,INE089A01031,Dr. Reddy's Laboratories Ltd.,,standard,2003-05-30
+ENDURANCE,INE913H01037,Endurance Technologies Limited,,standard,2016-10-19
+ENRIN,INE1NPP01017,Siemens Energy India Limited,,standard,2025-06-19
+ESCORTS,INE042A01014,Escorts Kubota Limited,,standard,1995-03-01
+FACT,INE188A01015,Fertilizers and Chemicals Travancore Limited,,standard,1995-04-12
+FEDERALBNK,INE171A01029,Federal Bank Ltd.,,standard,1995-02-08
+FLUOROCHEM,INE09N301011,Gujarat Fluorochemicals Limited,,standard,2019-10-16
+FORTIS,INE061F01013,Fortis Healthcare Ltd,,standard,2007-05-09
+GICRE,INE481Y01014,General Insurance Corporation of India,,standard,2017-10-25
+GLAXO,INE159A01016,GlaxoSmithkline Pharmaceuticals Ltd.,,standard,2000-12-15
+GLENMARK,INE935A01035,Glenmark Pharmaceuticals ltd,,standard,2000-02-07
+GMRAIRPORT,INE776C01039,GMR Airports Limited,,standard,2006-08-21
+GODFRYPHLP,INE260B01028,Godfrey Phillips India Ltd.,,standard,1996-07-24
+GODREJIND,INE233A01035,Godrej Industries Ltd.,,standard,2003-02-25
+GODREJPROP,INE484J01027,Godrej Properties Limited,,standard,2010-01-05
+GVT&D,INE200A01026,GE Vernova T&D India Limited,,standard,2008-06-30
+HAVELLS,INE176B01034,Havells India Limited,,standard,2001-03-21
+HDBFS,INE756I01012,HDB FINANCIAL SERVICES LIMITED,,standard,2025-07-02
+HEROMOTOCO,INE158A01026,Hero MotoCorp Limited,,standard,2003-04-11
+HINDCOPPER,INE531E01026,Hindustan Copper Ltd.,,standard,2010-09-15
+HINDPETRO,INE094A01015,Hindustan Petroleum Corporation Ltd,,standard,1998-06-17
+HUDCO,INE031A01017,Housing &Urban Development Corporation Ltd.,,standard,2017-05-19
+ICICIGI,INE765G01017,ICICI Lombard General Insurance Company Limited,,standard,2017-09-27
+ICICIPRULI,INE726G01019,ICICI Prudential Life Insurance Company Limited,,standard,2016-09-29
+IDBI,INE008A01015,IDBI Bank Ltd,,standard,1995-09-20
+IDFCFIRSTB,INE092T01019,IDFC FIRST BANK LIMITED,,standard,2015-11-06
+INDHOTEL,INE053A01029,Indian Hotels Co. Ltd,,standard,1996-07-03
+INDUSINDBK,INE095A01012,IndusInd Bank Ltd.,,standard,1998-01-28
+IOB,INE565A01014,Indian Overseas Bank,,standard,2000-12-07
+IPCALAB,INE571A01038,Ipca Laboratories Ltd.,,standard,1995-02-08
+IRCTC,INE335Y01020,Indian Railway Catering & Tourism Corporation Ltd,,standard,2019-10-14
+IREDA,INE202E01016,Indian Renewable Energy Development Agency Limited,,standard,2023-11-29
+ITCHOTELS,INE379A01028,ITC Hotels Limited,,standard,2025-01-29
+JKCEMENT,INE823G01014,J.K. CEMENT LTD,,standard,2006-03-14
+JSL,INE220G01021,Jindal Stainless Limited,,standard,2003-11-17
+JSWENERGY,INE121E01018,JSW Energy Limited,,standard,2010-01-04
+JSWINFRA,INE880J01026,JSW Infrastructure Limited,,standard,2023-10-03
+KALYANKJIL,INE303R01014,Kalyan Jewellers India Limited,,standard,2021-03-26
+KEI,INE878B01027,KEI Industries Ltd.,,standard,2006-03-23
+LAURUSLABS,INE947Q01028,Laurus Labs Limited,,standard,2016-12-19
+LENSKART,INE956O01016,Lenskart Solutions Limited,,standard,2025-11-10
+LGEINDIA,INE324D01010,LG Electronics India Limited,,standard,2025-10-14
+LINDEINDIA,INE473A01011,Linde India Limited,,standard,1999-06-16
+LLOYDSME,INE281B01032,Lloyds Metals and Energy Limited,,standard,2023-07-17
+LODHA,INE670K01029,Lodha Developers Limited,,standard,2021-04-19
+LTF,INE498L01015,L&T Finance Limited,,standard,2011-08-12
+LTTS,INE010V01017,L&T Technology Services Limited,,standard,2016-09-23
+LUPIN,INE326A01037,Lupin Ltd,,standard,2001-09-10
+M&MFIN,INE774D01024,Mahindra & Mahindra Financial Services Limited,,standard,2006-03-17
+MAHABANK,INE457A01014,Bank of maharashtra,,standard,2004-04-12
+MANKIND,INE634S01028,Mankind Pharma Limited,,standard,2023-05-09
+MARICO,INE196A01026,Marico Limited,,standard,1996-05-01
+MAXHEALTH,INE027H01010,Max Healthcare Institute Limited,,standard,2020-08-21
+MAZDOCK,INE249Z01020,Mazagon Dock Shipbuilders Limited,,standard,2020-10-12
+MEESHO,INE0VDM01015,Meesho Limited,,standard,2025-12-10
+MFSL,INE180A01020,Max Financial Services Limited,,standard,2000-05-17
+MOTILALOFS,INE338I01027,Motilal Oswal Financial Services Limited,,standard,2007-09-11
+MPHASIS,INE356A01018,Mphasis Limited,,standard,2004-06-04
+MRF,INE883A01011,M.R.F. Ltd.,,standard,1996-09-18
+NAM-INDIA,INE298J01013,NIPPON LIFE INDIA ASSET MANAGEMENT LIMITED,,standard,2017-11-06
+NATIONALUM,INE139A01034,National Aluminium Co. Ltd.,,standard,1999-04-28
+NAUKRI,INE663F01032,Info Edge(India) Ltd.,,standard,2006-11-21
+NH,INE410P01011,Narayana Hrudayalaya Limited,,standard,2016-01-06
+NHPC,INE848E01016,NHPC Limited,,standard,2009-09-01
+NLCINDIA,INE589A01014,NLC India Limited,,standard,2000-08-23
+NMDC,INE584A01023,NMDC Ltd,,standard,2008-03-03
+NTPCGREEN,INE0ONG01011,NTPC GREEN ENERGY LIMITED,,standard,2024-11-27
+NYKAA,INE388Y01029,FSN E-Commerce Ventures Limited,,standard,2021-11-10
+OBEROIRLTY,INE093I01010,OBEROI REALTY LIMITED,,standard,2010-10-20
+OFSS,INE881D01027,Oracle Financial Services Software Limited,,standard,2002-06-28
+OIL,INE274J01014,Oil India Limited,,standard,2009-09-30
+PAGEIND,INE761H01022,Page Industries Ltd.,,standard,2007-03-16
+PATANJALI,INE619A01035,Patanjali Foods Limited,,standard,2020-01-24
+PAYTM,INE982J01020,One 97 Communications Limited,,standard,2021-11-18
+PERSISTENT,INE262H01021,Persistent Systems Limited,,standard,2010-04-06
+PETRONET,INE347G01014,PETRONET LNG LTD.,,standard,2004-03-26
+PGHH,INE179A01014,Procter & Gamble Hygiene & Health Care Ltd.,,standard,2004-07-07
+PHOENIXLTD,INE211B01039,The Phoenix Mills Ltd.,,standard,2007-04-23
+PIIND,INE603J01030,PI Industries Limited,,standard,2011-06-15
+PIRAMALFIN,INE202B01038,Piramal Finance Limited,,standard,2025-11-07
+POLICYBZR,INE417T01026,PB Fintech Limited,,standard,2021-11-15
+POONAWALLA,INE511C01022,POONAWALLA FINCORP LIMITED,,standard,2004-04-27
+PREMIERENE,INE0BS701011,Premier Energies Limited,,standard,2024-09-03
+PRESTIGE,INE811K01011,Prestige Estates Projects Limited,,standard,2010-10-27
+RADICO,INE944F01028,Radico Khaitan Ltd.,,standard,2003-06-18
+RECLTD,INE020B01018,REC LIMITED,,standard,2008-03-12
+RVNL,INE415G01027,Rail Vikas Nigam Limited,,standard,2019-04-11
+SAIL,INE114A01011,Steel Authority of India Ltd.,,standard,1995-07-06
+SBICARD,INE018E01016,SBI CARDS AND PAYMENT SERVICES LIMITED,,standard,2020-03-16
+SCHAEFFLER,INE513A01022,Schaeffler India Limited,,standard,2000-11-29
+SHREECEM,INE070A01015,Shree Cements Ltd.,,standard,1995-04-26
+SONACOMS,INE073K01018,Sona BLW Precision Forgings Limited,,standard,2021-06-24
+SRF,INE647A01010,SRF Ltd.,,standard,2003-08-18
+SUNDARMFIN,INE660A01013,SUNDARAM FINANCE LTD,,standard,1998-01-07
+SUPREMEIND,INE195A01028,Supreme Industries Ltd.,,standard,1995-07-19
+SUZLON,INE040H01021,SUZLON ENERGY LTD.,,standard,2005-10-19
+SWIGGY,INE00H001014,SWIGGY LIMITED,,standard,2024-11-13
+TATACOMM,INE151A01013,Tata Communications Limited,,standard,1995-04-12
+THERMAX,INE152A01029,Thermax Ltd.,,standard,1995-08-30
+TIINDIA,INE974X01010,Tube Investments of India Ltd,,standard,2017-11-02
+TORNTPOWER,INE813H01021,TORRENT POWER LIMITED,,standard,2006-11-28
+UBL,INE686F01025,United Breweries Ltd.,,standard,2008-07-28
+UCOBANK,INE691A01018,UCO Bank,,standard,2003-10-09
+UNITDSPR,INE854D01024,United Spirits Limited,,standard,2001-09-27
+UNOMINDA,INE405E01023,UNO Minda Limited,,standard,2007-02-02
+UPL,INE628A01036,UPL Limited,,standard,2004-01-23
+VMM,INE01EA01019,Vishal Mega Mart Limited,,standard,2024-12-18
+VOLTAS,INE226A01021,Voltas Ltd.,,standard,1995-04-12
+WAAREEENER,INE377N01017,Waaree Energies Limited,,standard,2024-10-28
+YESBANK,INE528G01035,Yes Bank Ltd.,,standard,2005-07-12
+ZYDUSLIFE,INE010B01027,Zydus Lifesciences Limited,,standard,2000-04-18
