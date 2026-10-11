@@ -31,7 +31,7 @@
 | AC-F04.7 | F04 |  | `tests/unit/test_snapshot_pipeline.py::test_profile_and_history_class_are_recorded_and_young_listings_are_informational` | — |
 | AC-F04.8 | F04 |  | `tests/unit/test_value_lens.py::test_missing_own_history_is_na_with_reason_and_weights_renormalise` | — |
 | AC-F04.9 | F04 |  | `tests/unit/test_snapshot_pipeline.py::test_profile_and_history_class_are_recorded_and_young_listings_are_informational`<br>`tests/unit/test_value_lens.py::test_h0_stock_is_informational_low_confidence_and_vetoes_still_apply`<br>`tests/unit/test_verdict_policy.py::test_informational_value_uses_the_fair_row_with_low_confidence_and_a_label` | — |
-| AC-F04.10 | F04 |  | `tests/unit/test_value_lens.py::test_airline_leverage_is_lease_adjusted_not_raw_debt_equity` | — |
+| AC-F04.10 | F04 |  | `tests/unit/test_lease_basis.py::test_leases_already_in_borrowings_are_not_added_twice`<br>`tests/unit/test_value_lens.py::test_airline_leverage_is_lease_adjusted_not_raw_debt_equity` | — |
 | AC-F04.11 | F04 |  | `tests/unit/test_value_lens.py::test_holdco_intrinsic_value_includes_sotp_and_uses_standalone_balance_sheet` | — |
 | AC-F04.12 | F04 |  | `tests/unit/test_value_lens.py::test_pre_profit_negative_cfo_is_a_flag_with_runway_and_a_veto_without` | — |
 | AC-F05.1 | F05 |  | `tests/unit/test_momentum_lens.py::test_benchmark_follows_the_cap` | — |

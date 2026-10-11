@@ -163,7 +163,10 @@ def test_airline_leverage_is_lease_adjusted_not_raw_debt_equity() -> None:
         fx.rows(isin="INE646L01027"),
         profile="airline_lease_heavy",
         isin="INE646L01027",
-        inputs={"lease_liabilities_cr": 4000.0, "lease_cost_cr": 900.0},
+        inputs={
+            "lease_liabilities_cr": 150.0,
+            "lease_cost_cr": 900.0,
+        },  # leases sit inside borrowings (200)
     )
     assert V + "lease_adj_leverage" in r.metrics_used
     assert V + "debt_equity" not in r.metrics_used

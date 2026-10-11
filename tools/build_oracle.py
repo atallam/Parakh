@@ -671,8 +671,14 @@ class Sheet:
             ).font = BOLD
             ws.cell(r, 1).fill = SUB
             labels = [
-                ("Lease liabilities, latest balance sheet, ₹ cr (non-current + current); already inside Screener Borrowings", None),
-                ("Aircraft and engine rentals (short-term leases), last 4 quarters (TTM), ₹ cr", None),
+                (
+                    "Lease liabilities, latest balance sheet, ₹ cr (non-current + current); already inside Screener Borrowings",
+                    None,
+                ),
+                (
+                    "Aircraft and engine rentals (short-term leases), last 4 quarters (TTM), ₹ cr",
+                    None,
+                ),
             ]
             rows = {}
             for i, (lab, _) in enumerate(labels, start=1):

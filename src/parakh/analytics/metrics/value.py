@@ -409,10 +409,11 @@ def ev_ebitdar(v: VCalc) -> Measure:
 
     Formula:   (market cap + borrowings + lease liabilities − cash) ÷ (TTM operating profit + lease cost)
     Meaning:   Ind AS 116 moves leases onto the balance sheet, so EV and earnings must both include them.
-    Pitfalls:  Needs lease liabilities and lease cost from filings (profile_inputs.yaml); N/A without them.
+    Pitfalls:  Screener borrowings already include lease liabilities (`borrowings_include_leases`), so they are
+               added only when that is false. Needs lease liabilities and the TTM lease cost from filings; N/A without them.
     Source:    Screener export; filings (analyst input); plan 01 §3
     """
-    lease, cost = v.inputs_value("lease_liabilities_cr"), v.inputs_value("lease_cost_cr")
+    lease, cost = v.lease_debt_to_add_cr(), v.inputs_value("lease_cost_cr")
     ev, op = v.ev_cr(), v.f.ttm("Operating Profit")
     if lease.value is None or cost.value is None:
         return _na(lease.reason or cost.reason or "lease inputs missing")
@@ -783,10 +784,11 @@ def lease_adj_leverage(v: VCalc) -> Measure:
 
     Formula:   (borrowings + lease liabilities − cash) ÷ (TTM operating profit + lease cost)
     Meaning:   Leverage that counts leases; raw D/E fails every airline (AC-F04.10).
-    Pitfalls:  Needs lease inputs from filings; a flag above 4× is a starting point.
+    Pitfalls:  Screener borrowings already include lease liabilities (`borrowings_include_leases`), so they are
+               added only when that is false. Needs lease inputs from filings; a flag above 4× is a starting point.
     Source:    Screener export; filings (analyst input); plan 01 §3
     """
-    lease, cost = v.inputs_value("lease_liabilities_cr"), v.inputs_value("lease_cost_cr")
+    lease, cost = v.lease_debt_to_add_cr(), v.inputs_value("lease_cost_cr")
     nd, op = v.net_debt_cr(), v.f.ttm("Operating Profit")
     if lease.value is None or cost.value is None:
         return _na(lease.reason or cost.reason or "lease inputs missing")

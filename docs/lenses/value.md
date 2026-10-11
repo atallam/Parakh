@@ -17,7 +17,7 @@
 
 ## Inputs
 
-- Config: `config/value.yaml` (hash `a1ce6659`).
+- Config: `config/value.yaml` (hash `ff785ab0`).
 - 61 registered metrics (see [METRICS.md](../METRICS.md)), e.g. `MET.value.car`, `MET.value.casa`, `MET.value.cash_runway_months`, `MET.value.cfo_to_ebitda_3y`.
 
 ## Assumptions

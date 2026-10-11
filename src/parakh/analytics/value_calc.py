@@ -169,6 +169,23 @@ class VCalc:
             return None
         return float(b.iloc[-1] - c.iloc[-1])
 
+    def lease_debt_to_add_cr(self) -> Measure:
+        """Lease liabilities to add on top of Screener borrowings.
+
+        Zero when borrowings already include leases (`borrowings_include_leases`); the filed
+        figure is then a sanity check, and a lease balance larger than borrowings is refused
+        because it would mean the basis assumption is wrong for this company.
+        """
+        lease = self.inputs_value("lease_liabilities_cr")
+        if lease.value is None or not self.cfg.borrowings_include_leases:
+            return lease
+        b = self.f.annual("balance_sheet", "Borrowings")
+        if len(b) and lease.value > float(b.iloc[-1]):
+            return Measure.na(
+                "filed lease liabilities exceed Screener borrowings: the leases-included basis does not hold"
+            )
+        return Measure(0.0)
+
     def ev_cr(self) -> float | None:
         nd, mc = self.net_debt_cr(), self.mcap_cr
         return None if nd is None or mc is None else mc + nd
