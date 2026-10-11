@@ -11,6 +11,20 @@ prices:
   max_unexplained_move_ratio: 0.40
   # why: more than 3 trading days without a bar means the feed stalled or the stock is suspended
   max_stale_trading_days: 3
+  # why: real one-day moves over 40% with no corporate action (checked 11 Oct 2026 against price
+  # and volume); a listed day here is not flagged by DQ.prices.gaps. Each needs a reason.
+  accepted_moves:
+    - {isin: INE095A01012, day: 2020-03-26, reason: "IndusInd Bank +45% in the Mar 2020 Covid-crash rebound; volume normal"}
+    - {isin: INE528G01035, day: 2018-09-21, reason: "Yes Bank -29%: RBI cut the CEO's term; volume 18x"}
+    - {isin: INE528G01035, day: 2019-04-30, reason: "Yes Bank -29% on a Q4 FY19 loss; volume 4x"}
+    - {isin: INE528G01035, day: 2020-03-06, reason: "Yes Bank -56% on the RBI moratorium; volume heavy"}
+    - {isin: INE528G01035, day: 2020-03-16, reason: "Yes Bank +45% on the SBI reconstruction scheme news"}
+    - {isin: INE528G01035, day: 2020-03-17, reason: "Yes Bank +58% on the reconstruction scheme; volume heavy"}
+  # why: Yahoo leaves Motilal Oswal's closes before 2024-01-01 unadjusted for the 3:1 bonus (ex
+  # 10 Jun 2024, 4x the shares): the series drops 3.94x on 2024-01-01 with no action. Ex-date and
+  # ratio from Trendlyne; confirm on NSE. Ignored automatically once Yahoo is fixed.
+  manual_adjustments:
+    - {isin: INE338I01027, before: 2024-01-01, divisor: 4, reason: "Yahoo closes before 2024-01-01 are not adjusted for the 3:1 bonus (ex 10 Jun 2024)"}
 
 fundamentals:
   # why: plan 09 Phase 1 exit gate: 10 years of fundamentals per pilot (since listing for young ones)

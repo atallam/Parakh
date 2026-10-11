@@ -179,12 +179,32 @@ class SourcesConfig(Strict):
 
 
 # -- data_quality.yaml -----------------------------------------------------------------------
+class AcceptedMove(Strict):
+    """A one-day move over the threshold that is real and so must not fail DQ.prices.gaps."""
+
+    isin: str
+    day: dt.date
+    reason: str = Field(min_length=10)
+
+
+class PriceAdjustment(Strict):
+    """Closes before `before` are divided by `divisor` (volume multiplied) when the source left
+    them unadjusted for a split or bonus. Skipped if the step in the data is no longer there."""
+
+    isin: str
+    before: dt.date
+    divisor: float = Field(gt=1)
+    reason: str = Field(min_length=10)
+
+
 class PriceDq(Strict):
     history_years: int = Field(ge=1, le=30)
     close_mismatch_pct: float = Field(gt=0, le=10)
     cross_check_sessions: int = Field(ge=1, le=60)
     max_unexplained_move_ratio: float = Field(gt=0, lt=1)
     max_stale_trading_days: int = Field(ge=1, le=30)
+    accepted_moves: list[AcceptedMove] = Field(default_factory=list)
+    manual_adjustments: list[PriceAdjustment] = Field(default_factory=list)
 
 
 class FundamentalsDq(Strict):

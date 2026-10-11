@@ -135,6 +135,39 @@ def yahoo_symbol(nse_symbol: str) -> str:
     return f"{nse_symbol}.NS"
 
 
+def apply_price_adjustments(
+    frame: pd.DataFrame, isin: str, adjustments: Iterable[Any]
+) -> tuple[pd.DataFrame, list[str]]:
+    """Divide prices before a date by a divisor where the source missed a split or bonus.
+
+    Applies only if the series really steps by about `divisor` across the date (the last close
+    before it is at least half the divisor times the first close on or after it); otherwise the
+    source has been fixed and the frame is returned unchanged. Returns (frame, notes).
+    """
+    notes: list[str] = []
+    for adj in adjustments:
+        if adj.isin != isin or frame.empty:
+            continue
+        before = frame["trade_date"] < adj.before
+        if not before.any() or before.all():
+            continue
+        last_before = float(frame.loc[before, "close"].iloc[-1])
+        first_after = float(frame.loc[~before, "close"].iloc[0])
+        if first_after <= 0 or last_before / first_after < adj.divisor * 0.5:
+            notes.append(f"{isin}: step not found at {adj.before}, adjustment skipped")
+            continue
+        frame = frame.copy()
+        for col in ("open", "high", "low", "close", "adj_close"):
+            frame.loc[before, col] = frame.loc[before, col].astype(float) / adj.divisor
+        frame.loc[before, "volume"] = (
+            (frame.loc[before, "volume"].astype(float) * adj.divisor).round().astype("int64")
+        )
+        notes.append(
+            f"{isin}: {int(before.sum())} rows before {adj.before} divided by {adj.divisor:g}"
+        )
+    return frame, notes
+
+
 def normalize_yahoo(history: pd.DataFrame, isin: str) -> pd.DataFrame:
     """yfinance `history(auto_adjust=False)` output → the store's price frame.
 
@@ -174,14 +207,17 @@ def fetch_yahoo(
     """Daily bars from Yahoo, start and end inclusive."""
     import yfinance as yf
 
-    history = yf.Ticker(yahoo_symbol(nse_symbol)).history(
-        start=start.isoformat(),
-        end=(end + dt.timedelta(days=1)).isoformat(),
-        interval="1d",
-        auto_adjust=False,
-        actions=False,
-        raise_errors=True,
-    )
+    try:
+        history = yf.Ticker(yahoo_symbol(nse_symbol)).history(
+            start=start.isoformat(),
+            end=(end + dt.timedelta(days=1)).isoformat(),
+            interval="1d",
+            auto_adjust=False,
+            actions=False,
+            raise_errors=True,
+        )
+    except Exception as exc:  # yfinance raises its own types (e.g. YFTzMissingError)
+        raise PriceSourceError(f"yahoo: {type(exc).__name__}: {exc}") from exc
     if history.empty:
         raise PriceSourceError(f"yahoo: no rows for {nse_symbol} {start}..{end}")
     return normalize_yahoo(history, isin)

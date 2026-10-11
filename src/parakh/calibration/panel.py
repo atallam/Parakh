@@ -141,6 +141,13 @@ def build_panel(
         kept = same
         have = set(same["period"])
     rows: list[dict[str, object]] = []
+    # why: a stock listed after a rebalance date has no bars yet; it is not eligible then, which is
+    # different from a scoring failure (and logging one warning per such stock-month is just noise)
+    first_bar: dict[str, dt.date] = {
+        isin: pd.to_datetime(f["trade_date"]).min().date()
+        for isin, f in prices.items()
+        if f is not None and not f.empty
+    }
     for asof in rebalance_dates:
         period = period_of(asof)
         if period in have:
@@ -149,6 +156,8 @@ def build_panel(
         for sec in securities:
             frame = prices.get(sec.isin)
             if frame is None or frame.empty:
+                continue
+            if first_bar[sec.isin] > asof:
                 continue
             seg = _segment(sec, asof, membership, indices)
             if seg is not None:

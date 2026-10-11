@@ -99,10 +99,19 @@ def unexplained(gaps: list[Gap]) -> list[Gap]:
 # Pitfall: the feed keeps the pre-split ISIN on every row (MAZDOCK INE249Z01012), so ISINs are
 # resolved through isin_history before anything is stored.
 _SPLIT = re.compile(
-    r"Split.*?From\s+(?:Rs\.?|Re\.?)\s*([\d.]+).*?To\s+(?:Rs\.?|Re\.?)\s*([\d.]+)", re.I
+    r"Split.*?From\s+(?:Rs\.?|Re\.?)\s*(\d[\d.]*).*?To\s+(?:Rs\.?|Re\.?)\s*(\d[\d.]*)", re.I
 )
 _BONUS = re.compile(r"Bonus\s+(\d+)\s*:\s*(\d+)", re.I)
-_DIVIDEND = re.compile(r"Dividend\s*-\s*(?:Rs\.?|Re\.?)\s*([\d.]+)", re.I)
+_DIVIDEND = re.compile(r"Dividend\s*-\s*(?:Rs\.?|Re\.?)\s*(\d[\d.]*)", re.I)
+
+
+def _number(text: str) -> float | None:
+    """Parse an amount from a feed subject. The feed has typos such as "62..50" (a doubled dot):
+    collapse repeated dots, and return None for anything still unreadable instead of crashing."""
+    try:
+        return float(re.sub(r"\.{2,}", ".", text).rstrip("."))
+    except ValueError:
+        return None
 
 
 def _nse_date(text: str) -> dt.date:
@@ -113,14 +122,14 @@ def parse_nse_subject(subject: str) -> list[tuple[ActionType, float, float | Non
     """(type, ratio, amount) for each action a subject line announces. Unknown subjects → []."""
     out: list[tuple[ActionType, float, float | None]] = []
     if m := _SPLIT.search(subject):
-        old_fv, new_fv = float(m.group(1)), float(m.group(2))
-        if new_fv > 0 and old_fv > new_fv:
+        old_fv, new_fv = _number(m.group(1)), _number(m.group(2))
+        if old_fv is not None and new_fv is not None and new_fv > 0 and old_fv > new_fv:
             out.append(("split", old_fv / new_fv, None))
     if m := _BONUS.search(subject):
         new, held = int(m.group(1)), int(m.group(2))
         if held > 0:
             out.append(("bonus", new / held, None))
-    amounts = [float(x) for x in _DIVIDEND.findall(subject)]
+    amounts = [a for x in _DIVIDEND.findall(subject) if (a := _number(x)) is not None]
     if amounts:
         out.append(("dividend", 0.0, sum(amounts)))
     return out
