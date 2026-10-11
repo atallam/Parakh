@@ -1,0 +1,59 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M4NH8W7EYSQEREFZNQGYBQWH",
+  "mode": "restore_test",
+  "env": "prod",
+  "asof": "2026-10-11",
+  "trigger": "manual",
+  "triggered_by": "ci:restore-test",
+  "status": "SUCCESS",
+  "started_at": "2026-10-11T13:08:42.352810Z",
+  "finished_at": "2026-10-11T13:08:47.570958Z",
+  "code_version": "57d817b4d9e4",
+  "config_hash": "sha256:e6c4c77b8442f814635f2583872b4215c867fdc73e85972e105df8b739e32411",
+  "framework_version": "0.1.0",
+  "lens_versions": {},
+  "policy_version": null,
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M4NH8W7EYSQEREFZNQGYBQWH.find_backup.01",
+      "name": "find_backup",
+      "seq": 1,
+      "status": "ok",
+      "started_at": "2026-10-11T13:08:43.935307Z",
+      "ended_at": "2026-10-11T13:08:44.931411Z",
+      "duration_ms": 996.1,
+      "inputs": {},
+      "outputs": {
+        "backup": "2026-10-01T1948Z.tar.gz.age",
+        "age_days": 9.72271239474537
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4NH8W7EYSQEREFZNQGYBQWH.verify_archive.02",
+      "name": "verify_archive",
+      "seq": 2,
+      "status": "ok",
+      "started_at": "2026-10-11T13:08:44.931593Z",
+      "ended_at": "2026-10-11T13:08:47.155492Z",
+      "duration_ms": 2223.9,
+      "inputs": {},
+      "outputs": {
+        "tables": 0,
+        "problems": 1
+      },
+      "error": null
+    }
+  ],
+  "audit_events": 3,
+  "audit_pending": 0,
+  "audit_chain_head": "sha256:2ae48f1aa161cd9dfb235b41c4e73d8920b06839ac4d9235d3cad61359e7c7da",
+  "audit_sink": "supabase",
+  "llm_tokens": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 0,
+  "agent_runs": 0,
+  "failed_steps": 0
+}
