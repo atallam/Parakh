@@ -9,6 +9,7 @@ import pytest
 from streamlit.testing.v1 import AppTest
 
 from parakh import config
+from tests.conftest import called_from_socketpair
 from tests.unit.test_reports import months
 
 APP = Path(__file__).resolve().parents[2] / "app"
@@ -36,7 +37,13 @@ def env(output_root, monkeypatch, tmp_path):
     monkeypatch.setenv("PARAKH_WATCH_STATE_DIR", str(tmp_path / "watch"))
     config.get_settings.cache_clear()
 
-    def no_network(*a, **k):  # AC-F15.11: nothing may open a connection while a page renders
+    real_connect = socket.socket.connect
+
+    def no_network(self, *a, **k):  # AC-F15.11: nothing may open a connection while a page renders
+        # why: on Windows asyncio's event loop connects a socketpair over 127.0.0.1 (same
+        # exemption as the global guard in tests/conftest.py); that is not network access
+        if called_from_socketpair():
+            return real_connect(self, *a, **k)
         raise AssertionError("network access during render")
 
     monkeypatch.setattr(socket.socket, "connect", no_network)
