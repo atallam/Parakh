@@ -432,6 +432,7 @@ def _prices_load(symbols: list[str] | None, store_kind: str, use_exchange: bool)
             return 2
         blobs = SupabaseBlobs(repo.client)
         blobs.ensure_bucket()
+        repo.ensure_securities(bundle.universe.active)  # price_files points at securities (FK)
     else:
         blobs = LocalBlobs(state_dir() / "prices")
     store = ParquetPriceStore(blobs, state_dir() / "cache" / "prices")

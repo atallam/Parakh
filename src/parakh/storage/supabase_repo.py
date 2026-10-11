@@ -165,6 +165,28 @@ class SupabaseRepository:
             ).execute()
         return len(new), restated
 
+    def ensure_securities(self, securities: Iterable[Any]) -> int:
+        """Insert universe stocks the database does not know yet; existing rows are left as they are.
+
+        Every table that points at `securities` (price_files, fundamentals, ...) needs the row first,
+        and seed.sql only carries the pilot. A rollout stage adds stocks without a manual SQL step.
+        """
+        rows = [
+            {
+                "isin": s.isin,
+                "symbol": s.symbol,
+                "name": s.name,
+                "sector": s.sector,
+                "listing_date": s.listed_on.isoformat() if s.listed_on else None,
+            }
+            for s in securities
+        ]
+        if rows:
+            self.client.table("securities").upsert(
+                rows, on_conflict="isin", ignore_duplicates=True, returning=ReturnMethod.minimal
+            ).execute()
+        return len(rows)
+
     def record_price_files(self, rows: list[dict[str, Any]]) -> int:
         if rows:
             self.client.table("price_files").upsert(

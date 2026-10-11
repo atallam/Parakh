@@ -93,3 +93,19 @@ def test_audit_row_matches_the_table_columns(tmp_path: Path) -> None:
     ctx, _ = run_dummy(sink=sink)
     row = audit_row(sink.events_for_run(ctx.run_id)[0])
     assert "synced_at" not in row and row["event_type"] == "AUD.RUN.START"
+
+
+def test_ensure_securities_adds_new_stocks_and_never_overwrites() -> None:
+    """T-STO-10: a rollout stage must not need a manual seed; existing rows are left alone."""
+    from parakh.configs.models import Security
+
+    sec = Security(
+        symbol="360ONE", isin="INE466L01038", name="360 ONE WAM LIMITED", cap="mid",
+        cap_source="test", profile="standard", listed_on=dt.date(2019, 9, 19),
+    )  # fmt: skip
+    client = _Client()
+    assert SupabaseRepository(client).ensure_securities([sec]) == 1
+    rows, kwargs = client.calls[0]
+    assert rows[0]["isin"] == "INE466L01038" and rows[0]["listing_date"] == "2019-09-19"
+    assert kwargs["ignore_duplicates"] is True and kwargs["on_conflict"] == "isin"
+    assert SupabaseRepository(_Client()).ensure_securities([]) == 0
