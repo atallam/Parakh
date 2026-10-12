@@ -1,0 +1,148 @@
+{
+ "rows": [
+  {
+   "code": "E07",
+   "date": "2026-10-12",
+   "headline": "Credit rating action: Ashok Leyland Limited has informed the Exchange about Credit Rating",
+   "isin": "INE208A01029",
+   "key": "event:INE208A01029:E07:106812581",
+   "kind": "event",
+   "symbol": "ASHOKLEY"
+  },
+  {
+   "code": "E07",
+   "date": "2026-10-12",
+   "headline": "Credit rating action: The Federal Bank  Limited has informed the Exchange about Credit Rating",
+   "isin": "INE171A01029",
+   "key": "event:INE171A01029:E07:106813341",
+   "kind": "event",
+   "symbol": "FEDERALBNK"
+  },
+  {
+   "code": "E13",
+   "date": "2026-10-12",
+   "headline": "Director or key management change (role not in the filing line): GICRE has informed the Exchange about change in Management",
+   "isin": "INE481Y01014",
+   "key": "event:INE481Y01014:E13:106813022",
+   "kind": "event",
+   "symbol": "GICRE"
+  },
+  {
+   "code": "E07",
+   "date": "2026-10-12",
+   "headline": "Credit rating action: Godrej Industries Limited has informed the Exchange about Credit Rating",
+   "isin": "INE233A01035",
+   "key": "event:INE233A01035:E07:106813145",
+   "kind": "event",
+   "symbol": "GODREJIND"
+  },
+  {
+   "code": "E13",
+   "date": "2026-10-12",
+   "headline": "Director or key management change (role not in the filing line): HAVELLS has informed the Exchange about change in Management",
+   "isin": "INE176B01034",
+   "key": "event:INE176B01034:E13:106814675",
+   "kind": "event",
+   "symbol": "HAVELLS"
+  },
+  {
+   "code": "E13",
+   "date": "2026-10-12",
+   "headline": "Director or key management change (role not in the filing line): Hindustan Copper Limited has informed the Exchange about change in Management",
+   "isin": "INE531E01026",
+   "key": "event:INE531E01026:E13:106814982",
+   "kind": "event",
+   "symbol": "HINDCOPPER"
+  },
+  {
+   "code": "E13",
+   "date": "2026-10-12",
+   "headline": "Director or key management change (role not in the filing line): Hindustan Copper Limited has informed the Exchange about change in Management",
+   "isin": "INE531E01026",
+   "key": "event:INE531E01026:E13:106813963",
+   "kind": "event",
+   "symbol": "HINDCOPPER"
+  },
+  {
+   "code": "E13",
+   "date": "2026-10-12",
+   "headline": "Director or key management change (role not in the filing line): Hindustan Copper Limited has informed the Exchange about change in Management",
+   "isin": "INE531E01026",
+   "key": "event:INE531E01026:E13:106812730",
+   "kind": "event",
+   "symbol": "HINDCOPPER"
+  },
+  {
+   "code": "E07",
+   "date": "2026-10-12",
+   "headline": "Credit rating action: MAXHEALTH has informed the Exchange about Credit Rating",
+   "isin": "INE027H01010",
+   "key": "event:INE027H01010:E07:106813203",
+   "kind": "event",
+   "symbol": "MAXHEALTH"
+  },
+  {
+   "code": "E07",
+   "date": "2026-10-12",
+   "headline": "Credit rating action: MAXHEALTH has informed the Exchange about Credit Rating",
+   "isin": "INE027H01010",
+   "key": "event:INE027H01010:E07:106812258",
+   "kind": "event",
+   "symbol": "MAXHEALTH"
+  },
+  {
+   "code": "E13",
+   "date": "2026-10-12",
+   "headline": "Director or key management change (role not in the filing line): PERSISTENT has informed the Exchange about Resignation of Director/KMP/SMP",
+   "isin": "INE262H01021",
+   "key": "event:INE262H01021:E13:106813089",
+   "kind": "event",
+   "symbol": "PERSISTENT"
+  },
+  {
+   "code": "E13",
+   "date": "2026-10-12",
+   "headline": "Director or key management change (role not in the filing line): Poonawalla Fincorp Limited has informed the Exchange regarding Change in Director(s) of t…",
+   "isin": "INE511C01022",
+   "key": "event:INE511C01022:E13:106812712",
+   "kind": "event",
+   "symbol": "POONAWALLA"
+  },
+  {
+   "code": "E01",
+   "date": "2026-10-12",
+   "headline": "Results filed: Poonawalla Fincorp Limited has submitted to the Exchange, the financial results for the p…",
+   "isin": "INE511C01022",
+   "key": "event:INE511C01022:E01:september302026",
+   "kind": "event",
+   "symbol": "POONAWALLA"
+  },
+  {
+   "code": "E07",
+   "date": "2026-10-12",
+   "headline": "Credit rating action: UCOBANK has informed the Exchange about Credit Rating",
+   "isin": "INE691A01018",
+   "key": "event:INE691A01018:E07:106812765",
+   "kind": "event",
+   "symbol": "UCOBANK"
+  },
+  {
+   "code": "E13",
+   "date": "2026-10-12",
+   "headline": "Director or key management change (role not in the filing line): UNITDSPR has informed the Exchange regarding Change in Director(s) of the company.",
+   "isin": "INE854D01024",
+   "key": "event:INE854D01024:E13:106812488",
+   "kind": "event",
+   "symbol": "UNITDSPR"
+  },
+  {
+   "code": "E08",
+   "date": "2026-10-12",
+   "headline": "ASM list: Stage I",
+   "isin": "INE417T01026",
+   "key": "event:INE417T01026:E08:ASM-stagei",
+   "kind": "event",
+   "symbol": "POLICYBZR"
+  }
+ ]
+}
