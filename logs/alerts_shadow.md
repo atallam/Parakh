@@ -20,3 +20,11 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 - 🟡 HINDCOPPER E13 Director or key management change (role not in the filing line): Hindustan Copper Limited has informed the Exchange about change in Management  Open ▸
 - … +7 more in the shadow log or reports
 - [ ] noise  `01M4S1RPXJR24R6PW9DNKMFHZZ` `01M4S1RPXKMDNZ1YJXN5FSJXMN` `01M4S1RPXKMDNZ1YJXN5FSJXMP` `01M4S1RPXKMDNZ1YJXN5FSJXMQ` `01M4S1RPXKMDNZ1YJXN5FSJXMR` `01M4S1RPXKMDNZ1YJXN5FSJXMS` `01M4S1RPXKMDNZ1YJXN5FSJXMT`
+
+## 2026-10-13 20:01 · evening digest (5 items), would be sent
+- 🟡 ICICIPRULI E01 Results filed: ICICIPRULI has submitted to the Exchange, the financial results for the period ended Sept…  Open ▸
+- 🟡 ICICIPRULI E13 Director or key management change (role not in the filing line): ICICIPRULI has informed the Exchange about change in Management  Open ▸
+- 🟡 INDIGO 🟢 OWNED wt 16.6% P&L +10.7% E14 Regulatory action or order: InterGlobe Aviation Limited has informed the Exchange about Action(s) taken or orders pas…  Open ▸
+- 🟡 LLOYDSME E07 Credit rating action: Lloyds Metals And Energy Limited has informed the Exchange about Credit Rating  Open ▸
+- 🟡 NMDC E13 Director or key management change (role not in the filing line): NMDC Limited has informed the Exchange regarding Change in Director(s) of the company.  Open ▸
+- [ ] noise  `01M4VDMTVE8KECVGCZ6KV7GN71` `01M4VDMTVE8KECVGCZ6KV7GN72` `01M4VDMTVE8KECVGCZ6KV7GN73` `01M4VDMTVE8KECVGCZ6KV7GN74` `01M4VDMTVE8KECVGCZ6KV7GN75`
