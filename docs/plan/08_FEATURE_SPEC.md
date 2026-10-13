@@ -1,10 +1,10 @@
 ---
 title: Feature Specification — Parakh
-version: 1.8 (F04/F05 ACs for sector profiles and limited history; new backlog F26 consensus & results context; F20 adds own forecasts for ≤ 5 holdings — plan 13 D23/D24; v1.7: agentic, MCP-first: new F24 MCP server and F25 agent roster; F06/F07 run on the Claude Agent SDK through MCP tools; F11 narrative review by the Monthly Reviewer agent; F20 ask-Claude item replaced by remote MCP access — plan 15; v1.6: Part A plain-English overview; new F23 Thesis tracking; ACs for email + .ics, Telegram commands, portfolio XIRR/drawdown, Obsidian links, watcher replay, source check, doc lint, traceability; F20 later items; v1.5: Phase column removed from the catalogue — phases live in 09; ACs cite NFR-07/NFR-14 instead of restating numbers; v1.4: every AC traceable to tests or UAT steps — plan 14 §5; v1.3: baseline: CAS holdings, BSE-filed transcripts, thesis-aware agent, Production criteria in F19/F21 — plan 13; v1.2: F22 design system added; UI/UX criteria in F09, F11, F15, F17 — plan 12; v1.1: F21 audit, logging & governance)
+version: 1.10 (D26–D28: new F28 Orchestrator, F29 Portfolio Analyst, F30 integration contracts; F01/F10/F14/F25 reworded for holdings-only coverage; v1.9: backlog F27 document search; v1.8: F04/F05 ACs for sector profiles and limited history; new backlog F26 consensus & results context; F20 adds own forecasts for ≤ 5 holdings — plan 13 D23/D24; v1.7: agentic, MCP-first: new F24 MCP server and F25 agent roster; F06/F07 run on the Claude Agent SDK through MCP tools; F11 narrative review by the Monthly Reviewer agent; F20 ask-Claude item replaced by remote MCP access — plan 15; v1.6: Part A plain-English overview; new F23 Thesis tracking; ACs for email + .ics, Telegram commands, portfolio XIRR/drawdown, Obsidian links, watcher replay, source check, doc lint, traceability; F20 later items; v1.5: Phase column removed from the catalogue — phases live in 09; ACs cite NFR-07/NFR-14 instead of restating numbers; v1.4: every AC traceable to tests or UAT steps — plan 14 §5; v1.3: baseline: CAS holdings, BSE-filed transcripts, thesis-aware agent, Production criteria in F19/F21 — plan 13; v1.2: F22 design system added; UI/UX criteria in F09, F11, F15, F17 — plan 12; v1.1: F21 audit, logging & governance)
 date: 2026-09-24
 parent: 07_PRD.md
 rollout: 09_PHASED_ROLLOUT_PLAN.md
-conventions: Feature IDs F01–F26 · acceptance criteria AC-Fxx.n · priorities MoSCoW · plan refs point to FRAMEWORK/00–14 · every AC is tagged in tests (`@pytest.mark.ac`) or UAT steps and tracked in the generated `docs/TRACEABILITY.md` (plan 14 §5)
+conventions: Feature IDs F01–F30 · acceptance criteria AC-Fxx.n · priorities MoSCoW · plan refs point to FRAMEWORK/00–14 · every AC is tagged in tests (`@pytest.mark.ac`) or UAT steps and tracked in the generated `docs/TRACEABILITY.md` (plan 14 §5)
 ---
 
 # Feature Specification
@@ -35,7 +35,8 @@ Dates are in the timeline (plan 09). A check in the build keeps this column in s
 | **Market mood** | Tags each segment Risk-On / Neutral / Risk-Off from valuations, volatility and fund flows, and gets stricter when the market is stretched | M1 → M2 | F16 |
 | **Concall reader** | Reads each quarter's earnings-call transcript filed on BSE, checks it against your thesis and quotes management word for word. It never changes a score | M3 | F06 |
 | **Devil's advocate** | For every BUY or SELL, argues the opposite case in three points | M3 | F07 |
-| **AI helpers** ✨ | Agents that do the first pass for you: a monthly "top 5 things to look at" review, a one-line "why it matters" on new filings, and reasoned watchlist ideas. They only suggest; nothing changes without your approval | M2 → M3 | F25 |
+| **AI helpers** ✨ | Agents that do the first pass for you: a monthly "top 5 things to look at" review and a one-line "why it matters" on new filings. An **orchestrator** plans which holdings need which specialist, and plain code checks the plan before anything runs. They only suggest; nothing changes without your approval | M2 → M3 | F25, F28 |
+| **Portfolio analyst** ✨ | Looks at your holdings together: allocation, concentration, and what each position's weight means for its verdict | M3 | F29 |
 
 ### 2. Your portfolio
 
@@ -54,13 +55,13 @@ Dates are in the timeline (plan 09). A check in the build keeps this column in s
 | **Daily event watch** | New results, promoter buying or selling, pledges, auditor or CFO exits, rating changes, surveillance lists | M2 | F13 |
 | **Phone actions** ✨ | Tap to mark an alert useful or noise, mute it, or approve and reject suggestions; quick commands such as `/today` and `/stock POLYCAB` | M2 → M3 | F11 |
 
-### 4. Finding new ideas
+### 4. Coverage and context
 
 | Feature | What it does for you | First visible | ID |
 |---|---|---|---|
-| **Stock universe** | Every stock in each size segment (Large, Mid, Nifty Smallcap 250), kept current as AMFI reclassifies twice a year | M1 → M3 | F01 |
-| **Segment ranking** | A ranked list of every stock in a segment, with the best ideas you don't yet own | M1 → M3 | F10 |
-| **Watchlists** | Your own list (changes only with your approval) plus a system list that curates itself, with limits and minimum stays so it doesn't churn | M3 | F14 |
+| **Coverage and benchmark panel** | Covers the stocks you hold. A prices-only panel of the AMFI list and NSE index valuations give context; the list is kept current as AMFI reclassifies twice a year | M1 → M3 | F01 |
+| **Holdings summary** | Your holdings ranked by what needs attention, against the panel for context | M1 → M3 | F10 |
+| **Watchlists** *(parked)* | Your own list (changes only with your approval) plus a system list. Switched off by default; designed in plan 06 | Later | F14 |
 
 ### 5. Reviewing and acting
 
@@ -83,8 +84,9 @@ Dates are in the timeline (plan 09). A check in the build keeps this column in s
 
 ### 7. Later (optional, after v1.0)
 
-- Ask questions across quarters of concall transcripts.
-- Ask Parakh from your phone or claude.ai, not just your PC (remote access; reviewed before v1.0).
+- Ask questions across quarters of concall transcripts (F27).
+- Ask Parakh from your phone or claude.ai, not just your PC (remote access; a conditional candidate, plan 09 Phase 6).
+- **Link to WealthLens Hub** (F30): Parakh's insights appear in the Hub through agreed contracts, with the Hub owning your holdings and Parakh owning the analysis (plan 18).
 - **Consensus and results context** (F26, decided at the M1 review): forward P/E on analysts' consensus, a results-day note vs consensus, a sensitivity grid on what's priced in, and a "key debate" box you confirm.
 - Your own earnings forecasts for up to 5 holdings, only if you find you miss them after 3 live months.
 - Animated dashboards, and a phone-friendly app behind a login.
@@ -117,7 +119,7 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 
 | ID | Feature | Priority | Depends on | Plan ref |
 |---|---|---|---|---|
-| F01 | Universe and cap classification | Must | F02 | 00 §4, 05 §1 |
+| F01 | Coverage set, benchmark panel and cap classification | Must | F02 | 00 §4, 05 §1, 17 |
 | F02 | Multi-source data ingestion and validation | Must | — | 00 §7, 04 §4 |
 | F03 | Holdings management (lots, P&L, tax timing) | Must | F02 | 05 §2, §4 |
 | F04 | Value lens | Must | F02, F18 | 01 |
@@ -126,11 +128,11 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 | F07 | Devil's-advocate agent | Could | F06, F08, F24 | 04 §2, 15 §5 |
 | F08 | Verdict policy engine | Must | F04, F05 | 00 §5 |
 | F09 | Per-stock report, snapshot and history | Must | F08 | 00 §3, §8 |
-| F10 | Segment summary and ranking | Must | F09, F03 | 05 §1 |
+| F10 | Holdings summary and panel context | Must | F09, F03 | 05 §1, 17 |
 | F11 | Monthly scheduler and notifications (incl. two-way Telegram, ADR-008) | Must | F09, F10, F22 | 03 §2–4, 12 §6 |
 | F12 | Daily momentum watcher | Must | F05 | 03 §5 |
 | F13 | Daily event watcher | Should | F02 | 03 §5b |
-| F14 | Watchlist auto-curation (two lists) | Should | F10, F12, F13 | 06 |
+| F14 | Watchlist auto-curation (two lists) *(parked, D26)* | Could (off by default) | F10, F12, F13 | 06 |
 | F15 | Streamlit app (review inbox, watchlist review, holdings + thesis form, stock detail, dashboard) | Should | F03, F14, F22 | 04 §5 ADR-006, 12 |
 | F16 | Market context and regime | Should | F02 | 00 §2b, 02 §5 |
 | F17 | Calibration, scorecards and decision journal | Should | F09, F12, F14 | 04 §2, 06 §6 |
@@ -140,15 +142,19 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 | F22 | Design system and cross-surface presentation | Must (tokens, tri-state, masking) / Should (components, share export) | F09, F11, F15 | 12 |
 | F23 | Thesis tracking *(v1.6)* | Must (thesis file, metric exit checks, status) / Should (concall assessments, heatmap) | F03, F06, F09 | 05 §2.4, 01 §6, 12 §5.3 |
 | F24 | MCP server `parakh-mcp` *(v1.7)* | Must (read toolsets, audit, masking) / Should (propose, notify, jobs) | F09, F21 | 15 §4, §7, §8 |
-| F25 | Agent roster and runtime *(v1.7)* | Should | F24, F11, F13, F14 | 15 §5, §6 |
+| F25 | Agent roster and runtime *(v1.7)* | Should | F24, F11, F13 | 15 §5, §6 |
 | F26 | Consensus and results context *(v1.8, backlog)* | Could (decided at the M1 review) | F02, F09 | 00 §1 (D23) |
+| F27 | Document search over cached transcripts and filings *(v1.9, backlog)* | Could (decided at the M1 review) | F06, F24 | 15 §4 |
+| F28 | Orchestrator, dispatcher and case files *(v1.10, D27)* | Must (plan validation, dispatcher) / Should (Synthesis turn) | F24, F25, F09, F21 | 15 §5b |
+| F29 | Portfolio Analyst *(v1.10)* | Should | F28, F03, F08 | 15 §5, 18 Part II |
+| F30 | Integration contracts `holdings.v1` and `insights.v1` *(v1.10, D28)* | Must (contracts, Fake and CAS providers, File publisher) / Could (Hub link, after GA) | F03, F09 | 18 |
 | F20 | Future: concall Q&A (RAG), remote MCP access, animated pages, new lenses, own forecasts (≤ 5 holdings) | Won't (v1) | F06, F15, F18, F24 | 05 §3.3, ADR-006, ADR-012 |
 
 ---
 
-## F01: Universe and cap classification
+## F01: Coverage set, benchmark panel and cap classification
 
-**What:** builds the analysis universe per cap from AMFI rankings and index constituents, and tracks cap migrations.
+**What:** *(v1.10, D26)* the **coverage set** is the holdings read from the CAS; the **benchmark panel** is the AMFI list for each cap, prices only (no fundamentals, scores or LLM calls). Cap classification and migrations are still tracked from AMFI rankings and index constituents. Model in plan 17.
 
 **Behaviour**
 - Large = AMFI 1–100, Mid = 101–250, Small = Nifty Smallcap 250 (default) or extended AMFI 251–1000 with a liquidity filter.
@@ -160,6 +166,7 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 - AC-F01.2: A stock reclassified Mid → Large appears under `large_cap/` with its complete prior history and a migration note in HISTORY.md.
 - AC-F01.3: Universe membership is reproducible for any past date (point-in-time).
 - AC-F01.4: Securities are keyed by ISIN; symbol changes don't break history.
+- AC-F01.5 *(v1.10)*: A panel stock that is not a holding receives no fundamentals fetch, no score and no LLM call (panel-isolation test); a new holding in the CAS joins the coverage set on the next run.
 
 ---
 
@@ -199,7 +206,7 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 - AC-F03.2: A partial sale reduces the oldest lots first and records realised P&L.
 - AC-F03.3: Each owned stock's report shows 🟢 OWNED, quantity, P&L, weight and "LTCG in N days".
 - AC-F03.4: The plaintext holdings file is never committed (pre-commit check).
-- AC-F03.5: Owned stocks are always Tier A (deep dive).
+- AC-F03.5: Every owned stock is in the coverage set and gets the deep dive (D26).
 - AC-F03.6 *(v1.3)*: A quantity change between two CAS statements creates exactly one "complete this trade" prompt; until it's completed, P&L and the LTCG timer show "cost pending", never a guessed cost.
 - AC-F03.7 *(v1.3)*: With a synthetic CAS, no PAN, name, address or DP/client ID appears in the database, logs, audit events or any LLM input (redaction test).
 
@@ -265,7 +272,7 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 - *(v1.3, D13)* **Thesis-aware:** when THESIS.md is structured, the agent assesses each key metric and exit condition. It **can only flag** (`FLAG.thesis_review`); BROKEN needs a metric-based breaker or your confirmation.
 - Output is Pydantic-validated; every rating cites a source or reads "insufficient evidence".
 - Guidance is stored as structured records for guidance-vs-delivery tracking; a QoQ tone diff is produced.
-- Runs only for Tier A; outputs are cached by document hash; there's a token budget per run.
+- Runs only for the coverage set (holdings); outputs are cached by document hash; there's a token budget per run.
 - A new transcript triggers an event-driven refresh (F13).
 
 **Acceptance criteria**
@@ -289,7 +296,7 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 **Acceptance criteria**
 - AC-F07.1: Every BUY/SELL report contains exactly 3 counter-points, each with a citation or metric reference.
 - AC-F07.2: The agent can't change the verdict; its output is shown in the report and summary only.
-- AC-F07.3: Runs only for verdict changes or new Tier A entries (cost control).
+- AC-F07.3: Runs only for verdict changes or new holdings (cost control).
 - AC-F07.4 *(v1.7)*: The agent has read-only (R-tier) MCP tools only; any other call is refused and logged `AUD.MCP.TOOL_DENIED`.
 
 ---
@@ -324,13 +331,13 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 
 ---
 
-## F10: Segment summary and ranking
+## F10: Holdings summary and panel context
 
-**What:** a per-cap monthly summary: your holdings first, best opportunities not owned, the full ranked universe (also CSV/XLSX), regime and breadth, watchlist changes, red flags and a portfolio view.
+**What:** *(v1.10)* a monthly summary: your holdings first with action flags, the orchestrator's notes on what changed, regime and breadth, panel context (CSV/XLSX), red flags and a portfolio view. Opportunities not owned are out of scope while the watchlist is parked.
 
 **Acceptance criteria**
 - AC-F10.1: The holdings section lists every owned stock in the cap with its action flags (e.g. "owned but SELL-rated").
-- AC-F10.2: The ranked table includes every stock in the universe (Tier B included).
+- AC-F10.2 *(v1.10)*: The summary covers every holding; panel rows appear only as context (price, momentum rank) and never carry a verdict.
 - AC-F10.3: Sector concentration and single-stock weight breaches are flagged against config limits.
 - AC-F10.4: The CSV/XLSX export opens and sorts correctly in Excel.
 - AC-F10.5 *(v1.6)*: The portfolio view shows XIRR per holding and overall against the cap-matched benchmark, maximum drawdown, and concentration (HHI and top-5 weight). The XIRR maths ported from Drishti is covered by unit tests against a hand-computed case.
@@ -386,6 +393,8 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 ---
 
 ## F14: Watchlist auto-curation (two lists)
+
+> **Parked (D26).** Behind `watchlist.enabled: false`. The criteria below stay as the acceptance contract if it is re-enabled.
 
 **What:** My Watchlist (approval-only) + System Watchlist (automatic, capacity-limited), with four add sources, removal rules, flags, promotions, urgent adds, suggestion expiry and an archive. Full detail in plan 06.
 
@@ -476,7 +485,7 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 - AC-F19.3: Searching logs for a signal or rule ID (e.g. `M03`) returns every occurrence with run_id and ISIN.
 - AC-F19.4: F19 covers *operational* observability; durable audit, lineage and governance are in **F21** (plan 10).
 - AC-F19.5 *(v1.3, P8)*: The NFR-14 service levels (plan 07) are measured in every run manifest and reported in the Sunday heartbeat; a breach is flagged ⚠️.
-- AC-F19.6 *(v1.3, P5)*: Before the Phase 4 scale-up, a full-universe dry run with mocked LLM at the configured concurrency completes within the NFR-07 run-time target with no unhandled rate-limit errors; an Anthropic 429 or overload leads to backoff and then "qualitative pending".
+- AC-F19.6 *(v1.3, P5)*: Before the Phase 4 go-live, a coverage-set plus panel dry run with mocked LLM at the configured concurrency completes within the NFR-07 run-time target with no unhandled rate-limit errors; an Anthropic 429 or overload leads to backoff and then "qualitative pending".
 - AC-F19.7 *(v1.3, P7)*: `docs/FAILURE_MODES.md` exists before M2, and each entry names its detection, impact, mitigation and owner action.
 - AC-F19.8 *(v1.6)*: A weekly **source check** in STAGING fetches each live source page, compares its structure with the recorded fixture, and raises ⚠️ on a change before a monthly run depends on it (plan 14 §4.2).
 
@@ -578,14 +587,14 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 
 ## F25: Agent roster and runtime *(v1.7)*
 
-**What:** the agents of plan 15 §5 on the Claude Agent SDK behind the `AgentRunner` interface (ADR-011): Monthly Reviewer, Event Triage and Watchlist Curator, plus F06 and F07 running the same way. Every agent has an allow-list of MCP tools, a pinned model and prompt, `max_turns`, a token budget and a Pydantic output model.
+**What:** the agents of plan 15 §5 on the Claude Agent SDK behind the `AgentRunner` interface (ADR-011): Monthly Reviewer, Event Triage and Portfolio Analyst (F29), plus F06 and F07 running the same way, all dispatched by the orchestrator (F28). The Watchlist Curator is parked. Every agent has an allow-list of MCP tools, a pinned model and prompt, `max_turns`, a token budget and a Pydantic output model.
 
 **Acceptance criteria**
 - AC-F25.1: Each agent's runtime options contain only its allow-listed `mcp__parakh__*` tools, no built-in SDK tools, and a non-bypass permission mode (contract test over `config/agents.yaml`).
 - AC-F25.2: Reaching `max_turns` or the token budget ends the run as `pending` with `AUD.AGENT.TURN_LIMIT` or `AUD.LLM.BUDGET_STOP`, and counts toward the P4 LLM-failure alert.
 - AC-F25.3: The Monthly Reviewer sends one Telegram message (≤ 10 lines, plan 12 §6) and one section in the monthly email, mentioning only stocks returned by `reports.what_changed`; if it fails, the monthly summary still goes out and says "review pending".
 - AC-F25.4: Event Triage never raises a severity above the E-code rule, never suppresses a rule-based alert, and makes at most 5 `jobs.request_refresh` calls a day.
-- AC-F25.5: Watchlist Curator proposals appear in Pending review marked 🤖 with a reason and evidence, respect capacity, minimum-stay and expiry rules (plan 06), and never change My Watchlist without your approval.
+- AC-F25.5 *(parked with F14)*: Watchlist Curator proposals appear in Pending review marked 🤖 with a reason and evidence, respect capacity, minimum-stay and expiry rules (plan 06), and never change My Watchlist without your approval.
 - AC-F25.6: CI runs agents only through `FakeRunner` with sockets blocked; a prompt or model change passes the L7 trajectory eval (plan 14) before promotion.
 - AC-F25.7: Every agent has an agent card (`docs/agents/`) and a `model_inventory` row, and every run writes `AUD.AGENT.START` and `AUD.AGENT.END`.
 
@@ -603,14 +612,64 @@ Which phase builds each feature lives in **plan 09** (the Features row of each p
 
 ---
 
+## F27: Document search over cached transcripts and filings *(v1.9, backlog)*
+
+**What:** a read-only `data` search tool (`TOOL.data.search_documents`) over the documents Parakh already caches, so an agent or Ask Parakh can answer across many documents with cited passages (for example, "what has this company said about fuel costs over the last eight calls?"). Start with keyword and section search (SQLite full-text index); add embeddings only if that proves too weak.
+
+**Why it waits:** the Qualitative agent reads one transcript in full, in parts, and completeness matters more than retrieval there. A missed passage would read as "management said nothing", an unsafe failure for an agent that only flags.
+
+**Triggers to build it:** (1) questions that span many documents, (2) documents too long to read whole, (3) reading every transcript in full becomes too costly.
+
+**Status:** backlog. Considered at the M1 review (UAT-1); if accepted, plan 09 places it and acceptance criteria are written then. Quotes returned by any search stay verified word for word against the cached text (F06).
+
+---
+
+## F28: Orchestrator, dispatcher and case files *(v1.10, D27)*
+
+**What:** `AGENT.orchestrator` reads `reports.what_changed` and returns a validated `RunPlan`; a plain-code dispatcher checks the plan and runs the specialists; a case-file assembler gathers each holding's evidence; an orchestrator Synthesis turn ranks the findings; `monthly_reviewer` writes the text. Design in plan 15 §5b (AG-09, AG-10).
+
+**Acceptance criteria**
+- AC-F28.1: The dispatcher rejects a plan that names an unregistered agent, an ISIN outside the coverage set, a `reason_code` not backed by a fact in `what_changed`, a cyclic task graph, or a budget overrun; each rejection writes `AUD.AGENT.PLAN_REJECTED` and the run falls back to linear mode.
+- AC-F28.2: Every holding appears in the plan's tasks or its `skipped` list with a reason.
+- AC-F28.3: The orchestrator's allow-list contains no document, notify or job tool; untrusted document text only reaches specialist leaves (AG-10).
+- AC-F28.4: A valid plan is stored (`audit.get_run_plan`) and its tasks run in dependency order; the plan, case files and outputs share one run_id.
+- AC-F28.5: With `agents.orchestrator.fallback: linear` and the orchestrator disabled or failing, the monthly summary still goes out unchanged.
+- AC-F28.6: In `dry_run`, the orchestrator's plan and review are written to `logs/agents_shadow.md` only.
+- AC-F28.7: CI runs the orchestrator only through `FakeRunner` with plan-eval fixtures (plan 14 L7).
+
+---
+
+## F29: Portfolio Analyst *(v1.10)*
+
+**What:** `AGENT.portfolio_analyst` reviews the holdings together: allocation as context, concentration and since-purchase performance, with evidence-first reasons. Allocation enters the verdict only through a deterministic `verdict_policy` row (F08), never through the agent.
+
+**Acceptance criteria**
+- AC-F29.1: The agent cannot change a verdict; allocation changes a verdict only through a policy row and shows as a driver.
+- AC-F29.2: Every reason cites a metric or fact id returned by a tool; a reason without one is dropped.
+- AC-F29.3: Quantities and ₹ values reach the agent only in the masked form (AC-F24.4).
+
+---
+
+## F30: Integration contracts `holdings.v1` and `insights.v1` *(v1.10, D28)*
+
+**What:** versioned contracts keyed on ISIN, with `HoldingsProvider` (Cas, Fake, Hub, Mcp) and `InsightPublisher` (File, SupabaseView, HubHttp) interfaces, so WealthLens Hub can be linked without changing the pipeline. Design in plan 18.
+
+**Acceptance criteria**
+- AC-F30.1: The Cas and Fake providers satisfy the `holdings.v1` contract tests; the File publisher output validates against `insights.v1`.
+- AC-F30.2: `insights.v1` carries no quantity, cost or ₹ value (masking test).
+- AC-F30.3: Switching `integration.provider` or `integration.publisher` needs no pipeline change (swap test with Fake).
+- AC-F30.4 *(after GA)*: The Hub view exposes only the owner's rows through a scoped role; the role cannot write to any table.
+
+---
+
 ## F20: Future (v2+, not in v1 scope)
 
-- **Concall Q&A agent:** pgvector over transcripts, with cited answers across quarters.
+- **Concall Q&A agent:** moved to F27 (document search).
 - **Animated pages:** FastAPI over the services + React/Framer Motion (ADR-006 revisit triggers).
 - **New lenses:** Quality/Coffee-Can, Magic Formula, Dividend, CAN SLIM, Turnaround, Special Situations.
 - **Hosted UI:** phone access behind a login.
 - **US equities adapter.**
-- *(v1.7)* **Remote MCP access:** Ask Parakh from the phone or claude.ai over Streamable HTTP + OAuth with a masked, read-only toolset, only if the ADR-012 review before v1.0 chooses it. *(The local MCP server itself is now F24.)*
+- *(v1.7)* **Remote MCP access:** Ask Parakh from the phone or claude.ai over Streamable HTTP + OAuth with a masked, read-only toolset, a conditional candidate after the Hub link (plan 09 Phase 6). *(The local MCP server itself is now F24.)*
 - *(v1.8, D23)* **Own forecast models** for at most 5 high-conviction holdings: driver-based, your assumptions in YAML, the LLM only drafts assumptions for you to accept. Only if you find you miss them after 3 live months.
 - *(v1.6)* **Gmail CAS fetch:** save the monthly CAS email attachment automatically.
 - *(v1.6)* **WhatsApp mirror:** only if an ADR-008 revisit trigger fires (plan 03 §4.4).

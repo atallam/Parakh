@@ -1,6 +1,6 @@
 ---
 title: Audit, Logging & Governance Layer
-version: 1.0 (MCP and agents: `AUD.MCP.*` / `AUD.AGENT.*`, tool permission tiers, proposals, `mcp_tool_calls`/`proposals`/`notify_queue`/`job_requests` tables — plan 15; v0.9: §16 now points to 09/14; v0.8 baseline: CAS data classification, prompt rollback event, secrets via SSM — plan 13 P1/P3/P6; v0.7: UI and channel interaction events; `channel` on human actions — plan 12, plan 03 §4)
+version: 1.1 (orchestrator events `AUD.AGENT.PLAN` / `AUD.AGENT.PLAN_REJECTED`, `case_files` and `run_plan` tables; v1.0: MCP and agents: `AUD.MCP.*` / `AUD.AGENT.*`, tool permission tiers, proposals, `mcp_tool_calls`/`proposals`/`notify_queue`/`job_requests` tables — plan 15; v0.9: §16 now points to 09/14; v0.8 baseline: CAS data classification, prompt rollback event, secrets via SSM — plan 13 P1/P3/P6; v0.7: UI and channel interaction events; `channel` on human actions — plan 12, plan 03 §4)
 date: 2026-09-24
 parent: 00_MASTER_PLAN.md
 related: 04 (standards, ADRs) · 05 (data model) · 07 (PRD FR-21/22, NFR-11/12) · 08 (F21) · 09 (rollout)
@@ -76,7 +76,7 @@ This follows the ID-anchored traceability convention (plan 04 §3.1). Searching 
 | Data | `AUD.DATA.FETCH`, `AUD.DATA.FALLBACK_USED`, `AUD.DATA.VALIDATION_FAIL`, `AUD.DATA.CONFLICT`, `AUD.DATA.CORP_ACTION_APPLIED`, `AUD.DATA.RESTATEMENT_DETECTED` | Per source per run (aggregated counts; per-stock only on failure) |
 | Scoring | `AUD.SCORE.COMPUTED` (batch), `AUD.VETO.TRIGGERED`, `AUD.VERDICT.CHANGED` | Verdict changes and vetoes per stock; computed scores per batch |
 | LLM / agents | `AUD.LLM.CALL`, `AUD.LLM.VALIDATION_FAIL`, `AUD.LLM.CITATION_UNVERIFIED`, `AUD.LLM.BUDGET_STOP`, `AUD.LLM.INJECTION_SUSPECTED` | Every call (details in `llm_calls`) |
-| Agent runs *(v1.0)* | `AUD.AGENT.START`, `AUD.AGENT.END` (status: ok / pending / failed), `AUD.AGENT.TURN_LIMIT`, `AUD.AGENT.PROPOSAL` | Every agent invocation; every proposal it writes |
+| Agent runs *(v1.0)* | `AUD.AGENT.START`, `AUD.AGENT.END` (status: ok / pending / failed), `AUD.AGENT.TURN_LIMIT`, `AUD.AGENT.PROPOSAL`, *(v1.1)* `AUD.AGENT.PLAN` (a valid plan stored), `AUD.AGENT.PLAN_REJECTED` (dispatcher refused, with the failing check) | Every agent invocation; every proposal it writes; every orchestrator plan and rejection |
 | MCP *(v1.0)* | `AUD.MCP.TOOL_CALL` (tool ID, tier, client, args hash, result hash, latency), `AUD.MCP.TOOL_DENIED` (not on the allow-list, tier refused, masking refused), `AUD.MCP.RATE_LIMITED` | Every tool call, from agents and from your Claude sessions (details in `mcp_tool_calls`) |
 | Signals and alerts | `AUD.SIGNAL.STATE_CHANGE`, `AUD.ALERT.SENT`, `AUD.ALERT.SUPPRESSED` (reason: dedupe / cool-down / dry-run / digest-batched / quiet-hours), `AUD.ALERT.DELIVERY_FAILED` | Every alert decision, **including the ones not sent** |
 | Watchlist | `AUD.WATCHLIST.AUTO_ADDED`, `…AUTO_REMOVED`, `…SUGGESTED`, `…APPROVED`, `…REJECTED`, `…SNOOZED`, `…EXPIRED`, `…MANUAL_ADD`, `…MANUAL_REMOVE` | Plan 06 rules and every human decision |
@@ -222,7 +222,7 @@ A lightweight version of model-risk-management practice (e.g. the ideas in the U
 - **Levels:** `DEBUG` (local only), `INFO` (step start/end, counts), `WARNING` (fallback used, data conflict), `ERROR` (step failed, recoverable), `CRITICAL` (run abort).
 - **Redaction:** a processor masks secrets, tokens, holdings quantities and account IDs. A unit test feeds known secrets and asserts they're masked.
 - **No PII in logs:** ISINs and symbols are fine; quantities, costs and account names are masked.
-- **Sampling:** per-stock INFO logs are summarised at batch level for Tier B (500 stocks), and detailed only on warnings or errors.
+- **Sampling:** per-stock INFO logs are summarised at batch level for the benchmark panel (about 500 stocks), and detailed only on warnings or errors.
 - **Shipping:** GitHub Actions logs are kept 90 days by GitHub. The run summary, step ledger and audit events live in our store, so nothing important depends on GitHub's log retention.
 
 ---
@@ -278,6 +278,8 @@ A lightweight version of model-risk-management practice (e.g. the ideas in the U
 | `sources` | source_id, tier, data_types, access_method, tos_note, cadence, last_success_at, failure_rate_30d | |
 | `mcp_tool_calls` *(v1.0)* | mcp_call_id, run_id, agent_run_id, client (`agent:<id>` / `claude:desktop` / `claude:code`), tool_id, tier, args_hash, result_hash, masked, status, latency_ms | Append-only |
 | `proposals` *(v1.0)* | proposal_id, kind (watchlist / thesis_flag / journal), isin, payload, reason, evidence_refs, agent_run_id, status, decided_by, decided_at, expires_at | The only table agents write to besides the two queues below |
+| `run_plan` *(v1.1)* | plan_id, run_id, plan_json, plan_hash, status (`valid` / `rejected`), rejected_check, created_at | One row per orchestrator plan; read by `audit.get_run_plan` |
+| `case_files` *(v1.1)* | case_id, run_id, isin, facts_json, evidence_refs, built_at | Assembled by code from tool results; no document text |
 | `notify_queue` / `job_requests` *(v1.0)* | item_id, agent_run_id, template_id or job kind, isin, severity, dedupe_key, status | Drained by the notifier (routing per ADR-008) and the job runner (daily cap) |
 
 ---

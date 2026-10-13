@@ -1,6 +1,6 @@
 ---
 title: Watchlist Management — Auto-Curation with Human Approval
-version: 0.7 (Watchlist Curator agent adds reasoned proposals through `portfolio.propose_watchlist`; approvals unchanged — plan 15; v0.6: §5.3 aligned with D11; v0.5 §5: cards built from plan 12 components; thesis form on approval; Telegram approve/reject/snooze)
+version: 0.8 (parked by D26: callout added, behaviour unchanged behind `watchlist.enabled: false`; v0.7: Watchlist Curator agent adds reasoned proposals through `portfolio.propose_watchlist`; approvals unchanged — plan 15; v0.6: §5.3 aligned with D11; v0.5 §5: cards built from plan 12 components; thesis form on approval; Telegram approve/reject/snooze)
 date: 2026-09-24
 parent: 00_MASTER_PLAN.md
 decisions_confirmed_by_owner:
@@ -12,6 +12,8 @@ supersedes: 05_STORAGE_UNIVERSE_AND_HOLDINGS.md §1 "Promotion rules"
 ---
 
 # Watchlist Management
+
+> **Parked (D26, 2026-10-14).** Parakh now covers your holdings only (plan 17). This design stays as written and is switched off by `watchlist.enabled: false` (default). My Watchlist can be re-enabled for a handful of names after M1; the System Watchlist, Curator and discovery stay parked.
 
 ## 1. Evaluation summary: why this feature exists
 

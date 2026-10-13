@@ -1,6 +1,6 @@
 ---
 title: Automation, Notifications & Continuous Momentum Watch — Plan
-version: 1.0 (agentic: Monthly Reviewer agent replaces the Claude scheduled-task review; Event Triage agent in §5b; agents send only through `notify.queue` — plan 15, ADR-003/008 amended; v0.9: Task Scheduler paths fixed to C:\dev\parakh; v0.8 baseline: ADR-003 and ADR-008 accepted, workflow secrets via AWS SSM + OIDC, concall source = BSE-filed transcripts — plan 13; v0.7: §4 rewritten: channel comparison incl. WhatsApp, ADR-008, routing matrix, two-way actions; v0.6: audit hooks → plan 10; v0.4: watchlist; v0.3: ownership routing; v0.2: §0, §5b)
+version: 1.1 (discovery mode parked with the watchlist, D26; the default scope is the coverage set; v1.0: agentic: Monthly Reviewer agent replaces the Claude scheduled-task review; Event Triage agent in §5b; agents send only through `notify.queue` — plan 15, ADR-003/008 amended; v0.9: Task Scheduler paths fixed to C:\dev\parakh; v0.8 baseline: ADR-003 and ADR-008 accepted, workflow secrets via AWS SSM + OIDC, concall source = BSE-filed transcripts — plan 13; v0.7: §4 rewritten: channel comparison incl. WhatsApp, ADR-008, routing matrix, two-way actions; v0.6: audit hooks → plan 10; v0.4: watchlist; v0.3: ownership routing; v0.2: §0, §5b)
 date: 2026-09-24
 parent: 00_MASTER_PLAN.md
 ---
@@ -202,7 +202,7 @@ All channels sit behind one interface: `src/notify/base.py: Notifier.send(messag
 - **Phase 4** (when approvals arrive): an always-on listener writes taps and commands to a `ui_actions` table, which the services apply with audit events. Two options:
   - A Supabase Edge Function (webhook; ~50 lines of TypeScript, the only non-Python piece).
   - A Python `python-telegram-bot` listener on your PC, started by Task Scheduler at logon.
-  
+
   The Edge Function is recommended because it doesn't need the PC.
 
 **Security:**
@@ -290,8 +290,8 @@ This gives you **"notify me when a momentum pattern changes"** without constant 
 
 ### Watch scope
 
-- **Default:** every stock in `watchlist.yaml`.
-- **Optional "discovery mode":** scan *all* constituents of Nifty Midcap 150 and Smallcap 250 for M01, M02, M03 and M05. This surfaces new candidates that aren't on your watchlist yet (one daily digest, "3 new stocks entered Stage 2").
+- **Default:** every holding in the coverage set (plan 17).
+- **Optional "discovery mode"** *(parked, D26; off by default)*: scan *all* constituents of Nifty Midcap 150 and Smallcap 250 for M01, M02, M03 and M05. This surfaces new candidates that aren't on your watchlist yet (one daily digest, "3 new stocks entered Stage 2").
 
 ---
 

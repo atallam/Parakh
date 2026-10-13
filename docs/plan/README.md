@@ -10,13 +10,13 @@ status: Plan locked · build starts Mon 28 Sep 2026
 
 ## What it does for you
 
-- **A monthly report for every stock you follow.** Each gets a clear verdict (BUY, HOLD, REDUCE …, or ADD / TRIM / EXIT for stocks you own) and the reasons behind it.
+- **A monthly report for every stock you hold.** Each gets a clear verdict (BUY, HOLD, REDUCE …, or ADD / TRIM / EXIT for stocks you own) and the reasons behind it.
 - **Two separate views of each stock.** *Value* asks whether it's cheap and a good business. *Momentum* asks whether it's trending. They're never averaged into mush.
 - **Alerts on Telegram only when something changes:** a breakout, a breakdown, a pledge, an auditor exit. No message means nothing changed.
 - **It knows what you own** (from your CAS statement) **and why you own it** (a short thesis per stock), and tells you when that reason weakens.
 - **A monthly "what changed" screen,** designed so your review takes about an hour.
-- **New ideas surface on their own** through a self-curating watchlist, and nothing is added to *your* list without your approval.
-- **AI helpers and "Ask Parakh".** AI agents do the first pass (a monthly "top 5" review, a line on why a new filing matters, reasoned watchlist ideas), and you can ask Claude on your PC about any stock. They read Parakh's numbers through one MCP server; they only suggest and never change a score or your lists.
+- **Context, not a stock screener.** A prices-only panel of the wider market and NSE index valuations show how your holdings compare. The watchlist is parked for now.
+- **AI helpers and "Ask Parakh".** An orchestrator plans the monthly review and AI agents do the first pass (a monthly "top 5" review, a line on why a new filing matters, a portfolio view); plain code checks the plan before anything runs, and you can ask Claude on your PC about any stock. They read Parakh's numbers through one MCP server; they only suggest and never change a score or your lists.
 
 ## How it works
 
@@ -41,19 +41,20 @@ Market data + company financials + concall transcripts + your holdings
 | **Mon 28 Sep 2026** | Build starts (evenings and weekends, ~8–10 hrs/week) |
 | **8 Nov 2026** · M1 | First reports on your 7 pilot stocks; you review them |
 | **2 Dec 2026** · M2 | Runs by itself every month and every trading evening; alerts on Telegram |
-| **2 Jan 2027** · M3 | Full stock universe, review app, watchlists, concall reading |
+| **2 Jan 2027** · M3 | Orchestrated review of every holding, review app, concall reading |
 | **2 Feb 2027** · v1.0 | Three unattended months, calibrated and signed off |
 
 ## What you decided
 
 - **Name:** Parakh, built to a production standard.
-- **Stocks covered:** NSE Large, Mid and Nifty Smallcap 250.
+- **Stocks covered:** the stocks you hold (from your CAS). The AMFI list is a prices-only benchmark panel (plan 17).
 - **Data:** company financials from your Screener.in export; concall transcripts from BSE filings.
 - **Holdings:** read from your monthly CAS statement. Your PAN and account numbers are never stored.
 - **Alerts and runs:** Telegram, plus an email archive; WhatsApp later only if needed. It runs on GitHub, so your laptop can be off. The code lives in `C:\dev\parakh`, and a readable copy of the reports lands in OneDrive.
 - **Value hurdle:** a value BUY must be expected to beat **15% a year**.
 - **Thesis breaks:** the AI can **flag** a broken thesis; only a measurable rule or you can mark it broken.
 - **What Parakh is:** a systematic engine held to institutional rigour, not a broker note. No forecasts of its own, no price targets, no ratings; the right valuation method for each kind of company, and young listings shown honestly as "limited history".
+- **Link to WealthLens Hub:** agreed `holdings.v1` and `insights.v1` contracts keep Parakh separate and easy to connect after v1.0 (plan 18). Drishti is frozen, not merged.
 - **Scope freeze:** from 28 Sep until the M1 review, new ideas go to the backlog only.
 - **Agentic, MCP-first:** everything goes through one MCP server; agents run on the Claude Agent SDK and only propose; the server stays on your PC and in the scheduled jobs for now (revisited before v1.0).
 
@@ -76,6 +77,8 @@ Market data + company financials + concall transcripts + your holdings
 | **08 Part A** | Every feature in plain English |
 | **13** | Your decisions, if you want the detail |
 | **09** | The detailed timeline |
+| **17** | Coverage model and benchmarks |
+| **18** | WealthLens Hub integration and what to reuse from Drishti |
 
 Everything else is the builder's reference. Claude reads it and brings you the relevant part when a choice needs you.
 

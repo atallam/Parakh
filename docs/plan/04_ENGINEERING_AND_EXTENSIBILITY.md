@@ -1,6 +1,6 @@
 ---
 title: Engineering, Extensibility & Pre-Build Checklist
-version: 1.0 (MCP-first: ADR-010/011/012 indexed, ADR-003/008 amended, `src/mcp/` + `AgentRunner` in the repo layout, TOOL./AGENT./AG- IDs — plan 15; v0.9: repo layout: docs/plan, outputs, test folders; v0.8 baseline: ADR-003/004/008 accepted, ADR-009 secrets, Production module layout, repo `parakh` — plan 13; v0.7: ADR-006 extended with design system + render guardrails; ADR-008 notifications proposed; UX/UI IDs; v0.6: ADR-007 audit & governance; v0.5: ADR-006 UI)
+version: 1.1 (ADR-013 to ADR-015 indexed (coverage model, orchestrator, integration seam); `contracts/` and `integrations/` in the repo layout; v1.0: MCP-first: ADR-010/011/012 indexed, ADR-003/008 amended, `src/mcp/` + `AgentRunner` in the repo layout, TOOL./AGENT./AG- IDs — plan 15; v0.9: repo layout: docs/plan, outputs, test folders; v0.8 baseline: ADR-003/004/008 accepted, ADR-009 secrets, Production module layout, repo `parakh` — plan 13; v0.7: ADR-006 extended with design system + render guardrails; ADR-008 notifications proposed; UX/UI IDs; v0.6: ADR-007 audit & governance; v0.5: ADR-006 UI)
 date: 2026-09-24
 parent: 00_MASTER_PLAN.md
 covers: plug-in "Lens" architecture for new investing styles · code maintainability & searchability standards · infra/data risks to settle before coding
@@ -188,7 +188,7 @@ parakh/                        ← C:\dev\parakh (plan 13 D10)
 │   ├── lenses.yaml            ← which lenses are active per cap
 │   ├── lenses/value.yaml  momentum.yaml …
 │   ├── verdict_policy.yaml
-│   ├── universe.yaml          ← coverage tiers per cap (see plan 05)
+│   ├── universe.yaml          ← coverage set (holdings) and benchmark panel per cap (plans 05, 17)
 │   ├── alerts.yaml
 │   ├── agents.yaml            ← per agent: model_id, max_turns, token_budget, allowed_tools (plan 15 §6.2)
 │   ├── ui_tokens.yaml         ← colours, icons, words for reports, Telegram and Streamlit (plan 12 §3)
@@ -202,8 +202,10 @@ parakh/                        ← C:\dev\parakh (plan 13 D10)
 │   ├── lenses/                ← value.py, momentum.py, _template/
 │   ├── mcp/                   ← parakh-mcp server (ADR-010): server.py + toolsets/ (reports, analytics, data,
 │   │                            portfolio, notify, jobs, audit), resources, prompts; thin wrappers over services (P2)
-│   ├── agents/                ← one module per agent: spec + prompt ref + output model (plan 15 §5)
+│   ├── agents/                ← one module per agent: spec + prompt ref + output model (plan 15 §5); orchestrator/ holds RunPlan, the dispatcher and the case-file assembler (§5b)
 │   │   └── runtime/           ← AgentRunner interface; ClaudeSDKRunner (ADR-011)
+│   ├── contracts/             ← holdings.v1 and insights.v1 Pydantic models (plan 18)
+│   ├── integrations/          ← HoldingsProvider (cas, fake, hub, mcp) and InsightPublisher (file, supabase_view, hub_http)
 │   ├── orchestration/         ← the deterministic workflow per job (monthly, watch, events) with audited_step (P2)
 │   ├── prompts/               ← versioned YAML prompts (pinned per agent in config/prompts.yaml)
 │   ├── policy/                ← verdict engine
@@ -232,13 +234,13 @@ parakh/                        ← C:\dev\parakh (plan 13 D10)
 | 6 | **Trading calendar** | Holidays, special sessions (e.g. Diwali Muhurat trading), half days | NSE holiday calendar in config; "last trading day of month" helper |
 | 7 | **Rate limits and terms of use** | Bans, broken scrapers | Polite fetching (throttling, caching, backoff); prefer exports and APIs; keep a per-source terms-of-use note |
 | 8 | **Data validation** | Silent bad data leading to confident wrong verdicts | pandera schemas; range checks (P/E < 0? price jump > 40% with no corporate action?); cross-source reconciliation; bad data **blocks** the verdict (confidence Low + warning) rather than being scored |
-| 9 | **LLM cost and determinism** | Token bills on 500 stocks; varying outputs | LLM only for coverage Tier A (plan 05); cache by transcript hash; temperature 0; prompt version stored; per-run token budget with a hard stop |
+| 9 | **LLM cost and determinism** | Token bills on 500 stocks; varying outputs | LLM only for the coverage set (plan 05); cache by transcript hash; temperature 0; prompt version stored; per-run token budget with a hard stop |
 | 10 | **Secrets and privacy** | Holdings and API keys leaking | Private repo; secrets in **AWS SSM Parameter Store via GitHub OIDC** (ADR-009) and `.env` locally; gitleaks + pip-audit as required CI checks (P10); **holdings file encrypted** (plan 05 §4); holdings never sent to an LLM unless needed |
 | 11 | **OneDrive + git + databases** | OneDrive sync can corrupt `.git` folders and database files | **Recommended:** code repo at a local path outside OneDrive (**locked: `C:\dev\parakh`**, plan 13 D10); the pipeline **publishes** reports into the OneDrive `Stock Analysis` folder; caches in `%LOCALAPPDATA%` |
 | 12 | **Time zones** | Cron in UTC vs market in IST | Store UTC timestamps plus the IST trading date; all schedules documented in both |
 | 13 | **Reproducibility** | "Why did it say BUY in March?" | Every run stores `run_id`, config hash, framework/lens versions, source as-of dates; raw inputs retained for 24 months |
 | 14 | **Observability** | Silent failures | Run table + structlog + Langfuse; failure alerts and heartbeat (plan 03) |
-| 15 | **Runtime budget** | A full-cap run grows long | Parallel fetch (asyncio / thread pool), incremental price updates, and fundamentals refreshed only when a new filing appears |
+| 15 | **Runtime budget** | A panel refresh grows long | Parallel fetch (asyncio / thread pool), incremental price updates, and fundamentals refreshed only when a new filing appears |
 
 ---
 
@@ -262,6 +264,9 @@ ADRs record *why* a choice was made, so future-you, or an AI coding assistant, d
 | **ADR-010** *(v1.0)* | **MCP as the agent-facing interface over services:** one `parakh-mcp` server with namespaced toolsets; the only way agents reach data or state; agents propose, never change state; workflows stay code | ✅ Accepted 2026-09-27 (plan 13 D20) | Plan 15 §10 |
 | **ADR-011** *(v1.0)* | **Agent runtime: Claude Agent SDK** behind the `AgentRunner` interface; built-in tools disabled; recorded deviation from the SCAIX LangGraph default | ✅ Accepted 2026-09-27 (plan 13 D21) | Plan 15 §6, §10 |
 | **ADR-012** *(v1.0)* | **MCP transport: local stdio only** (PC and inside job runners); remote Streamable HTTP + OAuth reviewed in Phase 5: kept local | ✅ Accepted 2026-09-27, review closed 2026-10-11 (plan 13 D22) | Plan 15 §7, §10 |
+| **ADR-013** *(v1.1)* | **Coverage model:** the coverage set is your holdings; everything else is a prices-only benchmark panel plus NSE index benchmarks; tiers A/B/C removed (plan 17) | ✅ Accepted 2026-10-14 |
+| **ADR-014** *(v1.1)* | **Orchestrator-workers:** the orchestrator returns a validated `RunPlan`, a plain-code dispatcher executes it; linear mode kept as fallback (plan 15 §5b) | ✅ Accepted 2026-10-14 |
+| **ADR-015** *(v1.1)* | **Integration seam:** `holdings.v1` / `insights.v1` contracts, provider and publisher interfaces, read-only DB views with scoped roles as the default exchange (plan 18) | ✅ Accepted 2026-10-14 |
 
 ### 5.2 ADR-006: UI framework for the review app and dashboard
 
