@@ -143,6 +143,51 @@
    "key": "event:INE417T01026:E08:ASM-stagei",
    "kind": "event",
    "symbol": "POLICYBZR"
+  },
+  {
+   "code": "E14",
+   "date": "2026-10-13",
+   "headline": "Regulatory action or order: InterGlobe Aviation Limited has informed the Exchange about Action(s) taken or orders pas…",
+   "isin": "INE646L01027",
+   "key": "event:INE646L01027:E14:106816211",
+   "kind": "event",
+   "symbol": "INDIGO"
+  },
+  {
+   "code": "E13",
+   "date": "2026-10-13",
+   "headline": "Director or key management change (role not in the filing line): ICICIPRULI has informed the Exchange about change in Management",
+   "isin": "INE726G01019",
+   "key": "event:INE726G01019:E13:106815709",
+   "kind": "event",
+   "symbol": "ICICIPRULI"
+  },
+  {
+   "code": "E01",
+   "date": "2026-10-13",
+   "headline": "Results filed: ICICIPRULI has submitted to the Exchange, the financial results for the period ended Sept…",
+   "isin": "INE726G01019",
+   "key": "event:INE726G01019:E01:september302026",
+   "kind": "event",
+   "symbol": "ICICIPRULI"
+  },
+  {
+   "code": "E07",
+   "date": "2026-10-13",
+   "headline": "Credit rating action: Lloyds Metals And Energy Limited has informed the Exchange about Credit Rating",
+   "isin": "INE281B01032",
+   "key": "event:INE281B01032:E07:106815664",
+   "kind": "event",
+   "symbol": "LLOYDSME"
+  },
+  {
+   "code": "E13",
+   "date": "2026-10-13",
+   "headline": "Director or key management change (role not in the filing line): NMDC Limited has informed the Exchange regarding Change in Director(s) of the company.",
+   "isin": "INE584A01023",
+   "key": "event:INE584A01023:E13:106816301",
+   "kind": "event",
+   "symbol": "NMDC"
   }
  ]
 }

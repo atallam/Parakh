@@ -37,3 +37,23 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-12 21:54 · event_triage HINDCOPPER E13, would add this line
 - 🤖 Filing notes a management change at Hindustan Copper; no verdict/thesis data available to assess impact.
 - [ ] noise  `event:INE531E01026:E13:106812730`
+
+## 2026-10-13 20:00 · event_triage INDIGO E14, would add this line
+- 🤖 Filing only shows generic header on an order/action taken; no details available to assess impact.
+- [ ] noise  `event:INE646L01027:E14:106816211`
+
+## 2026-10-13 20:00 · event_triage ICICIPRULI E13, would add this line
+- 🤖 ICICI Pru Life filed a management change notice to the exchange.
+- [ ] noise  `event:INE726G01019:E13:106815709`
+
+## 2026-10-13 20:00 · event_triage ICICIPRULI E01, would add this line
+- 🤖 Q2 FY27 results filed; routine quarterly disclosure, no detail yet beyond submission notice.
+- [ ] noise  `event:INE726G01019:E01:september302026`
+
+## 2026-10-13 20:00 · event_triage LLOYDSME E07, would add this line
+- 🤖 Routine intimation of credit/ESG rating update filed with exchange; no operational detail given.
+- [ ] noise  `event:INE281B01032:E07:106815664`
+
+## 2026-10-13 20:00 · event_triage NMDC E13, would add this line
+- 🤖 NMDC filed a notice of change in company director(s); routine governance disclosure.
+- [ ] noise  `event:INE584A01023:E13:106816301`

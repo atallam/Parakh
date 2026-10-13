@@ -41,6 +41,12 @@
   "rule": "E13",
   "text": "Persistent Systems Limited has informed the Exchange about Resignation of Director/KMP/SMP"
  },
+ "event:INE281B01032:E07:106815664": {
+  "filed": "2026-10-13",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/LLOYDSME_13102026125622_20261310_Intimation_of_ESG_Ratings.pdf",
+  "rule": "E07",
+  "text": "Lloyds Metals And Energy Limited has informed the Exchange about Credit Rating"
+ },
  "event:INE417T01026:E08:ASM-stagei": {
   "filed": "2026-10-12",
   "filing_url": null,
@@ -83,11 +89,35 @@
   "rule": "E13",
   "text": "Hindustan Copper Limited has informed the Exchange about change in Management"
  },
+ "event:INE584A01023:E13:106816301": {
+  "filed": "2026-10-13",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/NMDC_13102026185915_NMDC_SE13102026.pdf",
+  "rule": "E13",
+  "text": "NMDC Limited has informed the Exchange regarding Change in Director(s) of the company."
+ },
+ "event:INE646L01027:E14:106816211": {
+  "filed": "2026-10-13",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/Indigo1_13102026181943_LoDR-Order.pdf",
+  "rule": "E14",
+  "text": "InterGlobe Aviation Limited has informed the Exchange about Action(s) taken or orders passed"
+ },
  "event:INE691A01018:E07:106812765": {
   "filed": "2026-10-09",
   "filing_url": "https://nsearchives.nseindia.com/corporate/UCOBANK_09102026171732_NSEBSEINDIARATING09102026.pdf",
   "rule": "E07",
   "text": "UCO Bank has informed the Exchange about Credit Rating"
+ },
+ "event:INE726G01019:E01:september302026": {
+  "filed": "2026-10-13",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/ICICIPRULI_13102026131705_Outcome_BM_October_13_2026_Signed.pdf",
+  "rule": "E01",
+  "text": "ICICI Prudential Life Insurance Company Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
+ },
+ "event:INE726G01019:E13:106815709": {
+  "filed": "2026-10-13",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/ICICIPRULI_13102026132543_Outcome_BM_October_13_2026_Signed.pdf",
+  "rule": "E13",
+  "text": "ICICI Prudential Life Insurance Company Limited has informed the Exchange about change in Management"
  },
  "event:INE854D01024:E13:106812488": {
   "filed": "2026-10-09",
