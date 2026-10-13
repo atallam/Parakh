@@ -1,6 +1,6 @@
 ---
-title: Storage, Full-Cap Coverage & Holdings
-version: 0.13 (`isin_history` table: splits change the ISIN — spike ④, plan 13 v1.19; v0.12: MCP access to holdings: masked by default, CAS never reachable, `parakh_mcp` DB role — plan 15 AG-07; v0.11: D19: CAS and .env stay in OneDrive; v0.10: CAS and .env locations outside OneDrive; v0.9: §3.3 table relabelled, superseded row removed; v0.8: §2.4 THESIS.md schema now lives here; v0.7 baseline: holdings from CAS + cost seed, Supabase from Phase 1, CAS privacy rules — plan 13 D8/D11/P6; v0.6: audit & governance tables → plan 10 §13; v0.4: §1 superseded by plan 06)
+title: Storage, Coverage & Holdings
+version: 0.14 (D26–D28: §1 tiers replaced by the coverage model in plan 17, holdings provider seam in plan 18; v0.13: `isin_history` table: splits change the ISIN — spike ④, plan 13 v1.19; v0.12: MCP access to holdings: masked by default, CAS never reachable, `parakh_mcp` DB role — plan 15 AG-07; v0.11: D19: CAS and .env stay in OneDrive; v0.10: CAS and .env locations outside OneDrive; v0.9: §3.3 table relabelled, superseded row removed; v0.8: §2.4 THESIS.md schema now lives here; v0.7 baseline: holdings from CAS + cost seed, Supabase from Phase 1, CAS privacy rules — plan 13 D8/D11/P6; v0.6: audit & governance tables → plan 10 §13; v0.4: §1 superseded by plan 06)
 date: 2026-09-24
 parent: 00_MASTER_PLAN.md
 covers: storage options review & recommendation · data model · analysing ALL stocks in a cap · marking owned stocks & quantities
@@ -8,39 +8,32 @@ covers: storage options review & recommendation · data model · analysing ALL s
 
 # Storage, Full-Cap Coverage and Holdings
 
-## 1. Analysing every stock in a cap: tiered coverage
+## 1. Coverage: your holdings, with a prices-only benchmark panel
 
-Covering *all* stocks in a segment changes the scale. Deep analysis (fundamentals, LLM qualitative work and full reports) on hundreds of stocks is slow, costly and noisy. The answer is **tiered coverage**: every stock in the cap gets scored, and the expensive work goes only where it matters.
+**Superseded by D26 (2026-10-14).** The tiered coverage model (Tier A deep, Tier B screen, Tier C discovery) is removed. Parakh analyses **the stocks you hold**, read from the CAS. Everything else is a **benchmark panel** (the AMFI list, prices only, no fundamentals, no scores, no LLM) plus **index benchmarks** from NSE (P/E, P/B, yield, total return). The full model, the borrow-or-build table and the work items are in **plan 17**.
 
-| Cap | Universe (default) | Approx. size |
+| Set | Who is in it | What is computed |
 |---|---|---|
-| Large | AMFI ranks 1–100 | 100 |
-| Mid | AMFI ranks 101–250 | 150 |
-| Small | **Nifty Smallcap 250 constituents** (liquid, investable) | 250 |
-| Small (extended, optional) | AMFI ranks 251–1000, after a liquidity filter (≥ ₹1 Cr average daily traded value) | ~500–700 |
+| **Coverage set** | Every holding in the latest CAS import (about 11) | All lenses, qualitative, devil's advocate, orchestrated review, event watcher |
+| **Benchmark panel** | AMFI list for the chosen cap (Mid about 498) | Prices and momentum context only |
+| **Index benchmarks** | NSE broad and sector indices | Valuation context for the value lens |
 
-| Tier | Who is in it | What is computed | Output |
-|---|---|---|---|
-| **A: Deep** | **Stocks you own** + **My Watchlist** + **System Watchlist** (plan 06) | Everything: all lenses, qualitative (BSE-filed transcripts, thesis-aware), devil's advocate, full monthly report, event watcher | Stock folder with report, history and thesis |
-| **B: Screen** | **Every stock in the cap universe** | All quantitative lenses (value + momentum scores, vetoes, signals); **no LLM** | One row per stock in the **segment ranking table** + database; daily momentum watch |
-| **C: Discovery** *(optional)* | Extended small-cap universe | Momentum signals + liquidity + veto checks only | "New names entering Stage 2" digest |
+The watchlist (plan 06), the Curator and discovery mode are **parked** behind `watchlist.enabled: false` (default).
 
-**Moving between tiers (v0.4): replaced by plan 06.** The earlier tier-promotion rules are now the **System Watchlist**. Additions come from 4 sources (top combined score, momentum setup, value BUY zone, smart-money events). Removals are automatic but capacity-limited, with a minimum stay and a one-in-one-out rule. Your **My Watchlist** is never changed without your approval. Tier A = owned + My Watchlist + System Watchlist. Changes appear in the segment summary and in the monthly watchlist review.
+**Holdings provider (plan 18).** Holdings reach the pipeline through a `HoldingsProvider` interface (Cas, Fake, Hub, Mcp). The CAS stays Parakh's source through GA. The `holdings.v1` contract is keyed on ISIN.
 
 Run it as:
 
 ```powershell
-python run.py --mode monthly --cap mid                 # all 150 midcaps scored; deep dives for Tier A
-python run.py --mode monthly --cap small --extended    # + Tier C discovery
-python run.py --mode monthly --cap all --only-owned    # quick refresh of just your holdings
+python run.py --mode monthly                  # all holdings; panel prices refreshed
+python run.py --mode monthly --only ISIN      # one holding
 ```
 
-**Segment summary layout** (`mid_cap/_SEGMENT_SUMMARY/2026-09.md`):
+**Summary layout** (`_SUMMARY/2026-09.md`):
 
-1. **Your holdings in this cap**: 🟢 OWNED badge, quantity, value, P&L, weight, verdict, and any action flags ("owned but SELL-rated", "LTCG in < 30 days").
-2. **Best opportunities you don't own**: top 15 by combined verdict.
-3. **Full ranked universe**: all 150 rows (score, view, key metrics, signals). This also exists as CSV and XLSX for sorting.
-4. Regime, breadth, sector heat-map, **watchlist changes** (auto-added, auto-removed, pending your review), and new red flags.
+1. **Your holdings:** quantity, value, P&L, weight, verdict, action flags ("owned but SELL-rated", "LTCG in < 30 days").
+2. **Orchestrator notes:** what changed since last month and why each holding was or was not reviewed in depth.
+3. Regime, breadth, sector heat-map against the panel, and new red flags.
 
 ---
 
@@ -85,7 +78,7 @@ Derived automatically for each stock:
 
 | Where | Owned stock | Not owned |
 |---|---|---|
-| Coverage tier | Always Tier A (deep) | A if on My or System Watchlist, otherwise B |
+| Coverage | Always in the coverage set (deep) | Panel only (prices), unless the parked watchlist is enabled |
 | Verdict wording | Action on a position: **ADD / HOLD / TRIM / EXIT** | Entry wording: **BUY / WATCH / AVOID** |
 | Alerts | **Exit and warning** signals (M11, M20–M28, red-flag events) go out immediately | **Entry** signals go into the daily digest |
 | Report | Position box, tax note, thesis check, stop levels based on *your* entry | Entry zone and suggested initial stop |
@@ -145,7 +138,7 @@ A component-by-quarter history comes from the audit events, which drives the the
 
 ### 3.1 What needs storing
 
-| Data | Volume (full-cap, 10 years) | Access pattern |
+| Data | Volume (panel prices, 10 years) | Access pattern |
 |---|---|---|
 | Daily prices and volumes | ~500–1,000 stocks × ~2,500 days ≈ 1–2.5M rows | Bulk time-series scans |
 | Fundamentals (quarterly, bitemporal, long format) | ~1,000 stocks × 40 quarters × ~150 fields ≈ 6M rows | Point-in-time lookups |

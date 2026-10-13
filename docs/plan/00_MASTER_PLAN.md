@@ -1,6 +1,6 @@
 ---
 title: Parakh — Master Plan (Stock Analysis Framework)
-version: 1.5 (§1 scope boundary: a systematic engine, not a sell-side research product; §5 limited-history rule — plan 13 D23/D24; v1.4: §7 architecture is MCP-first: agents reach Parakh only through parakh-mcp, plan 15; v1.3: decision pointer drops the D-range; v1.2: changelog continues in 13 §9; v1.1: docs restructured: README index, one owner per fact, plan 14 test & UAT plan; §2 review archived; §4 fixed to D10; §9/§10 now pointers; v1.0: baseline locked)
+version: 1.6 (D26–D28: §1 reframed to holdings coverage with a prices-only benchmark panel, orchestrated agents, Hub integration seam; v1.5: §1 scope boundary: a systematic engine, not a sell-side research product; §5 limited-history rule — plan 13 D23/D24; v1.4: §7 architecture is MCP-first: agents reach Parakh only through parakh-mcp, plan 15; v1.3: decision pointer drops the D-range; v1.2: changelog continues in 13 §9; v1.1: docs restructured: README index, one owner per fact, plan 14 test & UAT plan; §2 review archived; §4 fixed to D10; §9/§10 now pointers; v1.0: baseline locked)
 date: 2026-09-24
 owner: Avinash Tallam
 scope: Indian equities (NSE), monthly per-stock reports + daily momentum watch
@@ -30,7 +30,7 @@ companion_docs:
 
 ## 1. What we are building
 
-A Python pipeline that runs **once a month** over a watchlist split by market cap (Large / Mid / Small), and for each stock:
+A Python pipeline that runs **once a month** over **the stocks you hold** (read from your CAS; a prices-only benchmark panel and NSE index valuations give context, plan 17), and for each holding:
 
 1. Pulls price and fundamental data from **multiple sources**, with fallbacks.
 2. Scores the stock on **two independent lenses**: Value (plan 01) and Momentum (plan 02).

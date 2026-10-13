@@ -1,6 +1,6 @@
 ---
 title: PRD — Parakh (Stock Analysis Framework)
-version: 1.9 (non-goal: sell-side research products; FR-04/FR-05 cover sector profiles and limited history; FR-28 consensus context as backlog — plan 13 D23/D24; v1.8: agentic, MCP-first: G9, US-17/18, FR-26/27, NFR-15; FR-12/16 and §9–§10 updated; FR-20 no longer lists ask-Claude — plan 15, D20–D22; v1.7: decision pointer drops the D-range; v1.6: FR-25 thesis tracking → F23; v1.5: NFR-14 service levels moved here from plan 13 — 07 owns every numeric target; v1.4: §12 now points to plan 13; release criteria reference UAT-5 in plan 14; v1.3: baseline locked — decisions resolved in §12 and plan 13; tier Production; v1.2: UI/UX design system and notification channels — US-14/15/16, FR-23/24, NFR-13, §8 rewritten; v1.1: audit, logging & governance — G8, US-13, FR-21/22, NFR-11/12)
+version: 1.10 (D26–D28: holdings-only coverage, orchestrated agents, integration contracts; NFR-07 re-based on the coverage set; v1.9: non-goal: sell-side research products; FR-04/FR-05 cover sector profiles and limited history; FR-28 consensus context as backlog — plan 13 D23/D24; v1.8: agentic, MCP-first: G9, US-17/18, FR-26/27, NFR-15; FR-12/16 and §9–§10 updated; FR-20 no longer lists ask-Claude — plan 15, D20–D22; v1.7: decision pointer drops the D-range; v1.6: FR-25 thesis tracking → F23; v1.5: NFR-14 service levels moved here from plan 13 — 07 owns every numeric target; v1.4: §12 now points to plan 13; release criteria reference UAT-5 in plan 14; v1.3: baseline locked — decisions resolved in §12 and plan 13; tier Production; v1.2: UI/UX design system and notification channels — US-14/15/16, FR-23/24, NFR-13, §8 rewritten; v1.1: audit, logging & governance — G8, US-13, FR-21/22, NFR-11/12)
 date: 2026-09-24
 owner: Avinash Tallam (product owner, sole user)
 status: Baseline v1.0 LOCKED (2026-09-24) — plan 13
@@ -13,7 +13,7 @@ companion_docs: 08_FEATURE_SPEC.md (features & acceptance criteria) · 09_PHASED
 
 ## 1. Summary
 
-A personal, automated **equity research system for Indian stocks (NSE)**. Every month it scores every stock in a chosen market-cap segment through independent **investing-style lenses** (Value and Momentum first), adds **LLM-assisted qualitative analysis** for the stocks that matter, keeps a **per-stock history** for trend analysis, and produces graded, explainable verdicts. Between monthly runs, **daily watchers** detect momentum-pattern changes and material corporate events, and notify the owner only when something changes. A **two-list watchlist** keeps the focus set fresh with human approval, and a lightweight **Streamlit app** handles reviews and holdings.
+A personal, automated **equity research system for Indian stocks (NSE)**. Every month it scores the stocks you hold (read from your CAS, with a prices-only benchmark panel for context) through independent **investing-style lenses** (Value and Momentum first), adds **LLM-assisted qualitative analysis** for the stocks that matter, keeps a **per-stock history** for trend analysis, and produces graded, explainable verdicts. Between monthly runs, **daily watchers** detect momentum-pattern changes and material corporate events, and notify the owner only when something changes. A **two-list watchlist** keeps the focus set fresh with human approval, and a lightweight **Streamlit app** handles reviews and holdings.
 
 **Usage boundary:** personal analysis only. Not investment advice; not for commercial or public distribution (public buy/sell calls may fall under SEBI's Research Analyst regulations).
 
@@ -38,7 +38,7 @@ A personal, automated **equity research system for Indian stocks (NSE)**. Every 
 
 | ID | Goal |
 |---|---|
-| G1 | A **repeatable, explainable** monthly analysis for every stock in a selected cap (Large / Mid / Small), with each style scored separately |
+| G1 | A **repeatable, explainable** monthly analysis for every stock you hold, with each style scored separately and a benchmark panel for context |
 | G2 | **Longitudinal memory:** per-stock history supporting month-over-month, quarter-over-quarter and year-over-year trend analysis and a thesis check |
 | G3 | **Hands-off operation:** scheduled runs, one notification per run, alerts only on state changes |
 | G4 | **Ownership-aware** output: holdings, quantities, lots, P&L, tax timing reflected in verdicts and alerts |
@@ -98,7 +98,7 @@ A personal, automated **equity research system for Indian stocks (NSE)**. Every 
 | Metric | Target | Measured by |
 |---|---|---|
 | Unattended monthly runs | ≥ 11 of 12 months complete without manual intervention | `runs` table |
-| Run duration (full mid-cap universe, 150 stocks) | < 20 min | `runs` table |
+| Run duration (coverage set of about 11 holdings plus the prices-only panel) | < 20 min | `runs` table |
 | Alert precision (owner-judged "useful") | ≥ 70% after tuning | 👍/👎 buttons on alerts, captured from the first live alerts (plan 03 §4.3, plan 12 UX-13) |
 | Duplicate or false-repeat alerts | 0 per month | De-duplication tests + logs |
 | Data-quality blocks | < 5% of stocks per run carry a Low-confidence data warning | `data_quality` blocks |
@@ -121,12 +121,12 @@ Detailed acceptance criteria are in **08_FEATURE_SPEC.md** (feature IDs in brack
 | FR-05 | Momentum lens: cap- and sector-benchmarked RS, volatility-adjusted momentum, trend structure, stages, signal catalogue, regime filter; *(v1.9)* minimum-history rules for young listings (plan 02 §3.9) | Must | F05 |
 | FR-06 | Combine lenses through a configurable verdict policy (matrix, vetoes, hysteresis, confidence) | Must | F08 |
 | FR-07 | Per-stock monthly report (Markdown) + canonical JSON snapshot + history CSV + HISTORY.md | Must | F09 |
-| FR-08 | Segment summary: holdings first, opportunities, full ranked universe, regime, changes | Must | F10 |
+| FR-08 | Summary: holdings first, orchestrator notes, regime, panel context, changes | Must | F10 |
 | FR-09 | Scheduled monthly run with a completion notification and failure alerts | Must | F11 |
 | FR-10 | Daily end-of-day momentum watcher with state diffing, confirmation, de-duplication and severity routing | Must | F12 |
 | FR-11 | Daily event watcher for filings (results/concalls, insider trades, pledges, auditor/KMP exits, ratings, surveillance lists) | Should | F13 |
 | FR-12 | Qualitative agent (Claude Agent SDK, MCP tools only) on BSE-filed transcripts (via Screener's Concalls list), thesis-aware, with exact-quote citations; the LLM can only flag thesis breaks | Should | F06 |
-| FR-13 | Two-list watchlist auto-curation with approvals | Should | F14 |
+| FR-13 | Two-list watchlist auto-curation with approvals *(parked, D26; off by default)* | Could | F14 |
 | FR-14 | Streamlit app: review inbox (home), watchlist review, holdings editor with thesis form, stock detail, dashboard | Should | F15 |
 | FR-15 | Market-context layer (valuation bands, VIX, flows, breadth) feeding regime and MoS | Should | F16 |
 | FR-16 | Devil's-advocate agent for every BUY/SELL | Could | F07 |
@@ -139,7 +139,7 @@ Detailed acceptance criteria are in **08_FEATURE_SPEC.md** (feature IDs in brack
 | FR-24 | Two-way notifications: Telegram buttons (approve / reject / snooze, useful / noise, mute) and read-only commands, all audited; routing per ADR-008 | Should | F11 |
 | FR-25 | Thesis tracking: a structured thesis per stock with status INTACT / WATCH / BROKEN from metric checks and concall evidence (the AI only flags), a timeline, and alerts | Must (core) / Should (concall-driven) | F23 |
 | FR-26 | MCP server `parakh-mcp`: read, propose, notify and job-request toolsets over the services; resources and prompts; every call audited; masking by default; no approve, edit or delete tools (plan 15 §4) | Must (read toolsets) / Should (propose, notify, jobs) | F24 |
-| FR-27 | Agent roster on the Claude Agent SDK behind `AgentRunner`: Monthly Reviewer, Event Triage and Watchlist Curator, plus F06/F07 migrated to MCP tools; allow-listed tools, turn and token limits, Pydantic outputs (plan 15 §5–6) | Should | F25 (F06, F07) |
+| FR-27 | Agent roster on the Claude Agent SDK behind `AgentRunner`, run under an **orchestrator** that plans and a plain-code dispatcher that validates (F28, plan 15 §5b): Monthly Reviewer, Event Triage, Portfolio Analyst (F29), Qualitative and Devil's advocate (Watchlist Curator parked), plus F06/F07 migrated to MCP tools; allow-listed tools, turn and token limits, Pydantic outputs (plan 15 §5–6) | Should | F25 (F06, F07) |
 | FR-28 *(v1.9)* | Consensus and results context: forward P/E on consensus estimates where coverage exists, results-day note vs consensus, reverse-DCF sensitivity grid, key-debate block (agent-drafted, owner-confirmed); no own forecasts | Could (backlog; decided at the M1 review) | F26 |
 | FR-20 | Future: concall Q&A (RAG), animated pages (React), additional lenses, remote MCP access, own forecast models for up to 5 holdings (only if missed after 3 live months, D23) | Won't (v1) | F20 |
 
@@ -155,8 +155,8 @@ Detailed acceptance criteria are in **08_FEATURE_SPEC.md** (feature IDs in brack
 | NFR-04 | Reliability | Idempotent runs; retries with backoff; failure alerts; weekly heartbeat; holiday-aware |
 | NFR-05 | Security and privacy | Private repo; secrets in AWS SSM via GitHub OIDC (ADR-009) / `.env` locally; PAN, names, addresses and DP/client IDs from CAS never stored, logged or sent to an LLM; holdings encrypted (sops/age) and RLS in Supabase; UI never public; notifications and share exports mask quantities and ₹ amounts by default; the bot answers only the owner's chat |
 | NFR-06 | Maintainability | Plan 04 §3 standards: ID-anchored traceability, docstrings with formula/pitfalls, unit-suffixed names, ruff + pyright + pre-commit, generated catalogues, ADRs, CLAUDE.md/AGENTS.md |
-| NFR-07 | Performance | Full mid-cap run < 20 min; daily watcher < 5 min; UI pages < 2 s with caching |
-| NFR-08 | Cost | Free tiers by default; LLM token budget per run with a hard stop; LLM only for Tier A |
+| NFR-07 | Performance | Coverage-set run < 20 min; daily watcher < 5 min; UI pages < 2 s with caching |
+| NFR-08 | Cost | Free tiers by default; LLM token budget per run with a hard stop; LLM only for the coverage set (never the panel) |
 | NFR-09 | Compliance | Respect data-source terms of use; prefer exports and APIs over scraping; personal-use disclaimer on every report |
 | NFR-10 | Portability | Storage behind a repository interface (DuckDB ↔ Supabase); UI behind a service layer (ADR-006) |
 | NFR-11 | Auditability | 100% of runs have START/END events; 100% of state changes and verdict changes have an audit event; the audit store is append-only and tamper-evident (hash chain + daily git anchor); audit writes are never lost (outbox) |
@@ -234,9 +234,9 @@ All decisions are logged in **plan 13 §2**. This section used to list them; it 
 
 - [ ] 3 consecutive monthly runs completed unattended, with notifications
 - [ ] Daily and event watchers live for ≥ 4 weeks with zero duplicate alerts
-- [ ] Full universe of ≥ 1 cap scored; Tier A deep dives for holdings + both watchlists
+- [ ] Every holding scored and deep-dived; benchmark panel loaded (prices only); orchestrator plans validated with no unexplained rejection
 - [ ] Holdings reflected in verdicts, alerts and the segment summary
-- [ ] Watchlist review completed via the Streamlit page at least once
+- [ ] `holdings.v1` and `insights.v1` contract tests green (plan 18)
 - [ ] One monthly review done end to end from the review inbox; AppTest, tri-state and redaction tests green (plan 14 L5/L6)
 - [ ] **UAT-5 signed** (plan 14 §7): all of the above verified in a recorded session; 0 open S1/S2
 - [ ] Golden tests and lens contract tests green in CI; catalogues generated

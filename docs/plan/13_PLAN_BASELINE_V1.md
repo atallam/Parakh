@@ -1,6 +1,6 @@
 ---
 title: Parakh — Plan Baseline v1.0 (locked)
-version: 1.28 (Phase 5 build closed 2026-10-11, §8.0e: ADR-012 decided (keep local); lease double-count fix, TTM lease cost and the document-input loader in PR #35, UAT-0 oracle change awaits your re-sign; v1.27: F27 document search added to the backlog; v1.26: D9 amended: small = AMFI ranks 251-500; v1.25: Phase 4 built, 09 status row; v1.24: BL-01 done: AWS account ready, OIDC role and Parameter Store loader written; v1.23: Phase 3 built, §8.0d; v1.22: UAT-0 and UAT-1 added to the prep backlog as BL-05 and BL-06; v1.21: Phase 1 built and loaded, §8.0c; order book and offer-document financials move to the Phase 2 document work; pilot is 4 Large, 1 Mid, 2 Small by AMFI; v1.20: all Phase 0.5 spikes closed; BL-02/03/04 done; v1.19: Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
+version: 1.30 (D29 Drishti frozen read-only, D30 panel breadth all caps, My Watchlist and curated peers deferred to the M1 review; v1.29: D26 holdings-only coverage with a price-only benchmark panel, D27 agents on an orchestrator, D28 integration seam for WealthLens Hub and other tools: decisions, §4.5, §8.0f rework status, BL-08…BL-10; D22 wording aligned with the 11 Oct decision to keep remote access a conditional Phase 6 candidate; v1.28: Phase 5 build closed 2026-10-11, §8.0e: ADR-012 decided (keep local); lease double-count fix, TTM lease cost and the document-input loader in PR #35, UAT-0 oracle change awaits your re-sign; v1.27: F27 document search added to the backlog; v1.26: D9 amended: small = AMFI ranks 251-500; v1.25: Phase 4 built, 09 status row; v1.24: BL-01 done: AWS account ready, OIDC role and Parameter Store loader written; v1.23: Phase 3 built, §8.0d; v1.22: UAT-0 and UAT-1 added to the prep backlog as BL-05 and BL-06; v1.21: Phase 1 built and loaded, §8.0c; order book and offer-document financials move to the Phase 2 document work; pilot is 4 Large, 1 Mid, 2 Small by AMFI; v1.20: all Phase 0.5 spikes closed; BL-02/03/04 done; v1.19: Phase 0.5 spikes done, §8.0b; backlog BL-02…BL-04; v1.18: Phase 0 build done on branch phase-0, PR #1, CI green; docs/plan in the repo is now the canonical copy; v1.17: D10 amended: repo inside the OneDrive Stock Analysis folder, venv kept outside; Phase 0 scaffold done; v1.16: AWS account setup moved to the prep backlog as BL-01, not blocking until Phase 3; Phase 0 started 28 Sep; v1.15: D23 systematic engine, not sell-side research; D24 pilot sector profiles + limited history before M1; D25 scope freeze; v1.14: scaffold rebuilt with the parakh profile; v1.13: agentic, MCP-first: D20–D22, P2 reworded, §4.4 consequences, plan 15 added; v1.12: Telegram bot live; v1.11: Docker installed; v1.10: tools installed; v1.9: Python via uv; v1.8: week-1 prep progress; v1.7: D19 private files in OneDrive; v1.6: CAS saved; move out of OneDrive; v1.5: golden stocks confirmed; v1.4: pilot list and golden proposal; v1.3: readability pass: plain README, 08 Part A, F23; v1.2: one-owner pass: dates → 09, SLOs → 07 NFR-14, phase column removed; v1.1: docs restructured; plan 14 added; defaults D17/D18; §5 now points to 09)
 date: 2026-09-24
 owner: Avinash Tallam
 status: LOCKED. This is the plan of record; changes follow §6
@@ -21,7 +21,7 @@ supersedes: the open-decision lists in 00 §10 and 07 §12 (now resolved here)
 
 ---
 
-## 2. Decision log (all open decisions closed on 2026-09-24; D17–D18 added in v1.1, D19 in v1.7, D20–D22 in v1.13, D23–D25 in v1.15)
+## 2. Decision log (all open decisions closed on 2026-09-24; D17–D18 added in v1.1, D19 in v1.7, D20–D22 in v1.13, D23–D25 in v1.15, D26–D28 in v1.29)
 
 | ID | Decision | Locked choice | Where it's applied |
 |---|---|---|---|
@@ -33,7 +33,7 @@ supersedes: the open-decision lists in 00 §10 and 07 §12 (now resolved here)
 | D6 | Scheduler | **ADR-003 accepted**: GitHub Actions in a private repo; Windows Task Scheduler as fallback; a self-hosted runner on your PC if NSE blocks cloud IPs | 03 §2, 04 |
 | D7 | Concall source | **Screener's Concalls list → BSE-filed transcript PDF** (verified working 2026-09-24), porting Drishti's extraction and validation pipeline; concall.in optional | 08 F06, 09 Phase 0.5, archive/11 §3 |
 | D8 | Holdings source | **CAS statement (NSDL/CDSL)**, parsed locally; a one-time cost-basis seed, plus CLI entries for trades between statements (§4.1) | 05 §2, 08 F03 |
-| D9 | Small-cap universe | **Nifty Smallcap 250 only** | 05 §1, 08 F01 |
+| D9 | Small-cap universe | **Nifty Smallcap 250 only** *(amended 10 Oct 2026: small = AMFI ranks 251-500; amended again by D26: the AMFI lists are a price-only benchmark panel, not a coverage set)* | 05 §1, 08 F01, 17 |
 | D10 | Repo location | *(amended 28 Sep 2026, your choice)* **`Stock Analysis\parakh`** inside the OneDrive folder (was `C:\dev\parakh`). The repo is a subfolder so `.env`, the CAS PDFs and FRAMEWORK stay out of git; the code finds `..\.env` itself. Accepted risk: OneDrive sync can lock or conflict files in `.git` during commits. Guard rails: the virtual environment lives **outside OneDrive** (`UV_PROJECT_ENVIRONMENT=C:\Users\atall\.venvs\parakh`), GitHub is the source of truth (push after each session), and if sync conflicts appear the repo moves back to `C:\dev\parakh`. Reports are published into the `Stock Analysis` folder | 04 §4 #11, 09 |
 | D11 | Storage | **Supabase from Phase 1** for operational tables (dedicated `parakh` project); Parquet + DuckDB for prices and analytics, with Parquet kept in Supabase Storage for cloud runs (§4.2). ADR-004 amended | 04, 05 §3, 09 |
 | D12 | Hurdle rate | **15%** expected CAGR for a value BUY | 01 §11, 08 F04 |
@@ -43,13 +43,18 @@ supersedes: the open-decision lists in 00 §10 and 07 §12 (now resolved here)
 | D17 *(v1.1, default)* | Staging / shadow environment | A **`staging` schema in the `parakh` Supabase project**, with its own database role that can't write `public`. A second Supabase project only if a free slot exists or you move to Pro. *Default; change it if you disagree* | 14 §3 |
 | D18 *(confirmed 27 Sep 2026)* | Golden test stocks | **HDFCBANK** (bank), **INDIGO** (cyclical), **M&M** (standard non-financial profile, standing in for a compounder). These are the only pilots with 10+ years of listed history. Frozen as of 30 Oct 2026 (M1's as-of date); expected values come from an independent Excel oracle that you sign (UAT-0) | 14 §4.1 |
 | D19 *(27 Sep 2026)* | Where your private files live | The CAS PDFs (`Stock Analysis\FILES FOR ANALYSIS\`) and `.env` (`Stock Analysis\.env`) **stay in OneDrive**, by your choice. Accepted risk: both sync to Microsoft's cloud and to every device on your account, and the password sits beside the file it opens. Guard rails: the code reads both through configured paths (`PARAKH_ENV_FILE`, `cas.inbox_dir`), so neither is ever inside the repo (`.env` stays git-ignored and gitleaks still runs); the `Stock Analysis` folder is never shared as a whole, only single reports through the redacted `share` export; keep 2-step verification on your Microsoft account | 05 §4, P6 |
-| D16 | Drishti | Outside Parakh's scope. Parakh reuses its code and ideas per the archived plan 11; the Drishti app's own future isn't decided here | archive/11 |
+| D16 | Drishti | *Superseded by D29.* Outside Parakh's scope; Parakh reuses its code and ideas per the archived plan 11 | archive/11 |
 | D20 *(27 Sep 2026)* | Agentic design | **MCP-first (ADR-010).** One `parakh-mcp` server over the services is the only way agents reach data or state. Scoring and the watchers stay deterministic code workflows; agents do the judgement work (review, qualitative reading, counter-arguments, event triage, watchlist curation) and **only propose**. No approve, edit or delete tools | 15, 00 §7, 03, 04, 06, 07, 08 F24/F25, 09, 10, 12, 14 |
 | D21 *(27 Sep 2026)* | Agent runtime | **Claude Agent SDK (ADR-011)**, only through the `AgentRunner` interface; built-in tools disabled; a recorded deviation from the SCAIX LangGraph default | 15 §6, 04 |
-| D22 *(27 Sep 2026)* | MCP transport | **Local stdio only (ADR-012)**: on your PC (Claude Desktop, Claude Code) and inside job runners; no network listener. **Phase 5 review done 11 Oct 2026: kept local, no remote access planned (ADR-012 accepted); reopen only if two months of real use shows a need** | 15 §7, 09 Phase 5 |
+| D22 *(27 Sep 2026)* | MCP transport | **Local stdio only (ADR-012)**: on your PC (Claude Desktop, Claude Code) and inside job runners; no network listener. **Phase 5 review done 11 Oct 2026: kept local for the first release (ADR-012 accepted); inbound remote access is a conditional Phase 6 candidate, asked at the M1 review with the Hub contract, or after two months of real use** | 15 §7, 09 Phase 5 |
 | D23 *(28 Sep 2026)* | What Parakh is | **A systematic engine held to institutional rigour, not a sell-side research product.** The same rules on observable data for every stock; the right valuation framework per sector; sourced numbers; honest unknowns. **Not built:** own earnings forecasts, 12-month price targets, formal ratings. The "what's priced in" answer is the reverse DCF and expected return vs the 15% hurdle (D12). Consensus and results context is backlog item **F26**; own forecasts for up to 5 holdings are a post-v1.0 option (F20), only if missed after 3 live months. Why: coverage maths (≈ 500 stocks, 8–10 h/week), consistency over narrative, and SEBI Research Analyst exposure | 00 §1, 07 §3.2, 08 F26/F20 |
 | D24 *(28 Sep 2026)* | Pilot frameworks before M1 | **Correctness, not new scope.** Before M1, the value lens gets the profiles the pilot needs (airline/lease-heavy for INDIGO, conglomerate SOTP for M&M, order-book for MAZDOCK, capital-market intermediary for GROWW, new-age/pre-profit for ATHERENERG and SHADOWFAX) and both lenses get limited-history rules (history classes H0–H2; per-measure minimum sessions). A lens without enough history is **informational**, and the verdict says "limited history" | 01 §3, 02 §3.9, 00 §5, 08 F04/F05, 09 Phases 1–2, 14 §4 |
 | D25 *(28 Sep 2026)* | Scope freeze | **From Mon 28 Sep 2026 until the M1 review, no new scope.** Every new idea becomes a backlog item (F20+ or a GitHub Issue). The backlog, including F26, is reviewed once, right after UAT-1. The test for any proposal: **does it change a decision I make with money, at the frequency I actually make it?** | §6, 09 §5, 14 §7.2 |
+| D26 *(14 Oct 2026)* | Coverage: holdings only | **Parakh analyses only the stocks you own** (open lots from the CAS import; the three golden stocks stay as test fixtures). The AMFI Large, Mid and Small lists stay as a **price-only benchmark panel** for cross-sectional maths (RS percentile, momentum z-score, breadth) and can never reach alerts, agents or reports. Index-level benchmarks (levels, total return, P/E, P/B, yield) are **borrowed from NSE Indices**; nothing is bought. There is no Tier B or C: no fundamentals, verdicts, alerts or LLM calls for stocks you do not own. System Watchlist, Watchlist Curator and discovery are parked behind flags. The value lens is reported as not calibrated on a universe. ADR-013 | 17, 05 §1, 06, 08 F01/F10/F14, 09 |
+| D27 *(14 Oct 2026)* | Agents run on an orchestrator | **`AGENT.orchestrator` plans the judgement work and a code dispatcher runs the plan through specialist agents** (qualitative, devil's advocate, event triage, portfolio analyst, monthly reviewer). The plan is a validated `RunPlan`; the dispatcher checks it against the registry, the coverage set, the facts in `what_changed` and the budgets. Documents never reach the orchestrator. Scoring, watchers and propose-only writes are unchanged (AG-02, AG-03); linear mode stays as the fallback and is what M2 relies on. Amends D20 narrowly. ADR-014 | 15 §5b, 08 F25/F28/F29, 09 |
+| D28 *(14 Oct 2026)* | Integration seam for WealthLens Hub and other tools | **Versioned, ISIN-keyed contracts** `holdings.v1` (in) and `insights.v1` (out, masked) behind `HoldingsProvider` and `InsightPublisher` interfaces. Default exchange: read-only database views with scoped roles, never a shared service key. Single writer: Hub owns holdings, Parakh owns analysis. CAS (D8) stays Parakh's source through GA; the live Hub link comes after GA behind flags. Remote MCP stays a conditional Phase 6 candidate (D22). ADR-015 | 18, 05 §2, 08 F30, 09 |
+| D29 *(14 Oct 2026)* | Drishti disposition | **Freeze Drishti 2.0 as a read-only archive; do not merge or extend it.** Tag its final state, add a "superseded by Parakh" note to its README, no data migration. Parakh is repositioned around "is the story I bought still true?" and takes the four reuse items in plan 18 Part II (allocation as context, evidence-first reasons, since-purchase panel, edge-case tests). FX logic is kept as a reference for any future US pack | 18 Part II, 15, 09 R7 |
+| D30 *(14 Oct 2026)* | Panel breadth; deferred items | **Benchmark panel covers all caps**: the AMFI Large, Mid and Small lists (about 498 stocks), prices only. **My Watchlist** and **curated peers** are not decided now; both are revisited at the M1 review, and My Watchlist stays off until then | 17 §9, 16, 09 |
 
 ---
 
@@ -126,6 +131,16 @@ Every Production item that a *manual* run doesn't need has moved to Phases 3–4
 
 ---
 
+### 4.5 Consequences of the narrowing, orchestrator and integration decisions (D26–D28)
+
+- **Scope.** About 490 stocks leave fundamentals, verdicts, alerts and agents. What stays for them is prices, used for percentiles and breadth. The Mid rollout already running in config becomes a price-only panel stage (plan 17 R2, R5).
+- **Phases 3 to 6 are reworded.** Plan 09 §1b places ten rework items (R1 to R10) in the phases and rewrites the Phase 4 goal, tasks and exit gate; Phases 0 to 2 keep their built status and gain only the rework rows that apply to them.
+- **Milestones do not move.** M1 stays on the 7 pilots. M2 does not depend on the orchestrator: it ships in shadow and the linear agent path is what the first unattended runs use. M3 becomes the first full holdings run with case files in Streamlit.
+- **Time.** About 40 to 50 hours of rework over Phases 2 to 4 (estimate; plan 09 §1b), of which the orchestrator is 12 to 16 and the holdings-only split 6 to 8. It competes with M1 preparation (BL-05 to BL-07), so only R1, R2 and the R3 spike are placed before M1. If capacity drops, the pre-agreed slip rule (§4.3) applies; the orchestrator slips before any M2 item does.
+- **What gets simpler.** Fewer exports, a shorter monthly run (NFR-07 is re-based on the coverage set), a review inbox that holds only your stocks, no Tier B shadow noise.
+- **What is lost, knowingly.** Discovery, universe-wide value percentiles and value-lens calibration (plan 17 §7).
+- **Unchanged.** The numbers firewall (NFR-02), human approval (D13, ADR-005), propose-only agents (AG-03), the audit trail, local stdio MCP (ADR-012), CAS as the holdings source through GA (D8).
+
 ## 5. The plan at a glance
 
 Dates, phase contents and exit gates live only in **plan 09**. The Production items (P1–P10) show their phase in the §3 table, and the test gates per phase are in **plan 14 §9**.
@@ -154,6 +169,8 @@ Dates, phase contents and exit gates live only in **plan 09**. The Production it
 | 04 Engineering | 0.8 | 11 Drishti review | 1.2 |
 | 05 Storage & holdings | 0.7 | 12 UI/UX design | 1.1 |
 | 06 Watchlist | 0.5 | **13 Baseline (this)** | **1.0** |
+
+*Added after the baseline: 15 (agentic and MCP, 27 Sep), 16 (M1 agenda and backlog notes, staging), 17 (coverage model and benchmarks, D26), 18 (integration and reuse, D28).*
 
 ---
 
@@ -292,6 +309,23 @@ Built on branch `phase-3`. **Not closed:** shadow mode has not started; it begin
 2. **Lease cost** is now the sum of four consecutive filed quarters of aircraft and engine rentals (TTM), not one quarter.
 3. **Document inputs** have a loader (`config/document_inputs.yaml`): source, tier (T1/T2 only) and as-of date per value, point in time, used only after you set `verified: true`. All shipped values are unverified, so no score moves until you check them. `MET.value.order_cover` now derives from the order book and TTM sales.
 
+### 8.0f D26–D28 rework status *(14 Oct 2026)*
+
+Planned, not built. This section records what was decided and what exists; plan 09 §1b owns the placement of each item.
+
+| Item | Status |
+|---|---|
+| R1 Plan documents and ADR-013 to ADR-015 | ✅ Written 14 Oct (plans 04, 05, 06, 07, 08, 09, 10, 12, 13, 14, 15, 17, 18, README) |
+| R2 Coverage set and benchmark panel split | ⏳ Not started. Note: `universe.yaml` has `rollout: mid`, so the watchers already scan about 154 names |
+| R3 NSE benchmark pack | ⏳ Not started. Only the constituent CSVs are wired; the valuation loader does not exist |
+| R4 Onboard holdings outside the pilot | ⏳ Not started. You own 11 stocks and 1 ETF; the pilot has 7 stocks |
+| R5 Price-only panel stages (Large, Small; shallower history) | ⏳ Not started. Mid price backfill is the first stage |
+| R6 Orchestrator, dispatcher, case files | ⏳ Not started. Specialist agents exist (`agents/`), run linearly in shadow |
+| R7 Portfolio Analyst and allocation context (Drishti items 1 to 4) | ⏳ Not started |
+| R8 Contracts and providers (`holdings.v1`, `insights.v1`) | ⏳ Not started |
+| R9 Hub integration live | ⏳ After GA |
+| R10 Calibration framing | ⏳ With Phase 5 follow-up |
+
 ### 8.1 Prep backlog
 
 Setup tasks that are pending but don't block the current phase. Feature ideas still go to F20+ (D25).
@@ -305,6 +339,10 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 | BL-05 | **UAT-0:** review the oracle workbook (`Stock Analysis\ORACLE\golden_expected.xlsx`): formulas in words, a few cells per stock, the COMPARE sheet; then sign. About 45 minutes. Record: `docs/uat/UAT-0_2026-10-03.md`. Also open: INDIGO lease inputs, M&M SOTP inputs, bank asset-quality inputs, momentum and DMA oracle on the frozen 30 Oct prices | Before the golden freeze (30 Oct 2026) and UAT-1 | Open; owner decisions on F1–F3 made 3 Oct; reminder runs daily until signed |
 | BL-06 | **UAT-1:** review the 7 pilot reports against the plan 14 §7.3 rubric (R1–R6), then the D25 backlog review. Up to 90 minutes. Record: `docs/uat/UAT-1_<date>.md`. Starts after BL-05 and the open Phase 2 inputs | M1 (8 Nov 2026) | Open; reminder runs daily until signed |
 | BL-07 | **Verify the document inputs** in `config/document_inputs.yaml` against the source PDFs (MAZDOCK order book, HDFCBANK GNPA/NNPA/NIM/CAR/CASA), then set `verified: true`; decide the HDFC NIM basis and the GROWW cost-to-income definition. Open: M&M unlisted book value and standalone net debt/equity, INDIGO Q1 FY27 lease liabilities | Before the golden freeze (30 Oct 2026) | Open |
+| BL-08 | ~~Decide the Drishti disposition~~ Decided as D29 (freeze read-only, no migration). Remaining action: tag Drishti's final state and add the README note | Before R7 | Decided |
+| BL-11 | **Revisit My Watchlist and curated peers** (D30; plan 17 §9 items 1 and 4) together with the fund-lens question in plan 16 | M1 review | Open |
+| BL-09 | **Hub-side asks** (plan 18 §6, H1 to H4): the `parakh_holdings_v1` view and read-only role, an Advisor tool reading `parakh_insights_v1`, and the overlap decisions in plan 18 §7. Add them to Hub's own backlog when R9 is scheduled | Before R9 (after GA) | Open |
+| BL-10 | **Benchmark access spike** (plan 17 R3): can a GitHub runner fetch NSE Indices valuation series, what do the terms allow, and which sector indices have P/E, P/B and yield history. Decides whether the loader is built or the sector comparison is shown as "not available" | Before M1, if capacity allows | Open |
 
 ---
 
@@ -312,7 +350,9 @@ Setup tasks that are pending but don't block the current phase. Feature ideas st
 
 | Version | Date | Change |
 |---|---|---|
-| 1.28 | 2026-10-11 | **Phase 5 build closed (§8.0e).** ADR-012 decided: keep MCP local (D22 updated); remote access dropped from Phase 6 unless real use shows a need. UAT-0 input pack: the INDIGO lease double count, TTM lease cost and the document-input loader are fixed in PR #35; the oracle change needs your re-signature. BL-07 added. Version: 13 1.28 |
+| 1.30 | 2026-10-14 | **Owner decisions on the narrowing.** D29: Drishti frozen read-only, not merged. D30: benchmark panel covers all caps (AMFI Large, Mid and Small); My Watchlist and curated peers are revisited at the M1 review (BL-11). BL-08 closed. Versions: 00 1.6, 03 1.1, 04 1.1, 05 0.14, 06 0.8, 07 1.10, 08 1.10, 09 1.21, 10 1.1, 12 1.5, 13 1.30, 14 1.7, 15 1.2, 16 (staging), 17 1.1, 18 1.1, README |
+| 1.29 | 2026-10-14 | **D26–D28 applied to the plan.** D26 holdings-only coverage with a price-only benchmark panel and borrowed NSE index benchmarks (new plan 17, ADR-013); D27 agents on an orchestrator with a code dispatcher (plan 15 v1.2 §5b, ADR-014); D28 integration seam for WealthLens Hub and other tools (new plan 18, ADR-015). Phases reworded in plan 09 (§1b, R1 to R10). D9 note added; D22 wording aligned with the 11 Oct decision (remote access stays a conditional Phase 6 candidate). BL-08 to BL-10 added; §4.5 and §8.0f added. Versions: 00 1.6, 03 1.1, 04 1.1, 05 0.14, 06 0.8, 07 1.10, 08 1.10, 09 1.20, 10 1.1, 12 1.5, 13 1.29, 14 1.7, 15 1.2, 16 (staging), 17 1.0, 18 1.0, README |
+| 1.28 | 2026-10-11 | **Phase 5 build closed (§8.0e).** ADR-012 decided: keep MCP local (D22 updated); remote access stays a conditional Phase 6 candidate (asked at the M1 review). UAT-0 input pack: the INDIGO lease double count, TTM lease cost and the document-input loader are fixed in PR #35; the oracle change needs your re-signature. BL-07 added. Version: 13 1.28 |
 | 1.27 | 2026-10-11 | **F27 added to the backlog** (document search over cached transcripts and filings; keyword first, embeddings only if needed). Not built before the M1 review: the Qualitative agent reads one transcript in full, in parts. Version: 08 1.9, 13 1.27 |
 | 1.26 | 2026-10-10 | **D9 amended.** Small caps for the staged scale-up are AMFI ranks 251–500 (NSE-listed), not the Nifty Smallcap 250, so one AMFI file fills Large, Mid and Small: `parakh universe import --amfi FILE`. BSE-only stocks are skipped (30 Jun 2026 list: MCX and Abbott India, so Mid is 148). Version: 13 1.26 |
 | 1.25 | 2026-10-10 | **Phase 4 built.** P3 (prompt rollback), P4 (LLM failure alert) and P5 (500-stock mocked-LLM dry run, 429 test) implemented as tests, not as AC ids. Live steps (universe import, migration, Edge Function, priced eval) wait on your environment. Version: 13 1.25 |

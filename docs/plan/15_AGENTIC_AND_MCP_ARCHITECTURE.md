@@ -1,10 +1,10 @@
 ---
 title: Agentic & MCP Architecture — Parakh
-version: 1.1 (scaffold note: parakh profile done; v1.0: first version: MCP-first agent layer, Claude Agent SDK runtime, local stdio transport — plan 13 D20–D22)
+version: 1.2 (D27: agents run on an orchestrator: AGENT.orchestrator plans, a code dispatcher executes, new §5b, AG-09/AG-10, AGENT.portfolio_analyst, case files, ADR-014; Curator parked by D26; v1.1: scaffold note: parakh profile done; v1.0: first version: MCP-first agent layer, Claude Agent SDK runtime, local stdio transport — plan 13 D20–D22)
 date: 2026-09-27
 owner: Avinash Tallam
 parent: 00_MASTER_PLAN.md
-owns: the agent-facing design — principles AG-01…AG-08, the `parakh-mcp` server (toolsets, resources, prompts, permission tiers), the agent roster, the agent runtime contract (`AgentRunner`), transport and hosting, and the full text of ADR-010…012. Other docs link here instead of restating it (README fact owners)
+owns: the agent-facing design — principles AG-01…AG-10, the orchestrator and dispatcher (§5b), the `parakh-mcp` server (toolsets, resources, prompts, permission tiers), the agent roster, the agent runtime contract (`AgentRunner`), transport and hosting, and the full text of ADR-010…012 and ADR-014. Other docs link here instead of restating it (README fact owners)
 related: 03 (jobs and notification routing) · 04 (ADR index, repo layout, ID conventions) · 05 §4 (holdings privacy) · 06 (watchlist approvals) · 07 (FR-26/27, NFR-15) · 08 (F24, F25) · 09 (phase placement) · 10 §7 (LLM and agent governance, `AUD.MCP.*` / `AUD.AGENT.*`) · 12 §1, §9 (Claude as a surface) · 14 (tests L2, L5, L7)
 conventions: tools `TOOL.<toolset>.<name>` · agents `AGENT.<name>` · principles `AG-nn` · resources `parakh://…`
 ---
@@ -18,7 +18,8 @@ Parakh does its maths in ordinary, testable Python, the same as before. What cha
 - Everything Parakh knows and can do is exposed through **one MCP server, `parakh-mcp`**, as a set of well-described tools: "get this stock's snapshot", "what changed this month", "explain this verdict", "propose adding this stock to the watchlist".
 - **AI agents** (built on the Claude Agent SDK) use only those tools. They read, reason, write narrative and **propose**. They never compute a score, never change your holdings, theses or watchlists directly, and never pick who gets alerted.
 - **You** can use the same tools from Claude Desktop or Claude Code on your PC: "why did HDFCBANK drop to HOLD?", "what needs my attention this month?". Nothing new to learn; it's a conversation.
-- For now the server runs **only on your PC and inside the scheduled GitHub jobs**. It isn't reachable from the internet (D22). Remote access is revisited in Phase 5.
+- For now the server runs **only on your PC and inside the scheduled GitHub jobs**. It isn't reachable from the internet (D22). Remote access stays a conditional later candidate, decided at the M1 review.
+- **The agents work under an orchestrator** (D27). `AGENT.orchestrator` looks at what changed across your holdings, decides which specialist agents are worth running on which stock, and hands the plan to a small piece of ordinary code (the dispatcher) that checks it against the rules and runs it. The specialists read, reason and propose; the orchestrator plans and summarises. Scores and verdicts are still computed by plain code first (§5b).
 
 ---
 
@@ -34,6 +35,8 @@ Parakh does its maths in ordinary, testable Python, the same as before. What cha
 | Audit of every step and change (ADR-007) | Every tool call and agent run is audited too (`AUD.MCP.*`, `AUD.AGENT.*`, 10 §4) |
 | Notification routing, de-duplication, cool-downs, masking (03, ADR-008) | Enforced **inside** the `notify.*` tools, so an agent can't get around them (AG-05) |
 | — | The Claude push lane for the monthly narrative review is replaced by the Monthly Reviewer agent's output on Telegram + email (ADR-008 amended, §5) |
+| Agents are triggered by fixed rules, one job per agent | An **orchestrator** plans the judgement work per run and a **dispatcher** executes the plan under the same allow-lists, budgets and audit; a linear fallback mode keeps the rules-based path (§5b, ADR-014) |
+| Agents cover the universe (Tier A, B, C) | Agents cover the **coverage set** (your holdings) only; the Watchlist Curator is parked (plan 17, D26) |
 
 ---
 
@@ -42,13 +45,15 @@ Parakh does its maths in ordinary, testable Python, the same as before. What cha
 | ID | Principle | What it means in practice |
 |---|---|---|
 | **AG-01** | **Tools are the only door** | Agents get no filesystem, shell, web or database access. Their allowed tools are `mcp__parakh__*` only, set per agent (§6.2) |
-| **AG-02** | **Workflows where the path is known, agents where judgement is needed** | Scoring, watchers, rendering and publishing are code. An agent is used only where reading, weighing or writing prose is the job |
+| **AG-02** | **Workflows where the path is known, agents where judgement is needed** | Scoring, watchers, rendering and publishing are code. An agent is used only where reading, weighing or writing prose is the job. *Which* judgement work is worth doing on a given run is itself a judgement, and belongs to the orchestrator (AG-09) |
 | **AG-03** | **Agents propose; you decide** | Tools that would change your state are `propose_*` tools. They write a proposal row and nothing else. Approval happens in Streamlit, Telegram or the CLI, never through MCP |
 | **AG-04** | **Deterministic under the hood** | Every tool is a thin wrapper over a service. The same call through MCP, the CLI or Streamlit returns the same numbers (tested at L2, plan 14) |
 | **AG-05** | **Policy lives in the server** | Routing, de-duplication, cool-downs, masking, rate limits and budgets are enforced by the tool, never trusted to the agent's instructions |
 | **AG-06** | **Untrusted content stays data** | Transcripts, filings and news come back in an `untrusted_content` field with provenance. Tools that act (notify, jobs) accept only IDs and enums, never free text, so injected text can't reach a message or trigger an action |
 | **AG-07** | **Private by default** | Holdings come back masked (weights and %, no quantities or ₹) unless the caller is the owner's local client and asks for detail. CAS data is never reachable through any tool (P6) |
 | **AG-08** | **Bounded and observable** | Every agent has a turn limit, a token budget, a pinned model and prompt version, and a trace. Running out means "pending", not "guess" |
+| **AG-09** | **Agents are planned, then dispatched** | The orchestrator never calls a specialist directly. It returns a `RunPlan` (a Pydantic object) and the dispatcher validates it against the registry, the coverage set, the facts in `what_changed` and the budgets, then runs it. A plan is data: it is audited, replayable and testable with `FakeRunner` |
+| **AG-10** | **Untrusted text stays at the leaves** | Documents (transcripts, filings, news) enter only the specialists that must read them. The orchestrator sees structured, schema-validated specialist outputs and snapshot facts, never raw document text, so injected text cannot steer the plan |
 
 ---
 
@@ -60,7 +65,8 @@ Parakh does its maths in ordinary, testable Python, the same as before. What cha
   Agents (Claude Agent SDK, via AgentRunner)                   ─ Streamlit app (ADR-006)
    AGENT.monthly_reviewer   AGENT.qualitative                  ─ Telegram bot + listener
    AGENT.devils_advocate    AGENT.event_triage                 ─ CLI (parakh …)
-   AGENT.watchlist_curator
+   AGENT.portfolio_analyst   AGENT.watchlist_curator (parked, D26)
+   AGENT.orchestrator ──► RunPlan ──► dispatcher (code) ──► the specialists above (§5b)
   You, interactively: Claude Desktop · Claude Code (stdio)
                  │  MCP (stdio, local only — ADR-012)
                  ▼
@@ -81,9 +87,9 @@ Parakh does its maths in ordinary, testable Python, the same as before. What cha
 
 | Job (plan 03) | Workflow part (code) | Agent part |
 |---|---|---|
-| Monthly Analyst | Fetch → validate → metrics → lenses → policy → render → publish | Qualitative Analyst (Tier A) inside the run; Devil's Advocate on verdict changes; after publish, the Monthly Reviewer writes the narrative review and the Watchlist Curator writes proposals |
+| Monthly Analyst | Fetch → validate → metrics → lenses → policy → render → publish | After publish, the Orchestrator reads `what_changed` and writes a `RunPlan`; the dispatcher runs the specialists it chose (Qualitative per holding with a new transcript or a thesis flag, Devil's Advocate on a verdict change, Portfolio Analyst on the whole book); the Monthly Reviewer then writes the narrative review from the case files |
 | Daily Momentum Watcher | Unchanged, no agent | — |
-| Daily Event Watcher | Parse filings → match rules (E-codes) → de-duplicate | Event Triage reads new filings the rules flagged, summarises them, and may request a single-stock refresh or queue a 🔴/🟡 alert through `notify.*` |
+| Daily Event Watcher | Parse filings → match rules (E-codes) → de-duplicate | Event Triage reads new filings the rules flagged, summarises them, and may request a single-stock refresh or queue a 🔴/🟡 alert through `notify.*`. On a day with more than one flagged filing or any High-severity event, the orchestrator plans the triage; otherwise the job runs it directly |
 | Ad hoc | — | You, from Claude Desktop or Claude Code |
 
 ---
@@ -125,6 +131,9 @@ Permission tiers: **R** read-only · **P** propose (writes a proposal only) · *
 | `notify.queue(kind, isin?, event_id?, severity, template_id, vars)` | N | Queues a message. `template_id` and `vars` are enums and IDs; text is rendered from the plan 12 §6 templates, with ADR-008 routing, de-duplication, cool-downs and masking applied |
 | `jobs.request_refresh(isin, reason_code)` | J | Asks for a single-stock deterministic re-run (value + qualitative). At most 5 per day, and never during a monthly run |
 | `audit.get_run(run_id)` · `audit.search(filters)` | R | Run manifest, step ledger, audit events (masked) |
+| `reports.get_case_file(isin, period?)` | R | The case file for one holding: verdict, evidence, specialist outputs with their status (ok or pending), portfolio context, open proposals (§5b) |
+| `insights.get_v1(period?)` | R | The masked `insights.v1` records Parakh publishes (plan 18 §3.2); always masked, for every client |
+| `audit.get_run_plan(run_id)` | R | The orchestrator's `RunPlan`, the dispatcher's accept or reject notes, and each task's outcome |
 
 **Not exposed through MCP, on purpose:** approving or rejecting anything, editing holdings or theses, CAS import, config or weight changes, prompt promotion, publishing, deleting. Those stay with you in Streamlit, Telegram or the CLI (AG-03).
 
@@ -154,14 +163,123 @@ Permission tiers: **R** read-only · **P** propose (writes a proposal only) · *
 
 | Agent | Feature | Trigger | Tools (allow-list) | Can write | Output |
 |---|---|---|---|---|---|
-| **`AGENT.qualitative`** (Qualitative Analyst) | F06 | Monthly run for Tier A; event refresh on a new transcript | `data.get_document`, `data.get_fundamentals`, `portfolio.get_thesis`, `reports.get_history`, `portfolio.propose_thesis_flag` | P | Pydantic-validated scorecard, guidance records, exact-quote citations, thesis assessments. **Confidence ±1 level only** (AC-F06.1) |
-| **`AGENT.devils_advocate`** | F07 | Verdict changes and new Tier A BUY/SELL | `reports.get_stock`, `analytics.explain_verdict`, `data.get_document`, `reports.get_history` | — | 3 counter-points with citations or metric refs; can't change the verdict |
-| **`AGENT.monthly_reviewer`** | F25 | After the monthly publish step | `reports.*`, `analytics.explain_verdict`, `portfolio.positions`, `portfolio.get_thesis`, `portfolio.pending_approvals`, `data.quality`, `notify.queue` | N | "Top 5 things to look at": a short Telegram message and a full section in the monthly email (replaces the Claude scheduled-task review of 03 §3C) |
-| **`AGENT.event_triage`** | F25 | Daily Event Watcher, for filings its rules flagged | `data.get_document`, `reports.get_stock`, `portfolio.get_thesis`, `notify.queue`, `jobs.request_refresh` | N, J | A one-line summary per material filing and, where warranted, a refresh request or a queued 🔴/🟡 alert (severity capped by the E-code rule table in 03 §5b) |
-| **`AGENT.watchlist_curator`** | F25 | Monthly, after scoring | `reports.segment_summary`, `reports.get_stock`, `portfolio.pending_approvals`, `portfolio.propose_watchlist` | P | Watchlist proposals with reasons and evidence, on top of the rule-based suggestions in 06 §3. Capacity limits and minimum stays still apply |
+| **`AGENT.qualitative`** (Qualitative Analyst) | F06 | Scheduled by the orchestrator for a holding with a new transcript or a thesis flag; event refresh on a new transcript | `data.get_document`, `data.get_fundamentals`, `portfolio.get_thesis`, `reports.get_history`, `portfolio.propose_thesis_flag` | P | Pydantic-validated scorecard, guidance records, exact-quote citations, thesis assessments. **Confidence ±1 level only** (AC-F06.1) |
+| **`AGENT.devils_advocate`** | F07 | Scheduled by the orchestrator on a verdict change or a new ADD / EXIT on a holding | `reports.get_stock`, `analytics.explain_verdict`, `data.get_document`, `reports.get_history` | — | 3 counter-points with citations or metric refs; can't change the verdict |
+| **`AGENT.monthly_reviewer`** | F25 | Last step of an orchestrated run; receives the case files | `reports.*`, `analytics.explain_verdict`, `portfolio.positions`, `portfolio.get_thesis`, `portfolio.pending_approvals`, `data.quality`, `notify.queue` | N | "Top 5 things to look at": a short Telegram message and a full section in the monthly email (replaces the Claude scheduled-task review of 03 §3C) |
+| **`AGENT.event_triage`** | F25 | Daily Event Watcher, for filings its rules flagged; planned by the orchestrator on busy days | `data.get_document`, `reports.get_stock`, `portfolio.get_thesis`, `notify.queue`, `jobs.request_refresh` | N, J | A one-line summary per material filing and, where warranted, a refresh request or a queued 🔴/🟡 alert (severity capped by the E-code rule table in 03 §5b) |
+| **`AGENT.watchlist_curator`** | F25 | **Parked by D26** (`agents.watchlist_curator.enabled: false`); returns only if discovery is re-enabled | `reports.segment_summary`, `reports.get_stock`, `portfolio.pending_approvals`, `portfolio.propose_watchlist` | P | Watchlist proposals with reasons and evidence, on top of the rule-based suggestions in 06 §3. Capacity limits and minimum stays still apply |
+| **`AGENT.orchestrator`** (Orchestrator) | F28 | After the monthly publish step; the daily event batch on busy days; a thesis status change; `parakh agents run` | `reports.what_changed`, `reports.get_stock`, `analytics.explain_verdict`, `portfolio.positions` (masked), `portfolio.pending_approvals`, `data.quality`, `audit.get_run`. **No document, notify or job tools** | — | A validated `RunPlan` (what to run, on which holding, why, with what budget, and which holdings it skipped and why), then a `Synthesis` of the specialists' outputs: the top items, conflicts between specialists, and which proposals to raise |
+| **`AGENT.portfolio_analyst`** (Portfolio Analyst) | F29 | Scheduled by the orchestrator once per monthly run, and when a weight limit is breached | `portfolio.positions` (masked), `reports.get_stock`, `reports.get_history`, `analytics.explain_verdict`, `portfolio.propose_journal_entry` | P | Allocation context for the whole book: sector weights against your targets and limits, concentration (HHI, top 5), correlation clusters, tax-timing proximity. It writes context and proposals only; sizing refinements that change a verdict are a deterministic policy row, not this agent (plan 18 §12 item 1) |
 | **You** (Claude Desktop / Claude Code) | F24 | Whenever you ask | All R tools; P tools with the host's confirmation prompt | P | Conversation |
 
 Every agent has an **agent card** (`docs/agents/<agent>.md`, 10 §7) and an entry in the model inventory.
+
+---
+
+## 5b. The orchestrator and the dispatcher (ADR-014, D27)
+
+### The pattern: orchestrator-workers with a code dispatcher
+
+```
+ snapshot + what_changed (deterministic, already published)
+              │
+              ▼
+   AGENT.orchestrator  ── reads facts only (no documents, no notify, no jobs)
+              │  returns RunPlan  (Pydantic)
+              ▼
+   DISPATCHER (plain code)  ── validates → runs tasks in dependency order, in parallel where independent
+        │        │        │        │
+        ▼        ▼        ▼        ▼
+   qualitative  devils_    event_    portfolio_      each: own allow-list, budget, prompt pin,
+   (per holding) advocate  triage    analyst         output schema, audit; documents stay here
+        │        │        │        │
+        └────────┴────┬───┴────────┘
+                      ▼
+   CASE FILE assembler (plain code)  ── merges snapshot + specialist outputs per holding
+                      ▼
+   AGENT.orchestrator (second turn)  ── Synthesis: top items, conflicts, proposals to raise
+                      ▼
+   AGENT.monthly_reviewer  ── writes the Telegram and email text from the case files
+                      ▼
+   publish: reports, case files, insights.v1 (plan 18), notify.queue (routing applies)
+```
+
+### What each part owns
+
+| Part | Is | Decides | Cannot |
+|---|---|---|---|
+| Spine (plan 03, 04) | Code | Every score, verdict, signal and alert rule | Be changed by any agent |
+| Orchestrator | Agent | Which holdings need which specialist this run, in what order, with what share of the budget; which holdings can be skipped as quiet; which conflicts to flag | Call a specialist directly, read a document, send a message, request a refresh, approve anything, or change a number |
+| Dispatcher | Code | Whether a plan is acceptable, and how it is executed | Invent work the plan did not contain |
+| Specialists | Agents | How to do their one job well | Use tools outside their allow-list, or see another specialist's raw inputs |
+
+### The `RunPlan` and what the dispatcher checks
+
+```python
+class PlanTask(BaseModel):
+    task_id: str
+    agent_id: Literal[
+        "AGENT.qualitative",
+        "AGENT.devils_advocate",
+        "AGENT.event_triage",
+        "AGENT.portfolio_analyst",
+        "AGENT.monthly_reviewer",
+    ]
+    isin: str | None  # None only for whole-book tasks
+    reason_code: Literal[
+        "VERDICT_CHANGED",
+        "NEW_TRANSCRIPT",
+        "THESIS_FLAG",
+        "HIGH_SEVERITY_EVENT",
+        "WEIGHT_BREACH",
+        "LTCG_NEAR",
+        "REVIEW_DUE",
+        "SCHEDULED",
+    ]
+    depends_on: list[str] = []
+    budget_tokens: int
+
+
+class RunPlan(BaseModel):
+    run_id: str
+    trigger: Literal["MONTHLY", "EVENTS", "THESIS_CHANGE", "MANUAL"]
+    tasks: list[PlanTask]
+    skipped: list[SkippedHolding]  # isin + reason: every coverage-set holding is in a task or here
+    rationale: str  # at most 600 characters
+```
+
+The dispatcher rejects a task (and records `AUD.AGENT.PLAN_REJECTED`) unless all of these hold:
+1. `agent_id` is registered and enabled in `config/agents.yaml`; the task cannot add, widen or change tools.
+2. The ISIN is in the coverage set (D26).
+3. The `reason_code` is backed by a fact the dispatcher can look up (for example `NEW_TRANSCRIPT` needs a document hash not yet analysed; `VERDICT_CHANGED` needs a change in `what_changed`). The orchestrator cannot invent work.
+4. The task graph is acyclic, within the task cap, and the budgets fit the run budget.
+5. Every coverage-set holding appears in `tasks` or `skipped`, so a missed holding is visible rather than silent.
+
+### Case files
+
+A **case file** is the merged, per-holding record of one run: the snapshot (verdict, scores, evidence), each specialist's validated output with its status (`ok` or `pending`), the portfolio context, and open proposals. It is assembled by code, stored (`case_files`), shown in Stock Detail, and is the source of `insights.v1` (plan 18). A specialist that fails leaves its slot `pending`; the case file never guesses.
+
+### Triggers and modes
+
+| Trigger | Orchestrated when | Otherwise |
+|---|---|---|
+| Monthly publish | `agents.orchestrator.enabled` | Linear mode: the rule-triggered per-agent steps that already exist |
+| Daily event batch | More than one flagged filing, or any High severity | `AGENT.event_triage` runs directly on the flagged filing |
+| Thesis status change | WATCH or BROKEN on a holding | The existing alert and Home inbox item |
+| `parakh agents run` | Always | n/a |
+
+`agents.orchestrator.dry_run: true` (the default until promoted) writes the plan, the case files and the synthesis to `logs/agents_shadow.md` only. `agents.orchestrator.fallback: linear` runs the old path if the orchestrator fails or the plan is rejected as a whole, and sends a ⚠️.
+
+### Budgets and failure policy
+
+- A run budget is set in config. The orchestrator's two turns get a fixed slice; the rest is split across tasks by the plan, capped per agent by `config/agents.yaml`. The dispatcher enforces the caps, not the model.
+- A quiet month should produce a small plan: holdings with no trigger get no LLM task. Cost therefore follows what changed, not the number of holdings.
+- A failed or over-budget specialist becomes `pending` for that holding, counts toward the P4 alert, and the run continues.
+- Results are cached by ISIN, document hash and prompt pin (AC-F06.3), so re-running a plan costs nothing for unchanged inputs.
+
+### Tests and promotion
+
+Defined in plan 14 (L7 and L2): plan-quality evals on recorded `what_changed` fixtures (a quiet month yields a minimal plan; a verdict change schedules a devil's-advocate task; a new transcript schedules a qualitative task; a thesis flag takes priority), rejection tests (unregistered agent, ISIN outside the coverage set, unbacked reason code, cycle, budget overrun, missing holding), an injection test (hostile text in a specialist output cannot change the plan), and determinism of dispatch order. Promotion from shadow to live needs two shadow monthly runs in which you judged the plans right and the case files useful.
 
 ---
 
@@ -241,6 +359,8 @@ class AgentRunner(Protocol):
 | Holdings or PII leakage | AG-07: masked by default; `detail: true` refused for agents; CAS never reachable; redaction applies to tool outputs and logs (10 §10) |
 | Agents drifting from their job | Allow-list per agent; `AUD.MCP.TOOL_DENIED` on any refused call; agent cards; L7 trajectory evals |
 | MCP and CLI disagreeing | AG-04 equivalence test at L2 (plan 14) |
+| The orchestrator over-spends or over-reaches | The dispatcher, not the model, enforces the task cap, budgets and the reason-code facts; it plans on facts and structured outputs only (AG-09, AG-10); a rejected plan falls back to linear mode with a ⚠️ |
+| One specialist's bad output misleads another | Specialists share nothing directly; the case-file assembler merges validated schemas, and the orchestrator flags conflicts instead of resolving them |
 
 ---
 
@@ -248,6 +368,7 @@ class AgentRunner(Protocol):
 
 - **Audit events and tables:** `AUD.MCP.*` and `AUD.AGENT.*` events and the `mcp_tool_calls` and `proposals` tables are defined in **plan 10** (§4, §7, §13).
 - **Tests:** tool contract and schema snapshots, the MCP-vs-CLI equivalence test, the "no built-in tools" test, agent trajectory evals with `FakeRunner`, and the MCP Inspector smoke check are defined in **plan 14** (L0, L2, L5, L7).
+- The orchestrator's plan evals, rejection tests and injection test are in **plan 14** (L7, L2, §4.6).
 - **Phase placement** of every item in this doc lives only in **plan 09**.
 - **Features and acceptance criteria:** F24 (MCP server) and F25 (agent roster) in **plan 08**.
 
@@ -262,7 +383,7 @@ class AgentRunner(Protocol):
 - **Decision:** one MCP server, `parakh-mcp`, exposes the services as namespaced toolsets (§4). It is the **only** way agents reach data or state, and the same server serves you interactively. Scoring and watchers remain code workflows (AG-02). State changes by agents are proposals only (AG-03).
 - **Alternatives considered:**
   - Keep agents as pipeline nodes with private tools: works, but every new agent or client re-implements access and guardrails.
-  - Let an agent orchestrate the monthly run end to end: loses replay determinism and makes verdicts harder to explain (10 §5).
+  - Let an agent orchestrate the monthly run end to end: loses replay determinism and makes verdicts harder to explain (10 §5). *(Amended by ADR-014: an orchestrator now plans the **judgement work** after the deterministic run has published; scoring stays code.)*
   - Several MCP servers from day one: cleaner separation, but more processes and config for a solo build; namespaced toolsets give most of the benefit and can be split later.
 - **Consequences:**
   - ➕ One set of guardrails for every agent and for Claude; new agents are mostly a prompt, an allow-list and an output schema.
@@ -292,5 +413,22 @@ class AgentRunner(Protocol):
   - ➕ No attack surface, no hosting cost, no auth to build.
   - ➖ No Ask Parakh from your phone or claude.ai; the Claude scheduled-task push lane (which runs in the cloud) can't reach the server, so the monthly narrative review moves to the Monthly Reviewer agent in GitHub Actions (ADR-008 amended).
   - **Revisit triggers:** you want Ask Parakh away from your PC; a hosted UI goes behind a login anyway (ADR-006 revisit); or a second user appears.
+
+### ADR-014: Agents run on an orchestrator, planned then dispatched
+
+- **Status:** Accepted 2026-10-14 (plan 13 D27). Amends ADR-010 narrowly.
+- **Context:** you asked for the agents to run on an orchestrator. The agents so far were independent steps triggered by fixed rules, which spends LLM effort whether or not a holding changed and leaves no one to notice when two specialists disagree. After D26 the coverage is a dozen holdings, where deciding *what is worth a closer look this month* is the valuable judgement.
+- **Decision:** an orchestrator agent reads facts (the snapshot and `what_changed`), returns a validated `RunPlan`, and a code dispatcher runs the plan through the existing specialists. A case-file assembler merges their outputs and the orchestrator synthesises them. The deterministic spine, the numbers firewall and propose-only writes are unchanged. Documents never reach the orchestrator.
+- **Alternatives considered:**
+  - SDK-native subagents (the orchestrator calling specialists through the SDK's built-in delegation tool): simplest to write, but it would enable a built-in tool that AG-01 forbids, move budget and allow-list enforcement into model behaviour, and make plans harder to audit and replay. It stays possible later behind `AgentRunner`.
+  - A LangGraph supervisor graph: model-agnostic, but more glue code and a second runtime, against ADR-011.
+  - Keep independent rule-triggered agents: cheapest to build, but no triage across holdings, no conflict handling, and spend that does not follow what changed.
+  - Let the orchestrator run the whole monthly pipeline: rejected again, for replay determinism (ADR-010).
+- **Consequences:**
+  - ➕ Spend follows what changed; conflicts are flagged; one place to see why each agent ran (the plan is audited).
+  - ➕ New specialists are added by registering them; the orchestrator's choices stay bounded by the dispatcher.
+  - ➖ An extra layer (plan schema, dispatcher, case files, evals); an estimated 12 to 16 hours (plan 09 R6). Mitigated by linear mode, which stays as the fallback and is what M2 relies on.
+  - ➖ One more prompt to evaluate and pin; covered by the L7 plan evals.
+  - **Revisit when:** the plan is accepted unchanged for three straight months with little skipped (then the rules could replace the model), or SDK-native subagents can enforce allow-lists and budgets outside the model.
 
 *Personal analytical framework; not investment advice.*

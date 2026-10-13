@@ -11,6 +11,9 @@ method: read the design docs and code · ran the test suite · ran live source c
 related: 00 §7 (sources), 01 §11.7 (thesis drift), 04 ADR-006 (UI), 05 (holdings), 07 §12 (decisions #6, #7, locked in plan 13), 08 F06/F09/F14/F15, 10 (audit)
 ---
 
+> **Update 2026-10-14:** the Drishti assessment is revisited in plan 18 Part II (what Parakh already took, what is still worth taking, and the recommendation to freeze Drishti read-only rather than merge). This archived review is unchanged.
+
+
 # Drishti Review: What to Reuse, and UI/UX Considerations
 
 > **ARCHIVED on 2026-09-24. This is a point-in-time review, kept as history and porting guidance.** Its live content has moved: the THESIS.md schema → plan 05 §2.4; UI/UX → plan 12; decisions → plan 13 (D7, D8, D13, D16); the Drishti test lessons → plan 14 §12. The reuse matrix (§3) stays useful as porting guidance in Phases 0.5–4. If anything here disagrees with a live doc, the live doc wins.

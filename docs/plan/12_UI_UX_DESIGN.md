@@ -1,6 +1,6 @@
 ---
 title: UI/UX Design — Surfaces, Principles, Design System and Components
-version: 1.4 (Claude Desktop / Claude Code as a surface through `parakh-mcp`; Claude push retired; UX-14 agent-written content marked; §9 superseded by plan 15 — D20–D22; v1.3: phase columns removed (phases live in 09); targets cite NFR-07 / PRD §5; v1.2: §10/§12 now point to 14/09; v1.1 baseline: thesis schema adopted, ntfy off at baseline — plan 13 D5/D13)
+version: 1.5 (case-file view on Stock Detail, plan-rejected banner on Home; v1.4: Claude Desktop / Claude Code as a surface through `parakh-mcp`; Claude push retired; UX-14 agent-written content marked; §9 superseded by plan 15 — D20–D22; v1.3: phase columns removed (phases live in 09); targets cite NFR-07 / PRD §5; v1.2: §10/§12 now point to 14/09; v1.1 baseline: thesis schema adopted, ntfy off at baseline — plan 13 D5/D13)
 date: 2026-09-24
 owner: Avinash Tallam
 parent: 07_PRD.md
@@ -165,6 +165,11 @@ Components are plain functions returning HTML (via `st.html`) or Plotly figures,
 - "Since your last review" is the time you last pressed **Mark all reviewed** (stored per user; `AUD.REVIEW.MARKED`).
 - Items are ordered: owned 🔴 → owned 🟡 → approvals pending → non-owned upgrades → everything else.
 - Each item has *Open* (to Stock Detail) and *Mark reviewed*. Review time is measured from first open to "all reviewed", which gives the PRD §5 metric a real number instead of a self-report.
+
+### 5.1b Orchestrator surfaces *(v1.5)*
+
+- **Case file** on Stock Detail: the evidence the orchestrated review used for this holding (facts, tool results, specialist outputs) and the reason it was or was not reviewed in depth. A collapsed `<details>` block under *Why*.
+- **Plan rejected** banner on Home: if the dispatcher refused the plan, one 🟡 line says so and that the linear review was used; it links to the run plan in Audit.
 
 ### 5.2 Stock Detail: section order
 
