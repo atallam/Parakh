@@ -218,20 +218,34 @@ Every agent has an **agent card** (`docs/agents/<agent>.md`, 10 §7) and an entr
 ```python
 class PlanTask(BaseModel):
     task_id: str
-    agent_id: Literal["AGENT.qualitative", "AGENT.devils_advocate", "AGENT.event_triage",
-                      "AGENT.portfolio_analyst", "AGENT.monthly_reviewer"]
-    isin: str | None                       # None only for whole-book tasks
-    reason_code: Literal["VERDICT_CHANGED", "NEW_TRANSCRIPT", "THESIS_FLAG", "HIGH_SEVERITY_EVENT",
-                         "WEIGHT_BREACH", "LTCG_NEAR", "REVIEW_DUE", "SCHEDULED"]
+    agent_id: Literal[
+        "AGENT.qualitative",
+        "AGENT.devils_advocate",
+        "AGENT.event_triage",
+        "AGENT.portfolio_analyst",
+        "AGENT.monthly_reviewer",
+    ]
+    isin: str | None  # None only for whole-book tasks
+    reason_code: Literal[
+        "VERDICT_CHANGED",
+        "NEW_TRANSCRIPT",
+        "THESIS_FLAG",
+        "HIGH_SEVERITY_EVENT",
+        "WEIGHT_BREACH",
+        "LTCG_NEAR",
+        "REVIEW_DUE",
+        "SCHEDULED",
+    ]
     depends_on: list[str] = []
     budget_tokens: int
+
 
 class RunPlan(BaseModel):
     run_id: str
     trigger: Literal["MONTHLY", "EVENTS", "THESIS_CHANGE", "MANUAL"]
     tasks: list[PlanTask]
-    skipped: list[SkippedHolding]          # isin + reason: every coverage-set holding is in a task or here
-    rationale: str                         # at most 600 characters
+    skipped: list[SkippedHolding]  # isin + reason: every coverage-set holding is in a task or here
+    rationale: str  # at most 600 characters
 ```
 
 The dispatcher rejects a task (and records `AUD.AGENT.PLAN_REJECTED`) unless all of these hold:

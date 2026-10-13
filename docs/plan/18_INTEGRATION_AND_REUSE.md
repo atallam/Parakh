@@ -81,6 +81,7 @@ One record per ISIN in the coverage set per period. All fields are masked.
 class HoldingsProvider(Protocol):
     def list_holdings(self, asof: date) -> list[HoldingV1]: ...
 
+
 class InsightPublisher(Protocol):
     def publish(self, insights: list[InsightV1], run: RunContext) -> PublishReceipt: ...
 ```
