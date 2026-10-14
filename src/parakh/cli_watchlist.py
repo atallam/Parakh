@@ -150,10 +150,11 @@ def universe(
     bundle = load_all()
     if action == "stage":
         by_cap: dict[str, int] = {}
-        for s in bundle.universe.active:
+        for s in bundle.universe.panel:
             by_cap[s.cap] = by_cap.get(s.cap, 0) + 1
         print(
-            f"rollout: {bundle.universe.rollout} · "
+            f"coverage: {len(bundle.universe.coverage)} stocks · "
+            f"panel (prices only), rollout {bundle.universe.rollout}: "
             + " · ".join(f"{k} {v}" for k, v in sorted(by_cap.items()))
         )
         return 0

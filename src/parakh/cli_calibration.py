@@ -44,7 +44,7 @@ def _load_inputs(bundle: Any, store_kind: str, years: int, asof: dt.date) -> Any
     if data is None:
         return None
     start = dt.date(asof.year - years, 1, 1)
-    secs = bundle.universe.active
+    secs = bundle.universe.priced  # why: momentum calibration uses the panel's price history (R10)
     prices = {s.isin: data.prices(s.isin, start, asof) for s in secs}
     benches = {
         cap: b

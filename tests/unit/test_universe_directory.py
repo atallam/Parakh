@@ -64,9 +64,32 @@ def test_a_rollout_stage_widens_active_but_never_drops_the_pilot(tmp_path, monke
     base = load_all().universe
     wide = base.model_copy(update={"rollout": "mid"})
     monkeypatch.setattr("parakh.config.config_dir", lambda: tmp_path)
-    symbols = {s.symbol for s in wide.active}
-    assert {s.symbol for s in base.pilot} <= symbols and "TATAPOWER" in symbols
+    priced = {s.symbol for s in wide.priced}
+    assert {s.symbol for s in base.pilot} <= priced and "TATAPOWER" in priced
     assert wide.by_isin("INE245A01021") is not None
+    # AC-F01.5: the panel widens the priced set only; the analysed (coverage) set is unchanged
+    assert {s.symbol for s in wide.active} == {s.symbol for s in base.pilot}
+    assert "TATAPOWER" in {s.symbol for s in wide.panel}
+    assert not {s.isin for s in wide.panel} & {s.isin for s in wide.coverage}
+
+
+def test_only_price_paths_may_read_the_panel() -> None:
+    """AC-F01.5: `universe.priced` and `universe.panel` are for price loading and calibration only.
+    A new caller outside this allow-list would put a panel stock on an analysis path."""
+    root = Path(__file__).resolve().parents[2] / "src" / "parakh"
+    allowed = {
+        "configs/models.py",
+        "orchestration/prices.py",
+        "cli.py",  # the `prices` command
+        "cli_calibration.py",  # momentum calibration on the panel's price history
+        "cli_watchlist.py",  # `universe stage` report
+    }
+    hits = {
+        str(p.relative_to(root)).replace("\\", "/")
+        for p in root.rglob("*.py")
+        if any(t in p.read_text(encoding="utf-8") for t in ("universe.priced", "universe.panel"))
+    }
+    assert hits <= allowed, f"panel read outside the allow-list: {sorted(hits - allowed)}"
 
 
 def _amfi_xlsx(path: Path) -> None:

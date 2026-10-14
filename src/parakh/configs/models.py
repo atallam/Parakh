@@ -130,27 +130,46 @@ class UniverseConfig(Strict):
         return self
 
     @property
-    def active(self) -> list[Security]:
-        """The pilot plus the directory caps the rollout stage names (pilot entries win on a clash)."""
+    def coverage(self) -> list[Security]:
+        """The coverage set (plan 13 D26): the stocks Parakh analyses. Today the pilot; holdings
+        from the CAS join it when R4 lands. Only this set gets fundamentals, scores, alerts, reports
+        and LLM calls."""
+        return list(self.pilot)
+
+    @property
+    def panel(self) -> list[Security]:
+        """The benchmark panel (D26, D30): the directory caps the rollout stage names, minus the
+        coverage set. Prices only; it never reaches scores, alerts, reports or agents (AC-F01.5)."""
         if self.rollout == "pilot":
-            return list(self.pilot)
+            return []
         from parakh.config import config_dir
         from parakh.configs.directory import load_directory
 
         seen = {s.isin for s in self.pilot}
-        extra = [
+        return [
             s
             for s in load_directory(config_dir() / self.directory, self.rollout)
             if s.isin not in seen
         ]
-        return [*self.pilot, *extra]
+
+    @property
+    def priced(self) -> list[Security]:
+        """Coverage plus panel: the stocks whose prices are loaded. Use only for price loading and
+        cross-sectional maths; every analysis path uses `active`."""
+        return [*self.coverage, *self.panel]
+
+    @property
+    def active(self) -> list[Security]:
+        """The stocks analysed this run: the coverage set (D26). Kept as the name every analysis
+        path already uses; the benchmark panel is `panel` and `priced`."""
+        return self.coverage
 
     @property
     def golden(self) -> list[Security]:
         return [s for s in self.pilot if s.golden]
 
     def by_isin(self, isin: str) -> Security | None:
-        return next((s for s in self.active if s.isin == isin), None)
+        return next((s for s in self.priced if s.isin == isin), None)
 
 
 # -- sources.yaml ----------------------------------------------------------------------------

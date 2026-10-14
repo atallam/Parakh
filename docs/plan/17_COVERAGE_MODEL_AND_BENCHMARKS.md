@@ -1,5 +1,6 @@
 ---
 title: Coverage model and benchmarks: holdings only, universe as benchmark
+version: 1.2 (new: D26, ADR-013; promoted from the 14 Oct 2026 staging draft)
 version: 1.1 (new: D26, ADR-013; promoted from the 14 Oct 2026 staging draft)
 date: 2026-10-14
 owner: Avinash Tallam
@@ -116,6 +117,16 @@ Hours are estimates. Plan 09 owns the phase and date of each item (§1b there).
   - ➕ Cleaner story: every number in a report is about something you hold.
   - ➖ No discovery, no value-lens calibration on a universe, coarser sector comparison (section 7).
   - **Revisit when:** you want idea generation, or a value backtest becomes worth buying data for.
+
+## 8b. R3a spike outcome *(14 Oct 2026)*
+
+Tried from the cloud workspace, not from a GitHub-hosted runner:
+
+- `niftyindices.com` (Historical Data page) answers HTTP 200 to a plain request. `nseindia.com` answers 403.
+- The page's P/E, P/B and yield endpoint (`getpepbHistoricaldataDBtoString`) accepted the connection but returned a generic server error for every payload tried, so the exact request format is not confirmed.
+- **Not yet proven:** access from a GitHub-hosted runner, and the terms of use for automated download.
+
+**Next step (about 10 minutes, yours):** open the Historical Data page in your browser, choose *P/E, P/B and Div Yield*, pick an index and dates, and either download the CSV or copy the request from DevTools (Network tab). With one working request the loader is a small job. If automated access fails from the runner, the fallback is a monthly manual CSV download for the handful of indices the holdings map to.
 
 ## 9. Decisions and open items
 
