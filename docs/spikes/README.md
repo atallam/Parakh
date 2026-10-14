@@ -10,5 +10,6 @@
 | ⑥ Telegram | ✅ Adapter tested; live send from your PC delivered (29 Sep) | [S6](S6-telegram.md) |
 | ⑦ CAS parse | ✅ casparser 1.4.1 on your real CAS, locally | [S7](S7-cas.md) |
 | ⑧ Claude Agent SDK | ✅ Install, MCP wiring and a real agent turn on the runner; the server's allow-list refused an unlisted call | [S8](S8-agent-sdk.md) |
+| R3a (14 Oct) NSE Indices P/E, P/B, yield | ⚠️ Manual CSV format proven; automated access from a runner not yet proven | [R3a](R3a-nse-index-benchmarks.md) |
 
 All eight spikes are closed. Two findings (③ integrated filing, ④ ISIN history) become Phase 1 tasks.

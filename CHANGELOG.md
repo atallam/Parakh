@@ -2,6 +2,15 @@
 
 All notable changes. Framework and lens versions follow SemVer; tool schemas are versioned per toolset (plan 15 §4.4).
 
+## [Unreleased] – R3a benchmark spike closed on manual CSVs, 2026-10-14
+
+### Added
+- Recorded fixtures `tests/fixtures/sources/niftyindices/pepb/` (NIFTY 100, MIDCAP 150, SMALLCAP 250 P/E, P/B and Div Yield, 16 Oct 2025 to 13 Oct 2026) and tests T-ADP-38 and T-ADP-39 pinning the layout and the non-price steps in the series.
+- ADR-013 (coverage set plus a price-only benchmark panel) as a file; spike note `docs/spikes/R3a-nse-index-benchmarks.md`.
+
+### Notes
+- No production code, score, weight or verdict changes. The benchmark loader and mapping stay in Phase 3 (plan 09 v1.22).
+
 ## [Unreleased] – Phase 5 (calibration and stabilisation), 2026-10-11
 
 ### Added
