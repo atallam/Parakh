@@ -5,8 +5,9 @@ from __future__ import annotations
 import json
 
 import httpx
+import pytest
 
-from parakh.notify.telegram import MAX_LEN, TelegramNotifier, escape
+from parakh.notify.telegram import MAX_LEN, TelegramError, TelegramNotifier, escape
 
 TOKEN = "123456789:" + "A" * 35
 
@@ -54,3 +55,17 @@ def test_over_long_messages_are_refused_before_sending() -> None:
     seen: list[dict] = []
     d = TelegramNotifier(TOKEN, "1", _client([], seen)).send("x" * (MAX_LEN + 1))
     assert not d.ok and seen == []
+
+
+def test_get_updates_409_webhook_gives_an_actionable_error() -> None:
+    """Polling is blocked while a webhook is registered; the error says how to fix it."""
+    desc = "Conflict: can't use getUpdates method while webhook is active; use deleteWebhook"
+    client = httpx.Client(
+        transport=httpx.MockTransport(
+            lambda _r: httpx.Response(409, json={"ok": False, "description": desc})
+        )
+    )
+    with pytest.raises(TelegramError) as exc:
+        TelegramNotifier(TOKEN, "1", client).get_updates()
+    assert "getWebhookInfo" in str(exc.value) and "deleteWebhook" in str(exc.value)
+    assert TOKEN not in str(exc.value)

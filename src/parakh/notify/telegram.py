@@ -108,9 +108,16 @@ class TelegramNotifier:
         except (httpx.HTTPError, ValueError) as exc:
             raise TelegramError(self._scrub(f"{type(exc).__name__}: {exc}")) from exc
         if resp.status_code != 200 or not body.get("ok"):
-            raise TelegramError(
-                self._scrub(f"HTTP {resp.status_code}: {body.get('description', '')}")
-            )
+            desc = str(body.get("description", ""))
+            if resp.status_code == 409 and "webhook" in desc.lower():
+                # why: polling and a webhook are mutually exclusive; say how to fix it instead of
+                # silently deleting a webhook some other consumer of this token may rely on.
+                raise TelegramError(
+                    "HTTP 409: a webhook is registered on this bot token, so getUpdates is "
+                    "blocked. Check it with getWebhookInfo, then call deleteWebhook (or stop "
+                    "the other service / use a separate bot if it keeps coming back)."
+                )
+            raise TelegramError(self._scrub(f"HTTP {resp.status_code}: {desc}"))
         result = body.get("result", [])
         return result if isinstance(result, list) else []
 
