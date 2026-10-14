@@ -28,3 +28,11 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 - 🟡 LLOYDSME E07 Credit rating action: Lloyds Metals And Energy Limited has informed the Exchange about Credit Rating  Open ▸
 - 🟡 NMDC E13 Director or key management change (role not in the filing line): NMDC Limited has informed the Exchange regarding Change in Director(s) of the company.  Open ▸
 - [ ] noise  `01M4VDMTVE8KECVGCZ6KV7GN71` `01M4VDMTVE8KECVGCZ6KV7GN72` `01M4VDMTVE8KECVGCZ6KV7GN73` `01M4VDMTVE8KECVGCZ6KV7GN74` `01M4VDMTVE8KECVGCZ6KV7GN75`
+
+## 2026-10-14 17:43 · INDIGO M21 (High), would be sent now: exit or warning signal on an owned stock
+- 🔴 INDIGO 🟢 OWNED wt 16.2% P&L +8.9% M21 200 DMA breakdown · close 4,718.50  Open ▸
+- [ ] noise  `01M4XR6YJNFXB995N92W2CPDY1`
+
+## 2026-10-14 17:43 · M&M M20 (Medium), would be sent now: exit or warning signal on an owned stock
+- 🟡 M&M 🟢 OWNED wt 16.0% P&L −9.6% M20 50 DMA breakdown · close 2,793.70  Open ▸
+- [ ] noise  `01M4XR6YJNFXB995N92W2CPDY2`
