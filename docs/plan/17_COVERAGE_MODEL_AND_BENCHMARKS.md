@@ -1,6 +1,7 @@
 ---
 title: Coverage model and benchmarks: holdings only, universe as benchmark
 version: 1.2 (new: D26, ADR-013; promoted from the 14 Oct 2026 staging draft)
+version: 1.1 (new: D26, ADR-013; promoted from the 14 Oct 2026 staging draft)
 date: 2026-10-14
 owner: Avinash Tallam
 parent: 00_MASTER_PLAN.md
