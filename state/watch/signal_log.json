@@ -188,6 +188,15 @@
    "key": "event:INE584A01023:E13:106816301",
    "kind": "event",
    "symbol": "NMDC"
+  },
+  {
+   "code": "E11",
+   "date": "2026-10-14",
+   "headline": "Lock-in expiry expected 05 Nov 2026: promoters' minimum contribution (check the prospectus)",
+   "isin": "INE0LEZ01016",
+   "key": "event:INE0LEZ01016:E11:548d",
+   "kind": "event",
+   "symbol": "ATHERENERG"
   }
  ]
 }

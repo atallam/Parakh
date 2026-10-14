@@ -57,3 +57,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-13 20:00 · event_triage NMDC E13, would add this line
 - 🤖 NMDC filed a notice of change in company director(s); routine governance disclosure.
 - [ ] noise  `event:INE584A01023:E13:106816301`
+
+## 2026-10-14 18:09 · event_triage ATHERENERG E11, would add this line
+- 🤖 Promoter lock-in expiry due 05 Nov 2026, check subsequent selling pressure/holding pattern.
+- [ ] noise  `event:INE0LEZ01016:E11:548d`

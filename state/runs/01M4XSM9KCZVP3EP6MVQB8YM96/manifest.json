@@ -1,0 +1,109 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M4XSM9KCZVP3EP6MVQB8YM96",
+  "mode": "events",
+  "env": "prod",
+  "asof": "2026-10-14",
+  "trigger": "cron",
+  "triggered_by": "scheduler:daily-events",
+  "status": "SUCCESS",
+  "started_at": "2026-10-14T18:08:40.558588Z",
+  "finished_at": "2026-10-14T18:09:04.572936Z",
+  "code_version": "e2669b6d99af",
+  "config_hash": "sha256:5641a9b86deae733a827c3b9db2e8b387ecad9925c018f55ab66c27fa9f34fe9",
+  "framework_version": "0.1.0",
+  "lens_versions": {},
+  "policy_version": null,
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M4XSM9KCZVP3EP6MVQB8YM96.positions.01",
+      "name": "positions",
+      "seq": 1,
+      "status": "ok",
+      "started_at": "2026-10-14T18:08:42.014313Z",
+      "ended_at": "2026-10-14T18:08:43.320200Z",
+      "duration_ms": 1305.9,
+      "inputs": {},
+      "outputs": {
+        "owned": 7
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4XSM9KCZVP3EP6MVQB8YM96.scan.02",
+      "name": "scan",
+      "seq": 2,
+      "status": "ok",
+      "started_at": "2026-10-14T18:08:43.320449Z",
+      "ended_at": "2026-10-14T18:08:54.353268Z",
+      "duration_ms": 11032.8,
+      "inputs": {
+        "stocks": 7
+      },
+      "outputs": {
+        "alerts": 1,
+        "errors": 0,
+        "refresh": 0
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4XSM9KCZVP3EP6MVQB8YM96.triage.03",
+      "name": "triage",
+      "seq": 3,
+      "status": "ok",
+      "started_at": "2026-10-14T18:08:54.353503Z",
+      "ended_at": "2026-10-14T18:09:03.787828Z",
+      "duration_ms": 9434.3,
+      "inputs": {
+        "filings": 1
+      },
+      "outputs": {
+        "triaged": 1,
+        "pending": 0,
+        "shadowed": 1
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4XSM9KCZVP3EP6MVQB8YM96.queue_refresh.04",
+      "name": "queue_refresh",
+      "seq": 4,
+      "status": "ok",
+      "started_at": "2026-10-14T18:09:03.788040Z",
+      "ended_at": "2026-10-14T18:09:03.788531Z",
+      "duration_ms": 0.5,
+      "inputs": {},
+      "outputs": {
+        "queued": 0
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M4XSM9KCZVP3EP6MVQB8YM96.notify.05",
+      "name": "notify",
+      "seq": 5,
+      "status": "ok",
+      "started_at": "2026-10-14T18:09:03.788735Z",
+      "ended_at": "2026-10-14T18:09:03.792032Z",
+      "duration_ms": 3.3,
+      "inputs": {},
+      "outputs": {
+        "sent": 0,
+        "shadowed": 0,
+        "suppressed": 0
+      },
+      "error": null
+    }
+  ],
+  "audit_events": 4,
+  "audit_pending": 0,
+  "audit_chain_head": "sha256:8ccf430362f115c576e16e59cd492ce23917368904dd006d4c3ef4b8ff424aea",
+  "audit_sink": "supabase",
+  "llm_tokens": 223,
+  "alerts_sent": 0,
+  "alerts_suppressed": 0,
+  "agent_runs": 1,
+  "failed_steps": 0
+}

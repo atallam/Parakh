@@ -1,9 +1,39 @@
 {
  "agent_counts": {},
- "digest": {},
+ "digest": {
+  "2026-10-14": [
+   {
+    "alert_id": "01M4XSN09DGCYSH5GQSP1VQ4ET",
+    "asof": "2026-10-14",
+    "code": "E11",
+    "direction": "info",
+    "extra": {
+     "due": "2026-11-05",
+     "max_severity": "Medium",
+     "refresh": false,
+     "rule": "E11"
+    },
+    "group": "548d",
+    "headline": "Lock-in expiry expected 05 Nov 2026: promoters' minimum contribution (check the prospectus)",
+    "isin": "INE0LEZ01016",
+    "kind": "event",
+    "link": null,
+    "note": null,
+    "owned": true,
+    "pnl_pct": 28.85194410970071,
+    "severity": "Medium",
+    "source": "events",
+    "symbol": "ATHERENERG",
+    "top_decile": false,
+    "valence": "negative",
+    "weight_pct": 8.420165742543755
+   }
+  ]
+ },
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
+  "event:INE0LEZ01016:E11:548d": "2026-10-14",
   "event:INE171A01029:E07:106813341": "2026-10-12",
   "event:INE176B01034:E13:106814675": "2026-10-12",
   "event:INE208A01029:E07:106812581": "2026-10-12",
@@ -28,6 +58,7 @@
  },
  "last_sent": {
   "event:INE027H01010:E07": "2026-10-12",
+  "event:INE0LEZ01016:E11": "2026-10-14",
   "event:INE171A01029:E07": "2026-10-12",
   "event:INE176B01034:E13": "2026-10-12",
   "event:INE208A01029:E07": "2026-10-12",

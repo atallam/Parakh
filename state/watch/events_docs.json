@@ -11,6 +11,12 @@
   "rule": "E07",
   "text": "Max Healthcare Institute Limited has informed the Exchange about Credit Rating"
  },
+ "event:INE0LEZ01016:E11:548d": {
+  "filed": "2026-10-14",
+  "filing_url": null,
+  "rule": "E11",
+  "text": "Lock-in expiry expected 05 Nov 2026: promoters' minimum contribution (check the prospectus)"
+ },
  "event:INE171A01029:E07:106813341": {
   "filed": "2026-10-10",
   "filing_url": "https://nsearchives.nseindia.com/corporate/FEDERALBNK_10102026000314_FBL_Care_Ratings_091026_F.pdf",
