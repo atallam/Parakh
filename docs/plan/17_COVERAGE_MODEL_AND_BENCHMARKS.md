@@ -1,7 +1,6 @@
 ---
 title: Coverage model and benchmarks: holdings only, universe as benchmark
-version: 1.2 (new: D26, ADR-013; promoted from the 14 Oct 2026 staging draft)
-version: 1.1 (new: D26, ADR-013; promoted from the 14 Oct 2026 staging draft)
+version: 1.3 (R3a: manual CSV format proven, automated access still open; new: D26, ADR-013; promoted from the 14 Oct 2026 staging draft)
 date: 2026-10-14
 owner: Avinash Tallam
 parent: 00_MASTER_PLAN.md
@@ -126,7 +125,16 @@ Tried from the cloud workspace, not from a GitHub-hosted runner:
 - The page's P/E, P/B and yield endpoint (`getpepbHistoricaldataDBtoString`) accepted the connection but returned a generic server error for every payload tried, so the exact request format is not confirmed.
 - **Not yet proven:** access from a GitHub-hosted runner, and the terms of use for automated download.
 
-**Next step (about 10 minutes, yours):** open the Historical Data page in your browser, choose *P/E, P/B and Div Yield*, pick an index and dates, and either download the CSV or copy the request from DevTools (Network tab). With one working request the loader is a small job. If automated access fails from the runner, the fallback is a monthly manual CSV download for the handful of indices the holdings map to.
+**Update 14 Oct 2026 (manual download done): the format is proven, automated access is not.**
+
+You downloaded the P/E, P/B and Div Yield series by hand for NIFTY 100, NIFTY MIDCAP 150 and NIFTY SMALLCAP 250 (16 Oct 2025 to 13 Oct 2026, 245 trading days each). They are kept as recorded fixtures in `tests/fixtures/sources/niftyindices/pepb/`, and T-ADP-38 and T-ADP-39 pin the layout.
+
+- **Layout.** Five quoted columns: `IndexName, Date, P/E, P/B, Div Yield %`. Dates read `13 Oct 2026`, newest first. Yield is written without a leading zero (`.75`). The only weekend date is Sunday 1 Feb 2026, the Union Budget session.
+- **The series moves in steps that are not price moves.** Midcap 150 P/E falls from 32.26 to 28.79 (-10.8%) on 19 May 2026 while the index price rises 0.8%. Smallcap 250 P/E rises from 30.03 to 33.14 (+10.4%) on 25 May. Midcap 150 P/B falls from 4.07 to 3.83 (-5.9%) on 30 Sep. Dividend yield steps up on the same day in all three indices on 9 Oct 2026 (NIFTY 100 1.21 to 1.51, Midcap 150 0.74 to 0.98, Smallcap 250 0.62 to 0.75). These look like earnings-season or trailing-window updates in NSE's data. Use levels over months and percentiles, never one-day changes.
+- **Basis not confirmed.** Which earnings basis the index P/E uses is still to be read from NSE's index methodology (section 5 caveat 1). Show sector comparisons as directional until then.
+- **Not yet proven.** Access from a GitHub-hosted runner, the terms of use for automated download, whether a longer date range than one year is allowed in a single download, and whether the sector indices that fit your holdings have P/E, P/B and yield history.
+
+**Recommendation for BL-10 (confirm at the M1 review).** Value benchmarks are monthly, so a file inbox fits: you drop the monthly CSV for each index a holding maps to, and the loader reads it with lineage (source, tier T1, as-of, raw hash), the same pattern as the CAS inbox. HTTP automation is added only if a runner can fetch the series. Build the inbox reader in Phase 3 (R3 loader and mapping), as planned. Until then the sector comparison is shown as "not available", and nothing before the first review depends on it.
 
 ## 9. Decisions and open items
 

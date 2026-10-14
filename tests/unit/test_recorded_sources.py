@@ -130,3 +130,65 @@ def test_nse_financial_results_stop_at_dec_2024_and_carry_broadcast_times() -> N
     latest = max(dt.datetime.strptime(r["toDate"], "%d-%b-%Y").date() for r in rows)
     assert latest == dt.date(2024, 12, 31)
     assert all(r.get("broadCastDate") for r in rows[:10])
+
+
+PEPB = SRC / "niftyindices" / "pepb"
+PEPB_FILES = {
+    "NIFTY 100": "NIFTY_100_Historical_PE_PB_DIV_Data_16102025to14102026.csv",
+    "NIFTY MIDCAP 150": "NIFTY_MIDCAP_150_Historical_PE_PB_DIV_Data_16102025to14102026.csv",
+    "NIFTY SMALLCAP 250": "NIFTY_SMALLCAP_250_Historical_PE_PB_DIV_Data_16102025to14102026.csv",
+}
+
+
+def _pepb(index: str) -> list[tuple[dt.date, float, float, float]]:
+    """Oldest first: (date, P/E, P/B, dividend yield %). The file itself is newest first."""
+    path = PEPB / PEPB_FILES[index]
+    with path.open(encoding="utf-8-sig", newline="") as fh:
+        reader = csv.DictReader(fh)
+        assert reader.fieldnames == ["IndexName", "Date", "P/E", "P/B", "Div Yield %"]
+        rows = [
+            (
+                dt.datetime.strptime(r["Date"], "%d %b %Y").date(),
+                float(r["P/E"]),
+                float(r["P/B"]),
+                float(r["Div Yield %"]),  # NSE writes ".75", not "0.75"
+            )
+            for r in reader
+            if r["IndexName"] == index
+        ]
+    return sorted(rows)
+
+
+@pytest.mark.parametrize("index", sorted(PEPB_FILES))
+def test_nse_index_pe_pb_yield_download_keeps_one_layout(index: str) -> None:
+    """T-ADP-38: the manual NSE Indices P/E, P/B and yield download (R3a, plan 17 §8b).
+
+    Pins the layout a later loader reads: five quoted columns, `13 Oct 2026` dates, newest first,
+    yield without a leading zero, one row per trading day, no duplicates, sane magnitudes.
+    """
+    rows = _pepb(index)
+    days = [r[0] for r in rows]
+    assert len(rows) == 245 and len(set(days)) == 245
+    assert (days[0], days[-1]) == (dt.date(2025, 10, 16), dt.date(2026, 10, 13))
+    # Sunday 1 Feb 2026 was the Union Budget special session, the only weekend date
+    assert [d for d in days if d.weekday() >= 5] == [dt.date(2026, 2, 1)]
+    assert all(5 < pe < 60 and 0.5 < pb < 10 and 0 < dy < 5 for _, pe, pb, dy in rows)
+    first_line = (PEPB / PEPB_FILES[index]).read_text(encoding="utf-8-sig").splitlines()[1]
+    assert first_line.startswith(f'"{index}","13 Oct 2026"')  # newest first
+
+
+def test_nse_index_valuation_has_steps_that_are_not_price_moves() -> None:
+    """T-ADP-39: the series moves in jumps that a price move cannot explain (R3a finding).
+
+    A loader must flag these, not trade on them. Same-day yield steps hit all three indices on
+    9 Oct 2026; Midcap 150 P/E falls 10.8% on 19 May 2026 while its price rises 0.8% that day.
+    """
+    mid = {d: (pe, pb, dy) for d, pe, pb, dy in _pepb("NIFTY MIDCAP 150")}
+    assert mid[dt.date(2026, 5, 18)][0] / mid[dt.date(2026, 5, 19)][0] > 1.10
+    for index in PEPB_FILES:
+        series = {d: dy for d, _, _, dy in _pepb(index)}
+        assert series[dt.date(2026, 10, 9)] / series[dt.date(2026, 10, 8)] > 1.20
+    for index in PEPB_FILES:  # no decimal slip or unit change anywhere in the year
+        rows = _pepb(index)
+        steps = [abs(b[1] / a[1] - 1) for a, b in zip(rows, rows[1:], strict=False)]
+        assert max(steps) < 0.15
