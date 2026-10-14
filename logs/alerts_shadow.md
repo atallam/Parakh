@@ -36,3 +36,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-14 17:43 · M&M M20 (Medium), would be sent now: exit or warning signal on an owned stock
 - 🟡 M&M 🟢 OWNED wt 16.0% P&L −9.6% M20 50 DMA breakdown · close 2,793.70  Open ▸
 - [ ] noise  `01M4XR6YJNFXB995N92W2CPDY2`
+
+## 2026-10-14 18:11 · evening digest (1 items), would be sent
+- 🟡 ATHERENERG 🟢 OWNED wt 8.4% P&L +28.9% E11 Lock-in expiry expected 05 Nov 2026: promoters' minimum contribution (check the prospectus)  Open ▸
+- [ ] noise  `01M4XSN09DGCYSH5GQSP1VQ4ET`
