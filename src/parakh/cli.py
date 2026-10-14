@@ -422,9 +422,9 @@ def _prices_load(symbols: list[str] | None, store_kind: str, use_exchange: bool)
     from parakh.storage.prices import LocalBlobs, ParquetPriceStore, SupabaseBlobs
 
     bundle = load_all()
-    pilot = [s for s in bundle.universe.active if not symbols or s.symbol in symbols]
+    pilot = [s for s in bundle.universe.priced if not symbols or s.symbol in symbols]
     if not pilot:
-        print(f"no pilot stock matches {symbols}", file=sys.stderr)
+        print(f"no stock matches {symbols}", file=sys.stderr)
         return 2
     repo = _supabase_repo() if store_kind == "supabase" else None
     if store_kind == "supabase":
@@ -432,11 +432,11 @@ def _prices_load(symbols: list[str] | None, store_kind: str, use_exchange: bool)
             return 2
         blobs = SupabaseBlobs(repo.client)
         blobs.ensure_bucket()
-        repo.ensure_securities(bundle.universe.active)  # price_files points at securities (FK)
+        repo.ensure_securities(bundle.universe.priced)  # price_files points at securities (FK)
     else:
         blobs = LocalBlobs(state_dir() / "prices")
     store = ParquetPriceStore(blobs, state_dir() / "cache" / "prices")
-    resolve = {p.isin: s.isin for s in bundle.universe.active for p in s.previous_isins}
+    resolve = {p.isin: s.isin for s in bundle.universe.priced for p in s.previous_isins}
     api = NseApi()
 
     def actions_for(isin: str):  # type: ignore[no-untyped-def]
