@@ -1,59 +1,6 @@
 {
  "agent_counts": {},
- "digest": {
-  "2026-10-16": [
-   {
-    "alert_id": "01M52V00W4ZZ9SMXAG23WP3XMB",
-    "asof": "2026-10-16",
-    "code": "M12",
-    "direction": "entry",
-    "extra": {},
-    "group": "",
-    "headline": "50 DMA pullback bounce · close 200.85",
-    "isin": "INE0HOQ01053",
-    "kind": "signal",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": 3.1216337749733647,
-    "severity": "Medium",
-    "source": "watcher",
-    "symbol": "GROWW",
-    "top_decile": false,
-    "valence": "positive",
-    "weight_pct": 4.595284548617965
-   },
-   {
-    "alert_id": "01M52WRVMPSTS2BQ7GP4XV0DA3",
-    "asof": "2026-10-16",
-    "code": "E02",
-    "direction": "info",
-    "extra": {
-     "desc": "Analysts/Institutional Investor Meet/Con. Call Updates",
-     "filed": "2026-10-16",
-     "filing_url": "https://nsearchives.nseindia.com/corporate/BILLIONBRAINS_16102026165927_EC_Trans_SD.pdf",
-     "max_severity": "Medium",
-     "refresh": true,
-     "rule": "E02",
-     "text": "Billionbrains Garage Ventures Limited has informed the Exchange about Transcript"
-    },
-    "group": "106820304",
-    "headline": "Concall transcript filed: Billionbrains Garage Ventures Limited has informed the Exchange about Transcript",
-    "isin": "INE0HOQ01053",
-    "kind": "event",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": 3.1216337749733647,
-    "severity": "Medium",
-    "source": "events",
-    "symbol": "GROWW",
-    "top_decile": false,
-    "valence": "neutral",
-    "weight_pct": 4.595284548617965
-   }
-  ]
- },
+ "digest": {},
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",

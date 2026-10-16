@@ -40,3 +40,8 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-14 18:11 · evening digest (1 items), would be sent
 - 🟡 ATHERENERG 🟢 OWNED wt 8.4% P&L +28.9% E11 Lock-in expiry expected 05 Nov 2026: promoters' minimum contribution (check the prospectus)  Open ▸
 - [ ] noise  `01M4XSN09DGCYSH5GQSP1VQ4ET`
+
+## 2026-10-16 17:42 · evening digest (2 items), would be sent
+- 🟢 GROWW 🟢 OWNED wt 4.6% P&L +3.1% M12 50 DMA pullback bounce · close 200.85  Open ▸
+- 🟡 GROWW 🟢 OWNED wt 4.6% P&L +3.1% E02 Concall transcript filed: Billionbrains Garage Ventures Limited has informed the Exchange about Transcript  Open ▸
+- [ ] noise  `01M52V00W4ZZ9SMXAG23WP3XMB` `01M52WRVMPSTS2BQ7GP4XV0DA3`
