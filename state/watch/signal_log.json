@@ -197,6 +197,15 @@
    "key": "event:INE0LEZ01016:E11:548d",
    "kind": "event",
    "symbol": "ATHERENERG"
+  },
+  {
+   "code": "E02",
+   "date": "2026-10-16",
+   "headline": "Concall transcript filed: Billionbrains Garage Ventures Limited has informed the Exchange about Transcript",
+   "isin": "INE0HOQ01053",
+   "key": "event:INE0HOQ01053:E02:106820304",
+   "kind": "event",
+   "symbol": "GROWW"
   }
  ]
 }

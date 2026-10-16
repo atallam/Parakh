@@ -61,3 +61,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-14 18:09 · event_triage ATHERENERG E11, would add this line
 - 🤖 Promoter lock-in expiry due 05 Nov 2026, check subsequent selling pressure/holding pattern.
 - [ ] noise  `event:INE0LEZ01016:E11:548d`
+
+## 2026-10-16 17:39 · event_triage GROWW E02, would add this line
+- 🤖 Filed concall transcript; no detail in disclosure text itself to assess impact.
+- [ ] noise  `event:INE0HOQ01053:E02:106820304`
