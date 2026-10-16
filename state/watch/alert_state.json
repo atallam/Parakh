@@ -1,6 +1,30 @@
 {
  "agent_counts": {},
- "digest": {},
+ "digest": {
+  "2026-10-16": [
+   {
+    "alert_id": "01M52V00W4ZZ9SMXAG23WP3XMB",
+    "asof": "2026-10-16",
+    "code": "M12",
+    "direction": "entry",
+    "extra": {},
+    "group": "",
+    "headline": "50 DMA pullback bounce · close 200.85",
+    "isin": "INE0HOQ01053",
+    "kind": "signal",
+    "link": null,
+    "note": null,
+    "owned": true,
+    "pnl_pct": 3.1216337749733647,
+    "severity": "Medium",
+    "source": "watcher",
+    "symbol": "GROWW",
+    "top_decile": false,
+    "valence": "positive",
+    "weight_pct": 4.595284548617965
+   }
+  ]
+ },
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
@@ -24,6 +48,7 @@
   "event:INE726G01019:E01:september302026": "2026-10-13",
   "event:INE726G01019:E13:106815709": "2026-10-13",
   "event:INE854D01024:E13:106812488": "2026-10-12",
+  "signal:INE0HOQ01053:M12": "2026-10-16",
   "signal:INE101A01026:M20": "2026-10-14",
   "signal:INE646L01027:M21": "2026-10-14"
  },
@@ -47,6 +72,7 @@
   "event:INE726G01019:E01": "2026-10-13",
   "event:INE726G01019:E13": "2026-10-13",
   "event:INE854D01024:E13": "2026-10-12",
+  "signal:INE0HOQ01053:M12": "2026-10-16",
   "signal:INE101A01026:M20": "2026-10-14",
   "signal:INE646L01027:M21": "2026-10-14"
  },
