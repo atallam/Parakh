@@ -1,0 +1,44 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M54CX81R6GHT9CP38WY2SDXF",
+  "mode": "bot",
+  "env": "prod",
+  "asof": "2026-10-17",
+  "trigger": "cron",
+  "triggered_by": "scheduler:bot-poll",
+  "status": "SUCCESS_AUDIT_PENDING",
+  "started_at": "2026-10-17T07:41:03.418221Z",
+  "finished_at": "2026-10-17T07:41:04.241642Z",
+  "code_version": "e2669b6d99af",
+  "config_hash": "sha256:5641a9b86deae733a827c3b9db2e8b387ecad9925c018f55ab66c27fa9f34fe9",
+  "framework_version": "0.1.0",
+  "lens_versions": {},
+  "policy_version": null,
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M54CX81R6GHT9CP38WY2SDXF.poll.01",
+      "name": "poll",
+      "seq": 1,
+      "status": "ok",
+      "started_at": "2026-10-17T07:41:03.419403Z",
+      "ended_at": "2026-10-17T07:41:04.213807Z",
+      "duration_ms": 794.4,
+      "inputs": {},
+      "outputs": {
+        "handled": 0,
+        "rejected": 0
+      },
+      "error": null
+    }
+  ],
+  "audit_events": 2,
+  "audit_pending": 2,
+  "audit_chain_head": "sha256:b4d62d48c08d8e0305b229bbc588f095a3644c2add2fe50ead426040fb78754b",
+  "audit_sink": "none (Supabase flush arrives in Phase 1)",
+  "llm_tokens": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 0,
+  "agent_runs": 0,
+  "failed_steps": 0
+}
