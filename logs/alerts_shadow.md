@@ -45,3 +45,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 - 🟢 GROWW 🟢 OWNED wt 4.6% P&L +3.1% M12 50 DMA pullback bounce · close 200.85  Open ▸
 - 🟡 GROWW 🟢 OWNED wt 4.6% P&L +3.1% E02 Concall transcript filed: Billionbrains Garage Ventures Limited has informed the Exchange about Transcript  Open ▸
 - [ ] noise  `01M52V00W4ZZ9SMXAG23WP3XMB` `01M52WRVMPSTS2BQ7GP4XV0DA3`
+
+## 2026-10-19 19:30 · evening digest (1 items), would be sent
+- 🟡 HDFCBANK 🟢 OWNED wt 16.7% P&L −9.7% E01 Results filed: HDFC Bank Limited has submitted to the Exchange, the financial results for the period end…  Open ▸
+- [ ] noise  `01M5AT3PB0ENN6FSHNKQYP6SRG`
