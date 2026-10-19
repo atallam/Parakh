@@ -1,9 +1,42 @@
 {
  "agent_counts": {},
- "digest": {},
+ "digest": {
+  "2026-10-19": [
+   {
+    "alert_id": "01M5AT3PB0ENN6FSHNKQYP6SRG",
+    "asof": "2026-10-19",
+    "code": "E01",
+    "direction": "info",
+    "extra": {
+     "desc": "Outcome of Board Meeting",
+     "filed": "2026-10-17",
+     "filing_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK_17102026135520_OutcomeofBMResults_17oct2026.pdf",
+     "max_severity": "Medium",
+     "refresh": true,
+     "rule": "E01",
+     "text": "HDFC Bank Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
+    },
+    "group": "september302026",
+    "headline": "Results filed: HDFC Bank Limited has submitted to the Exchange, the financial results for the period end…",
+    "isin": "INE040A01034",
+    "kind": "event",
+    "link": null,
+    "note": null,
+    "owned": true,
+    "pnl_pct": -9.65222264267258,
+    "severity": "Medium",
+    "source": "events",
+    "symbol": "HDFCBANK",
+    "top_decile": false,
+    "valence": "neutral",
+    "weight_pct": 16.67549379781679
+   }
+  ]
+ },
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
+  "event:INE040A01034:E01:september302026": "2026-10-19",
   "event:INE0HOQ01053:E02:106820304": "2026-10-16",
   "event:INE0LEZ01016:E11:548d": "2026-10-14",
   "event:INE171A01029:E07:106813341": "2026-10-12",
@@ -31,6 +64,7 @@
  },
  "last_sent": {
   "event:INE027H01010:E07": "2026-10-12",
+  "event:INE040A01034:E01": "2026-10-19",
   "event:INE0HOQ01053:E02": "2026-10-16",
   "event:INE0LEZ01016:E11": "2026-10-14",
   "event:INE171A01029:E07": "2026-10-12",

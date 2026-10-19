@@ -11,6 +11,12 @@
   "rule": "E07",
   "text": "Max Healthcare Institute Limited has informed the Exchange about Credit Rating"
  },
+ "event:INE040A01034:E01:september302026": {
+  "filed": "2026-10-17",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK_17102026135520_OutcomeofBMResults_17oct2026.pdf",
+  "rule": "E01",
+  "text": "HDFC Bank Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
+ },
  "event:INE0HOQ01053:E02:106820304": {
   "filed": "2026-10-16",
   "filing_url": "https://nsearchives.nseindia.com/corporate/BILLIONBRAINS_16102026165927_EC_Trans_SD.pdf",

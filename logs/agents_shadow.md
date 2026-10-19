@@ -65,3 +65,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-16 17:39 · event_triage GROWW E02, would add this line
 - 🤖 Filed concall transcript; no detail in disclosure text itself to assess impact.
 - [ ] noise  `event:INE0HOQ01053:E02:106820304`
+
+## 2026-10-19 19:27 · event_triage HDFCBANK E01, would add this line
+- 🤖 Routine filing: HDFC Bank submitted Sept-quarter financial results to the exchange.
+- [ ] noise  `event:INE040A01034:E01:september302026`
