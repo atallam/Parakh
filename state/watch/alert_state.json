@@ -1,6 +1,30 @@
 {
  "agent_counts": {},
- "digest": {},
+ "digest": {
+  "2026-10-21": [
+   {
+    "alert_id": "01M5FSA7KNN1ZABKCYRN4VX8WV",
+    "asof": "2026-10-21",
+    "code": "M04",
+    "direction": "entry",
+    "extra": {},
+    "group": "",
+    "headline": "Volatility contraction pattern · close 272.50",
+    "isin": "INE12UN01015",
+    "kind": "signal",
+    "link": null,
+    "note": null,
+    "owned": true,
+    "pnl_pct": 42.32960925952043,
+    "severity": "Medium",
+    "source": "watcher",
+    "symbol": "SHADOWFAX",
+    "top_decile": false,
+    "valence": "positive",
+    "weight_pct": 22.543310907106097
+   }
+  ]
+ },
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
@@ -28,6 +52,7 @@
   "event:INE854D01024:E13:106812488": "2026-10-12",
   "signal:INE0HOQ01053:M12": "2026-10-16",
   "signal:INE101A01026:M20": "2026-10-14",
+  "signal:INE12UN01015:M04": "2026-10-21",
   "signal:INE646L01027:M21": "2026-10-14"
  },
  "last_sent": {
@@ -52,8 +77,8 @@
   "event:INE726G01019:E01": "2026-10-13",
   "event:INE726G01019:E13": "2026-10-13",
   "event:INE854D01024:E13": "2026-10-12",
-  "signal:INE0HOQ01053:M12": "2026-10-16",
   "signal:INE101A01026:M20": "2026-10-14",
+  "signal:INE12UN01015:M04": "2026-10-21",
   "signal:INE646L01027:M21": "2026-10-14"
  },
  "muted": []
