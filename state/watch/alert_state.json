@@ -1,30 +1,6 @@
 {
  "agent_counts": {},
- "digest": {
-  "2026-10-21": [
-   {
-    "alert_id": "01M5FSA7KNN1ZABKCYRN4VX8WV",
-    "asof": "2026-10-21",
-    "code": "M04",
-    "direction": "entry",
-    "extra": {},
-    "group": "",
-    "headline": "Volatility contraction pattern · close 272.50",
-    "isin": "INE12UN01015",
-    "kind": "signal",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": 42.32960925952043,
-    "severity": "Medium",
-    "source": "watcher",
-    "symbol": "SHADOWFAX",
-    "top_decile": false,
-    "valence": "positive",
-    "weight_pct": 22.543310907106097
-   }
-  ]
- },
+ "digest": {},
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",

@@ -49,3 +49,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-19 19:30 · evening digest (1 items), would be sent
 - 🟡 HDFCBANK 🟢 OWNED wt 16.7% P&L −9.7% E01 Results filed: HDFC Bank Limited has submitted to the Exchange, the financial results for the period end…  Open ▸
 - [ ] noise  `01M5AT3PB0ENN6FSHNKQYP6SRG`
+
+## 2026-10-21 18:16 · evening digest (1 items), would be sent
+- 🟢 SHADOWFAX 🟢 OWNED wt 22.5% P&L +42.3% M04 Volatility contraction pattern · close 272.50  Open ▸
+- [ ] noise  `01M5FSA7KNN1ZABKCYRN4VX8WV`
