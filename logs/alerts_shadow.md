@@ -53,3 +53,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-21 18:16 · evening digest (1 items), would be sent
 - 🟢 SHADOWFAX 🟢 OWNED wt 22.5% P&L +42.3% M04 Volatility contraction pattern · close 272.50  Open ▸
 - [ ] noise  `01M5FSA7KNN1ZABKCYRN4VX8WV`
+
+## 2026-10-22 17:48 · HDFCBANK M20 (Medium), would be sent now: exit or warning signal on an owned stock
+- 🟡 HDFCBANK 🟢 OWNED wt 16.6% P&L −14.0% M20 50 DMA breakdown · close 694.05  Open ▸
+- [ ] noise  `01M5JBNS8S9NWENVAVX2EQ4BPK`
