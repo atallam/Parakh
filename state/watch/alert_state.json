@@ -1,38 +1,6 @@
 {
  "agent_counts": {},
- "digest": {
-  "2026-10-23": [
-   {
-    "alert_id": "01M5MYHF6FCR5RHGTMCEA299MG",
-    "asof": "2026-10-23",
-    "code": "E02",
-    "direction": "info",
-    "extra": {
-     "desc": "Analysts/Institutional Investor Meet/Con. Call Updates",
-     "filed": "2026-10-23",
-     "filing_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK_23102026224657_SEintimationTranscriptofearningscall17oct2026.pdf",
-     "max_severity": "Medium",
-     "refresh": true,
-     "rule": "E02",
-     "text": "HDFC Bank Limited has informed the Exchange about Transcript"
-    },
-    "group": "106827180",
-    "headline": "Concall transcript filed: HDFC Bank Limited has informed the Exchange about Transcript",
-    "isin": "INE040A01034",
-    "kind": "event",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": -14.120956099424243,
-    "severity": "Medium",
-    "source": "events",
-    "symbol": "HDFCBANK",
-    "top_decile": false,
-    "valence": "neutral",
-    "weight_pct": 16.757999497552408
-   }
-  ]
- },
+ "digest": {},
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",

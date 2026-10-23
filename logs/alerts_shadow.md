@@ -61,3 +61,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-23 17:39 · MAZDOCK M20 (Medium), would be sent now: exit or warning signal on an owned stock
 - 🟡 MAZDOCK 🟢 OWNED wt 13.5% P&L −23.3% M20 50 DMA breakdown · close 1,860.00  Open ▸
 - [ ] noise  `01M5MXGFGSWTE90E9YFNT8B9K7`
+
+## 2026-10-23 17:58 · evening digest (1 items), would be sent
+- 🟡 HDFCBANK 🟢 OWNED wt 16.8% P&L −14.1% E02 Concall transcript filed: HDFC Bank Limited has informed the Exchange about Transcript  Open ▸
+- [ ] noise  `01M5MYHF6FCR5RHGTMCEA299MG`
