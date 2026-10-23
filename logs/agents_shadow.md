@@ -69,3 +69,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-19 19:27 · event_triage HDFCBANK E01, would add this line
 - 🤖 Routine filing: HDFC Bank submitted Sept-quarter financial results to the exchange.
 - [ ] noise  `event:INE040A01034:E01:september302026`
+
+## 2026-10-23 17:57 · event_triage HDFCBANK E02, would add this line
+- 🤖 Routine filing: exchange intimation of concall transcript upload, no new financial content disclosed.
+- [ ] noise  `event:INE040A01034:E02:106827180`

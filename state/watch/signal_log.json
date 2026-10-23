@@ -215,6 +215,15 @@
    "key": "event:INE040A01034:E01:september302026",
    "kind": "event",
    "symbol": "HDFCBANK"
+  },
+  {
+   "code": "E02",
+   "date": "2026-10-23",
+   "headline": "Concall transcript filed: HDFC Bank Limited has informed the Exchange about Transcript",
+   "isin": "INE040A01034",
+   "key": "event:INE040A01034:E02:106827180",
+   "kind": "event",
+   "symbol": "HDFCBANK"
   }
  ]
 }
