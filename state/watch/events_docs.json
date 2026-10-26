@@ -29,6 +29,12 @@
   "rule": "E02",
   "text": "Billionbrains Garage Ventures Limited has informed the Exchange about Transcript"
  },
+ "event:INE0LEZ01016:E01:september302026": {
+  "filed": "2026-10-26",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/ATHERENERGY_26102026142521_Tofileresultsigned.pdf",
+  "rule": "E01",
+  "text": "Ather Energy Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
+ },
  "event:INE0LEZ01016:E11:548d": {
   "filed": "2026-10-14",
   "filing_url": null,

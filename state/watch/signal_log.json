@@ -224,6 +224,15 @@
    "key": "event:INE040A01034:E02:106827180",
    "kind": "event",
    "symbol": "HDFCBANK"
+  },
+  {
+   "code": "E01",
+   "date": "2026-10-26",
+   "headline": "Results filed: Ather Energy Limited has submitted to the Exchange, the financial results for the period…",
+   "isin": "INE0LEZ01016",
+   "key": "event:INE0LEZ01016:E01:september302026",
+   "kind": "event",
+   "symbol": "ATHERENERG"
   }
  ]
 }
