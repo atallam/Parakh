@@ -1,38 +1,6 @@
 {
  "agent_counts": {},
- "digest": {
-  "2026-10-26": [
-   {
-    "alert_id": "01M5WV3BQT77RCJ8Y6P4Q9D2JV",
-    "asof": "2026-10-26",
-    "code": "E01",
-    "direction": "info",
-    "extra": {
-     "desc": "Outcome of Board Meeting",
-     "filed": "2026-10-26",
-     "filing_url": "https://nsearchives.nseindia.com/corporate/ATHERENERGY_26102026142521_Tofileresultsigned.pdf",
-     "max_severity": "Medium",
-     "refresh": true,
-     "rule": "E01",
-     "text": "Ather Energy Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
-    },
-    "group": "september302026",
-    "headline": "Results filed: Ather Energy Limited has submitted to the Exchange, the financial results for the period…",
-    "isin": "INE0LEZ01016",
-    "kind": "event",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": 21.2104177719066,
-    "severity": "Medium",
-    "source": "events",
-    "symbol": "ATHERENERG",
-    "top_decile": false,
-    "valence": "neutral",
-    "weight_pct": 8.345135578124873
-   }
-  ]
- },
+ "digest": {},
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",

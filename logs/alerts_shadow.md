@@ -65,3 +65,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-23 17:58 · evening digest (1 items), would be sent
 - 🟡 HDFCBANK 🟢 OWNED wt 16.8% P&L −14.1% E02 Concall transcript filed: HDFC Bank Limited has informed the Exchange about Transcript  Open ▸
 - [ ] noise  `01M5MYHF6FCR5RHGTMCEA299MG`
+
+## 2026-10-26 19:35 · evening digest (1 items), would be sent
+- 🟡 ATHERENERG 🟢 OWNED wt 8.3% P&L +21.2% E01 Results filed: Ather Energy Limited has submitted to the Exchange, the financial results for the period…  Open ▸
+- [ ] noise  `01M5WV3BQT77RCJ8Y6P4Q9D2JV`
