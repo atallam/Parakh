@@ -69,3 +69,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-26 19:35 · evening digest (1 items), would be sent
 - 🟡 ATHERENERG 🟢 OWNED wt 8.3% P&L +21.2% E01 Results filed: Ather Energy Limited has submitted to the Exchange, the financial results for the period…  Open ▸
 - [ ] noise  `01M5WV3BQT77RCJ8Y6P4Q9D2JV`
+
+## 2026-10-27 18:30 · SHADOWFAX M23 (Medium), would be sent now: exit or warning signal on an owned stock
+- 🟡 SHADOWFAX 🟢 OWNED wt 24.1% P&L +52.7% M23 Bearish RSI divergence · close 292.30  Open ▸
+- [ ] noise  `01M5ZA28SVW2FR6YQH8J3PH0T0`

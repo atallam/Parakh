@@ -1,6 +1,30 @@
 {
  "agent_counts": {},
- "digest": {},
+ "digest": {
+  "2026-10-27": [
+   {
+    "alert_id": "01M5ZA28STJ13JKAN2EY0KPVWJ",
+    "asof": "2026-10-27",
+    "code": "M12",
+    "direction": "entry",
+    "extra": {},
+    "group": "",
+    "headline": "50 DMA pullback bounce · close 1,674.00",
+    "isin": "INE0LEZ01016",
+    "kind": "signal",
+    "link": null,
+    "note": null,
+    "owned": true,
+    "pnl_pct": 47.0335067754867,
+    "severity": "Medium",
+    "source": "watcher",
+    "symbol": "ATHERENERG",
+    "top_decile": false,
+    "valence": "positive",
+    "weight_pct": 9.873554909127789
+   }
+  ]
+ },
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
@@ -30,8 +54,10 @@
   "event:INE854D01024:E13:106812488": "2026-10-12",
   "signal:INE040A01034:M20": "2026-10-22",
   "signal:INE0HOQ01053:M12": "2026-10-16",
+  "signal:INE0LEZ01016:M12": "2026-10-27",
   "signal:INE101A01026:M20": "2026-10-14",
   "signal:INE12UN01015:M04": "2026-10-21",
+  "signal:INE12UN01015:M23": "2026-10-27",
   "signal:INE249Z01020:M20": "2026-10-23",
   "signal:INE646L01027:M21": "2026-10-14"
  },
@@ -60,7 +86,8 @@
   "event:INE726G01019:E13": "2026-10-13",
   "event:INE854D01024:E13": "2026-10-12",
   "signal:INE040A01034:M20": "2026-10-22",
-  "signal:INE12UN01015:M04": "2026-10-21",
+  "signal:INE0LEZ01016:M12": "2026-10-27",
+  "signal:INE12UN01015:M23": "2026-10-27",
   "signal:INE249Z01020:M20": "2026-10-23",
   "signal:INE646L01027:M21": "2026-10-14"
  },
