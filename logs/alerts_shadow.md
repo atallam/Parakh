@@ -73,3 +73,8 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-27 18:30 · SHADOWFAX M23 (Medium), would be sent now: exit or warning signal on an owned stock
 - 🟡 SHADOWFAX 🟢 OWNED wt 24.1% P&L +52.7% M23 Bearish RSI divergence · close 292.30  Open ▸
 - [ ] noise  `01M5ZA28SVW2FR6YQH8J3PH0T0`
+
+## 2026-10-27 19:00 · evening digest (2 items), would be sent
+- 🟢 ATHERENERG 🟢 OWNED wt 9.9% P&L +47.0% M12 50 DMA pullback bounce · close 1,674.00  Open ▸
+- 🟡 MAZDOCK 🟢 OWNED wt 12.4% P&L −27.7% E01 Results filed: Mazagon Dock Shipbuilders Limited has submitted to the Exchange, the Unaudited Financial…  Open ▸
+- [ ] noise  `01M5ZA28STJ13JKAN2EY0KPVWJ` `01M5ZBADWX71Z42H2J16RVKK8T`
