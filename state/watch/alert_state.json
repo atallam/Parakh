@@ -22,6 +22,35 @@
     "top_decile": false,
     "valence": "positive",
     "weight_pct": 9.873554909127789
+   },
+   {
+    "alert_id": "01M5ZBADWX71Z42H2J16RVKK8T",
+    "asof": "2026-10-27",
+    "code": "E01",
+    "direction": "info",
+    "extra": {
+     "desc": "Outcome of Board Meeting",
+     "filed": "2026-10-27",
+     "filing_url": "https://nsearchives.nseindia.com/corporate/MAZDOCK_27102026143906_Outcome_of_BM_27102026.pdf",
+     "max_severity": "Medium",
+     "refresh": true,
+     "rule": "E01",
+     "text": "Mazagon Dock Shipbuilders Limited has submitted to the Exchange, the Unaudited Financial Results (Standalone & Consolidated) of the Company for the quarter and period ended on 30 September 2026."
+    },
+    "group": "106830108",
+    "headline": "Results filed: Mazagon Dock Shipbuilders Limited has submitted to the Exchange, the Unaudited Financial…",
+    "isin": "INE249Z01020",
+    "kind": "event",
+    "link": null,
+    "note": null,
+    "owned": true,
+    "pnl_pct": -27.670103092783506,
+    "severity": "Medium",
+    "source": "events",
+    "symbol": "MAZDOCK",
+    "top_decile": false,
+    "valence": "neutral",
+    "weight_pct": 12.41449126208612
    }
   ]
  },
@@ -37,6 +66,7 @@
   "event:INE176B01034:E13:106814675": "2026-10-12",
   "event:INE208A01029:E07:106812581": "2026-10-12",
   "event:INE233A01035:E07:106813145": "2026-10-12",
+  "event:INE249Z01020:E01:106830108": "2026-10-27",
   "event:INE262H01021:E13:106813089": "2026-10-12",
   "event:INE281B01032:E07:106815664": "2026-10-13",
   "event:INE417T01026:E08:ASM-stagei": "2026-10-12",
@@ -72,6 +102,7 @@
   "event:INE176B01034:E13": "2026-10-12",
   "event:INE208A01029:E07": "2026-10-12",
   "event:INE233A01035:E07": "2026-10-12",
+  "event:INE249Z01020:E01": "2026-10-27",
   "event:INE262H01021:E13": "2026-10-12",
   "event:INE281B01032:E07": "2026-10-13",
   "event:INE417T01026:E08": "2026-10-12",

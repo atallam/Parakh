@@ -77,3 +77,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-26 19:30 · event_triage ATHERENERG E01, would add this line
 - 🤖 Routine filing: Ather submitted Sep-quarter financial results; no figures in text to assess impact.
 - [ ] noise  `event:INE0LEZ01016:E01:september302026`
+
+## 2026-10-27 18:52 · event_triage MAZDOCK E01, would add this line
+- 🤖 Routine filing: Q2 FY27 unaudited results submitted to exchange; no details disclosed yet in this text.
+- [ ] noise  `event:INE249Z01020:E01:106830108`

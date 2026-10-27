@@ -233,6 +233,15 @@
    "key": "event:INE0LEZ01016:E01:september302026",
    "kind": "event",
    "symbol": "ATHERENERG"
+  },
+  {
+   "code": "E01",
+   "date": "2026-10-27",
+   "headline": "Results filed: Mazagon Dock Shipbuilders Limited has submitted to the Exchange, the Unaudited Financial…",
+   "isin": "INE249Z01020",
+   "key": "event:INE249Z01020:E01:106830108",
+   "kind": "event",
+   "symbol": "MAZDOCK"
   }
  ]
 }
