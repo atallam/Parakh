@@ -78,3 +78,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 - 🟢 ATHERENERG 🟢 OWNED wt 9.9% P&L +47.0% M12 50 DMA pullback bounce · close 1,674.00  Open ▸
 - 🟡 MAZDOCK 🟢 OWNED wt 12.4% P&L −27.7% E01 Results filed: Mazagon Dock Shipbuilders Limited has submitted to the Exchange, the Unaudited Financial…  Open ▸
 - [ ] noise  `01M5ZA28STJ13JKAN2EY0KPVWJ` `01M5ZBADWX71Z42H2J16RVKK8T`
+
+## 2026-10-28 18:36 · ATHERENERG M24 (Low), would be sent now: exit or warning signal on an owned stock
+- ⚪ ATHERENERG 🟢 OWNED wt 9.7% P&L +44.9% M24 Over-extension · close 1,650.00  Open ▸
+- [ ] noise  `01M61WSJ9YDBY2GABT5GRTXSMM`
