@@ -41,6 +41,12 @@
   "rule": "E11",
   "text": "Lock-in expiry expected 05 Nov 2026: promoters' minimum contribution (check the prospectus)"
  },
+ "event:INE12UN01015:E01:september302026": {
+  "filed": "2026-10-29",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/9900590024_29102026134914_Outcome_of_Board_Meeting.pdf",
+  "rule": "E01",
+  "text": "Shadowfax Technologies Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
+ },
  "event:INE171A01029:E07:106813341": {
   "filed": "2026-10-10",
   "filing_url": "https://nsearchives.nseindia.com/corporate/FEDERALBNK_10102026000314_FBL_Care_Ratings_091026_F.pdf",
@@ -130,6 +136,12 @@
   "filing_url": "https://nsearchives.nseindia.com/corporate/NMDC_13102026185915_NMDC_SE13102026.pdf",
   "rule": "E13",
   "text": "NMDC Limited has informed the Exchange regarding Change in Director(s) of the company."
+ },
+ "event:INE646L01027:E01:september302026": {
+  "filed": "2026-10-29",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/Indigo1_29102026155229_Outcome_of_BM_29102026_Final.pdf",
+  "rule": "E01",
+  "text": "InterGlobe Aviation Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
  },
  "event:INE646L01027:E14:106816211": {
   "filed": "2026-10-13",

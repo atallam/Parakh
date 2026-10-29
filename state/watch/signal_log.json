@@ -242,6 +242,24 @@
    "key": "event:INE249Z01020:E01:106830108",
    "kind": "event",
    "symbol": "MAZDOCK"
+  },
+  {
+   "code": "E01",
+   "date": "2026-10-29",
+   "headline": "Results filed: InterGlobe Aviation Limited has submitted to the Exchange, the financial results for the…",
+   "isin": "INE646L01027",
+   "key": "event:INE646L01027:E01:september302026",
+   "kind": "event",
+   "symbol": "INDIGO"
+  },
+  {
+   "code": "E01",
+   "date": "2026-10-29",
+   "headline": "Results filed: Shadowfax Technologies Limited has submitted to the Exchange, the financial results for t…",
+   "isin": "INE12UN01015",
+   "key": "event:INE12UN01015:E01:september302026",
+   "kind": "event",
+   "symbol": "SHADOWFAX"
   }
  ]
 }

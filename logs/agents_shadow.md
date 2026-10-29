@@ -81,3 +81,11 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-27 18:52 · event_triage MAZDOCK E01, would add this line
 - 🤖 Routine filing: Q2 FY27 unaudited results submitted to exchange; no details disclosed yet in this text.
 - [ ] noise  `event:INE249Z01020:E01:106830108`
+
+## 2026-10-29 19:09 · event_triage INDIGO E01, would add this line
+- 🤖 Q2 FY27 results filed; routine quarterly disclosure, no commentary yet on numbers.
+- [ ] noise  `event:INE646L01027:E01:september302026`
+
+## 2026-10-29 19:09 · event_triage SHADOWFAX E01, would add this line
+- 🤖 Routine filing: Q2 FY27 (Sep 2026) financial results submitted to exchange; no details beyond outcome notice.
+- [ ] noise  `event:INE12UN01015:E01:september302026`
