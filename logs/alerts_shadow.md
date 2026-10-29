@@ -82,3 +82,8 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-28 18:36 · ATHERENERG M24 (Low), would be sent now: exit or warning signal on an owned stock
 - ⚪ ATHERENERG 🟢 OWNED wt 9.7% P&L +44.9% M24 Over-extension · close 1,650.00  Open ▸
 - [ ] noise  `01M61WSJ9YDBY2GABT5GRTXSMM`
+
+## 2026-10-29 19:15 · evening digest (2 items), would be sent
+- 🟡 INDIGO 🟢 OWNED wt 16.4% P&L +7.9% E01 Results filed: InterGlobe Aviation Limited has submitted to the Exchange, the financial results for the…  Open ▸
+- 🟡 SHADOWFAX 🟢 OWNED wt 24.1% P&L +53.7% E01 Results filed: Shadowfax Technologies Limited has submitted to the Exchange, the financial results for t…  Open ▸
+- [ ] noise  `01M64H2DAFT7TWPE6KPZJCXDEN` `01M64H2DAGV849230V0BZ0DQNM`

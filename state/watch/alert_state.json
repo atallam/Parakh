@@ -1,67 +1,6 @@
 {
  "agent_counts": {},
- "digest": {
-  "2026-10-29": [
-   {
-    "alert_id": "01M64H2DAFT7TWPE6KPZJCXDEN",
-    "asof": "2026-10-29",
-    "code": "E01",
-    "direction": "info",
-    "extra": {
-     "desc": "Outcome of Board Meeting",
-     "filed": "2026-10-29",
-     "filing_url": "https://nsearchives.nseindia.com/corporate/Indigo1_29102026155229_Outcome_of_BM_29102026_Final.pdf",
-     "max_severity": "Medium",
-     "refresh": true,
-     "rule": "E01",
-     "text": "InterGlobe Aviation Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
-    },
-    "group": "september302026",
-    "headline": "Results filed: InterGlobe Aviation Limited has submitted to the Exchange, the financial results for the…",
-    "isin": "INE646L01027",
-    "kind": "event",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": 7.939415395508487,
-    "severity": "Medium",
-    "source": "events",
-    "symbol": "INDIGO",
-    "top_decile": false,
-    "valence": "neutral",
-    "weight_pct": 16.411359391869066
-   },
-   {
-    "alert_id": "01M64H2DAGV849230V0BZ0DQNM",
-    "asof": "2026-10-29",
-    "code": "E01",
-    "direction": "info",
-    "extra": {
-     "desc": "Outcome of Board Meeting",
-     "filed": "2026-10-29",
-     "filing_url": "https://nsearchives.nseindia.com/corporate/9900590024_29102026134914_Outcome_of_Board_Meeting.pdf",
-     "max_severity": "Medium",
-     "refresh": true,
-     "rule": "E01",
-     "text": "Shadowfax Technologies Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
-    },
-    "group": "september302026",
-    "headline": "Results filed: Shadowfax Technologies Limited has submitted to the Exchange, the financial results for t…",
-    "isin": "INE12UN01015",
-    "kind": "event",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": 53.742096712847086,
-    "severity": "Medium",
-    "source": "events",
-    "symbol": "SHADOWFAX",
-    "top_decile": false,
-    "valence": "neutral",
-    "weight_pct": 24.11036446356188
-   }
-  ]
- },
+ "digest": {},
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
