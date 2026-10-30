@@ -260,6 +260,15 @@
    "key": "event:INE12UN01015:E01:september302026",
    "kind": "event",
    "symbol": "SHADOWFAX"
+  },
+  {
+   "code": "E02",
+   "date": "2026-10-30",
+   "headline": "Concall transcript filed: Ather Energy Limited has informed the Exchange about Transcript",
+   "isin": "INE0LEZ01016",
+   "key": "event:INE0LEZ01016:E02:106836389",
+   "kind": "event",
+   "symbol": "ATHERENERG"
   }
  ]
 }

@@ -35,6 +35,12 @@
   "rule": "E01",
   "text": "Ather Energy Limited has submitted to the Exchange, the financial results for the period ended September 30, 2026."
  },
+ "event:INE0LEZ01016:E02:106836389": {
+  "filed": "2026-10-30",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/ATHERENERGY_30102026150952_EarningscallQ2FY26signed.pdf",
+  "rule": "E02",
+  "text": "Ather Energy Limited has informed the Exchange about Transcript"
+ },
  "event:INE0LEZ01016:E11:548d": {
   "filed": "2026-10-14",
   "filing_url": null,

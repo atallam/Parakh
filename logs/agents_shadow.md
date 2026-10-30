@@ -89,3 +89,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-29 19:09 · event_triage SHADOWFAX E01, would add this line
 - 🤖 Routine filing: Q2 FY27 (Sep 2026) financial results submitted to exchange; no details beyond outcome notice.
 - [ ] noise  `event:INE12UN01015:E01:september302026`
+
+## 2026-10-30 18:47 · event_triage ATHERENERG E02, would add this line
+- 🤖 Exchange notice that Q2 FY26 earnings call transcript was filed; no content disclosed here.
+- [ ] noise  `event:INE0LEZ01016:E02:106836389`
