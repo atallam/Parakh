@@ -87,3 +87,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 - 🟡 INDIGO 🟢 OWNED wt 16.4% P&L +7.9% E01 Results filed: InterGlobe Aviation Limited has submitted to the Exchange, the financial results for the…  Open ▸
 - 🟡 SHADOWFAX 🟢 OWNED wt 24.1% P&L +53.7% E01 Results filed: Shadowfax Technologies Limited has submitted to the Exchange, the financial results for t…  Open ▸
 - [ ] noise  `01M64H2DAFT7TWPE6KPZJCXDEN` `01M64H2DAGV849230V0BZ0DQNM`
+
+## 2026-10-30 18:53 · evening digest (1 items), would be sent
+- 🟡 ATHERENERG 🟢 OWNED wt 10.4% P&L +54.2% E02 Concall transcript filed: Ather Energy Limited has informed the Exchange about Transcript  Open ▸
+- [ ] noise  `01M67279T7A3VB5BT55NWY9G3C`

@@ -1,38 +1,6 @@
 {
  "agent_counts": {},
- "digest": {
-  "2026-10-30": [
-   {
-    "alert_id": "01M67279T7A3VB5BT55NWY9G3C",
-    "asof": "2026-10-30",
-    "code": "E02",
-    "direction": "info",
-    "extra": {
-     "desc": "Analysts/Institutional Investor Meet/Con. Call Updates",
-     "filed": "2026-10-30",
-     "filing_url": "https://nsearchives.nseindia.com/corporate/ATHERENERGY_30102026150952_EarningscallQ2FY26signed.pdf",
-     "max_severity": "Medium",
-     "refresh": true,
-     "rule": "E02",
-     "text": "Ather Energy Limited has informed the Exchange about Transcript"
-    },
-    "group": "106836389",
-    "headline": "Concall transcript filed: Ather Energy Limited has informed the Exchange about Transcript",
-    "isin": "INE0LEZ01016",
-    "kind": "event",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": 54.235864932947806,
-    "severity": "Medium",
-    "source": "events",
-    "symbol": "ATHERENERG",
-    "top_decile": false,
-    "valence": "neutral",
-    "weight_pct": 10.382914176497597
-   }
-  ]
- },
+ "digest": {},
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
