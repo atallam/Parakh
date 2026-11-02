@@ -95,3 +95,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-02 22:27 · ATHERENERG E08 (High), would be sent now: High-severity event
 - 🔴 ATHERENERG 🟢 OWNED wt 10.4% P&L +54.2% E08 ASM list: Stage I  Open ▸
 - [ ] noise  `01M6F5ZQ0MN3ABJ65QD4AYAB5Y`
+
+## 2026-11-02 22:29 · evening digest (1 items), would be sent
+- 🟡 HDFCBANK 🟢 OWNED wt 16.4% P&L −14.1% E13 Director or key management change (role not in the filing line): HDFC Bank Limited has informed the Exchange about change in Management  Open ▸
+- [ ] noise  `01M6F5ZQ0MN3ABJ65QD4AYAB5Z`
