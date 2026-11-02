@@ -1,14 +1,48 @@
 {
  "agent_counts": {},
- "digest": {},
+ "digest": {
+  "2026-11-02": [
+   {
+    "alert_id": "01M6F5ZQ0MN3ABJ65QD4AYAB5Z",
+    "asof": "2026-11-02",
+    "code": "E13",
+    "direction": "info",
+    "extra": {
+     "desc": "Change in Management",
+     "filed": "2026-10-31",
+     "filing_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK3_31102026221631_SE_INTIMATION-_Sanjay_Dsouza.pdf",
+     "max_severity": "High",
+     "refresh": false,
+     "rule": "E13",
+     "text": "HDFC Bank Limited has informed the Exchange about change in Management"
+    },
+    "group": "106838688",
+    "headline": "Director or key management change (role not in the filing line): HDFC Bank Limited has informed the Exchange about change in Management",
+    "isin": "INE040A01034",
+    "kind": "event",
+    "link": null,
+    "note": null,
+    "owned": true,
+    "pnl_pct": -14.120956099424243,
+    "severity": "Medium",
+    "source": "events",
+    "symbol": "HDFCBANK",
+    "top_decile": false,
+    "valence": "neutral",
+    "weight_pct": 16.385610056339356
+   }
+  ]
+ },
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
   "event:INE040A01034:E01:september302026": "2026-10-19",
   "event:INE040A01034:E02:106827180": "2026-10-23",
+  "event:INE040A01034:E13:106838688": "2026-11-02",
   "event:INE0HOQ01053:E02:106820304": "2026-10-16",
   "event:INE0LEZ01016:E01:september302026": "2026-10-26",
   "event:INE0LEZ01016:E02:106836389": "2026-10-30",
+  "event:INE0LEZ01016:E08:ASM-stagei": "2026-11-02",
   "event:INE0LEZ01016:E11:548d": "2026-10-14",
   "event:INE12UN01015:E01:september302026": "2026-10-29",
   "event:INE171A01029:E07:106813341": "2026-10-12",
@@ -46,9 +80,11 @@
   "event:INE027H01010:E07": "2026-10-12",
   "event:INE040A01034:E01": "2026-10-19",
   "event:INE040A01034:E02": "2026-10-23",
+  "event:INE040A01034:E13": "2026-11-02",
   "event:INE0HOQ01053:E02": "2026-10-16",
   "event:INE0LEZ01016:E01": "2026-10-26",
   "event:INE0LEZ01016:E02": "2026-10-30",
+  "event:INE0LEZ01016:E08": "2026-11-02",
   "event:INE0LEZ01016:E11": "2026-10-14",
   "event:INE12UN01015:E01": "2026-10-29",
   "event:INE171A01029:E07": "2026-10-12",

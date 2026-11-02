@@ -269,6 +269,24 @@
    "key": "event:INE0LEZ01016:E02:106836389",
    "kind": "event",
    "symbol": "ATHERENERG"
+  },
+  {
+   "code": "E13",
+   "date": "2026-11-02",
+   "headline": "Director or key management change (role not in the filing line): HDFC Bank Limited has informed the Exchange about change in Management",
+   "isin": "INE040A01034",
+   "key": "event:INE040A01034:E13:106838688",
+   "kind": "event",
+   "symbol": "HDFCBANK"
+  },
+  {
+   "code": "E08",
+   "date": "2026-11-02",
+   "headline": "ASM list: Stage I",
+   "isin": "INE0LEZ01016",
+   "key": "event:INE0LEZ01016:E08:ASM-stagei",
+   "kind": "event",
+   "symbol": "ATHERENERG"
   }
  ]
 }

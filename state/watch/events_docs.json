@@ -23,6 +23,12 @@
   "rule": "E02",
   "text": "HDFC Bank Limited has informed the Exchange about Transcript"
  },
+ "event:INE040A01034:E13:106838688": {
+  "filed": "2026-10-31",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK3_31102026221631_SE_INTIMATION-_Sanjay_Dsouza.pdf",
+  "rule": "E13",
+  "text": "HDFC Bank Limited has informed the Exchange about change in Management"
+ },
  "event:INE0HOQ01053:E02:106820304": {
   "filed": "2026-10-16",
   "filing_url": "https://nsearchives.nseindia.com/corporate/BILLIONBRAINS_16102026165927_EC_Trans_SD.pdf",
@@ -40,6 +46,12 @@
   "filing_url": "https://nsearchives.nseindia.com/corporate/ATHERENERGY_30102026150952_EarningscallQ2FY26signed.pdf",
   "rule": "E02",
   "text": "Ather Energy Limited has informed the Exchange about Transcript"
+ },
+ "event:INE0LEZ01016:E08:ASM-stagei": {
+  "filed": "2026-11-02",
+  "filing_url": null,
+  "rule": "E08",
+  "text": "ASM list: Stage I"
  },
  "event:INE0LEZ01016:E11:548d": {
   "filed": "2026-10-14",

@@ -97,3 +97,11 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-02 11:59 · monthly_reviewer email section, would be included
 - Nothing changed this month.
 - [ ] noise  `01M6E22D6ZQ2H9WXZEVKSGK35E`
+
+## 2026-11-02 22:27 · event_triage HDFCBANK E13, would add this line
+- 🤖 Exchange filing cites a change in management; no detail on who or role given in the text.
+- [ ] noise  `event:INE040A01034:E13:106838688`
+
+## 2026-11-02 22:27 · event_triage ATHERENERG E08, would add this line
+- 🤖 Stock placed under ASM Stage I surveillance, signaling heightened exchange price-volatility scrutiny.
+- [ ] noise  `event:INE0LEZ01016:E08:ASM-stagei`
