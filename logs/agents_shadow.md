@@ -93,3 +93,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-10-30 18:47 · event_triage ATHERENERG E02, would add this line
 - 🤖 Exchange notice that Q2 FY26 earnings call transcript was filed; no content disclosed here.
 - [ ] noise  `event:INE0LEZ01016:E02:106836389`
+
+## 2026-11-02 11:59 · monthly_reviewer email section, would be included
+- Nothing changed this month.
+- [ ] noise  `01M6E22D6ZQ2H9WXZEVKSGK35E`

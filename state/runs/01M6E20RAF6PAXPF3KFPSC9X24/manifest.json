@@ -1,0 +1,174 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M6E20RAF6PAXPF3KFPSC9X24",
+  "mode": "monthly",
+  "env": "prod",
+  "asof": "2026-10-30",
+  "trigger": "manual",
+  "triggered_by": "user:avinash",
+  "status": "SUCCESS",
+  "started_at": "2026-11-02T11:58:50.192340Z",
+  "finished_at": "2026-11-02T11:59:21.571154Z",
+  "code_version": "e2669b6d99af",
+  "config_hash": "sha256:5641a9b86deae733a827c3b9db2e8b387ecad9925c018f55ab66c27fa9f34fe9",
+  "framework_version": "0.1.0",
+  "lens_versions": {
+    "value": "1.0.0",
+    "momentum": "1.0.0"
+  },
+  "policy_version": "1.0.0",
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M6E20RAF6PAXPF3KFPSC9X24.regime.01",
+      "name": "regime",
+      "seq": 1,
+      "status": "ok",
+      "started_at": "2026-11-02T11:58:52.076640Z",
+      "ended_at": "2026-11-02T11:58:54.361210Z",
+      "duration_ms": 2284.6,
+      "inputs": {},
+      "outputs": {
+        "large": "Risk-Off",
+        "mid": "Neutral",
+        "small": "Risk-On"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M6E20RAF6PAXPF3KFPSC9X24.analyse_stock.02",
+      "name": "analyse_stock",
+      "seq": 2,
+      "status": "ok",
+      "started_at": "2026-11-02T11:59:10.110945Z",
+      "ended_at": "2026-11-02T11:59:16.427128Z",
+      "duration_ms": 6316.2,
+      "inputs": {
+        "isin": "INE646L01027",
+        "symbol": "INDIGO"
+      },
+      "outputs": {
+        "verdict": "SELL",
+        "snapshot": "sha256:d98c9c95b9e567a9b83bc310f17599b0e1d5b9775d0d8fe64c1e768051797bc2"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M6E20RAF6PAXPF3KFPSC9X24.analyse_stock.03",
+      "name": "analyse_stock",
+      "seq": 3,
+      "status": "ok",
+      "started_at": "2026-11-02T11:59:16.427238Z",
+      "ended_at": "2026-11-02T11:59:17.177111Z",
+      "duration_ms": 749.9,
+      "inputs": {
+        "isin": "INE101A01026",
+        "symbol": "M&M"
+      },
+      "outputs": {
+        "verdict": "REDUCE",
+        "snapshot": "sha256:c05c16db7ec97594dc92bd29029c1be13c3edb4048781e3bca1c0509c86faa33"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M6E20RAF6PAXPF3KFPSC9X24.analyse_stock.04",
+      "name": "analyse_stock",
+      "seq": 4,
+      "status": "ok",
+      "started_at": "2026-11-02T11:59:17.177192Z",
+      "ended_at": "2026-11-02T11:59:17.800257Z",
+      "duration_ms": 623.1,
+      "inputs": {
+        "isin": "INE040A01034",
+        "symbol": "HDFCBANK"
+      },
+      "outputs": {
+        "verdict": "REDUCE",
+        "snapshot": "sha256:a7ea1004b6999c12f9f53f78d0d28d3060e9c72a5b8e6b0c8ebd657fde7fd19f"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M6E20RAF6PAXPF3KFPSC9X24.analyse_stock.05",
+      "name": "analyse_stock",
+      "seq": 5,
+      "status": "ok",
+      "started_at": "2026-11-02T11:59:17.800352Z",
+      "ended_at": "2026-11-02T11:59:18.387526Z",
+      "duration_ms": 587.2,
+      "inputs": {
+        "isin": "INE0HOQ01053",
+        "symbol": "GROWW"
+      },
+      "outputs": {
+        "verdict": "SELL",
+        "snapshot": "sha256:17311343c3a1a755423cdd7866a0f833ba9e91c1adc8ba4d952a4f00bd6d3a5a"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M6E20RAF6PAXPF3KFPSC9X24.analyse_stock.06",
+      "name": "analyse_stock",
+      "seq": 6,
+      "status": "ok",
+      "started_at": "2026-11-02T11:59:18.387627Z",
+      "ended_at": "2026-11-02T11:59:19.484485Z",
+      "duration_ms": 1096.9,
+      "inputs": {
+        "isin": "INE249Z01020",
+        "symbol": "MAZDOCK"
+      },
+      "outputs": {
+        "verdict": "ACCUMULATE",
+        "snapshot": "sha256:5a06d92c87260e2341d42f9433b0e9a57a6e947d152ae6916a5bd3188b314c12"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M6E20RAF6PAXPF3KFPSC9X24.analyse_stock.07",
+      "name": "analyse_stock",
+      "seq": 7,
+      "status": "ok",
+      "started_at": "2026-11-02T11:59:19.484559Z",
+      "ended_at": "2026-11-02T11:59:20.066929Z",
+      "duration_ms": 582.4,
+      "inputs": {
+        "isin": "INE0LEZ01016",
+        "symbol": "ATHERENERG"
+      },
+      "outputs": {
+        "verdict": "AVOID",
+        "snapshot": "sha256:ff7b8640222e9e71e6ccd81a206a8f0675c36b6a1c1ed1705c21ef17064a081b"
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M6E20RAF6PAXPF3KFPSC9X24.analyse_stock.08",
+      "name": "analyse_stock",
+      "seq": 8,
+      "status": "ok",
+      "started_at": "2026-11-02T11:59:20.067006Z",
+      "ended_at": "2026-11-02T11:59:20.644674Z",
+      "duration_ms": 577.7,
+      "inputs": {
+        "isin": "INE12UN01015",
+        "symbol": "SHADOWFAX"
+      },
+      "outputs": {
+        "verdict": "HOLD",
+        "snapshot": "sha256:f80026041e0348cf55c721478cbcf17dc3e3a6f1c462a27dfc1a075184244f99"
+      },
+      "error": null
+    }
+  ],
+  "audit_events": 18,
+  "audit_pending": 0,
+  "audit_chain_head": "sha256:ab269a7b9dd9c86f0b2ff1d2021529ad25617e42f0b2d2bbaef7c346b30d4a8b",
+  "audit_sink": "supabase",
+  "llm_tokens": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 0,
+  "agent_runs": 0,
+  "failed_steps": 0
+}
