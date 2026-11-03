@@ -287,6 +287,15 @@
    "key": "event:INE0LEZ01016:E08:ASM-stagei",
    "kind": "event",
    "symbol": "ATHERENERG"
+  },
+  {
+   "code": "E02",
+   "date": "2026-11-03",
+   "headline": "Concall transcript filed: Shadowfax Technologies Limited has informed the Exchange about Transcript of Earnings Con…",
+   "isin": "INE12UN01015",
+   "key": "event:INE12UN01015:E02:106841839",
+   "kind": "event",
+   "symbol": "SHADOWFAX"
   }
  ]
 }

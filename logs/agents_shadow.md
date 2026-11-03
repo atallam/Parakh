@@ -105,3 +105,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-02 22:27 · event_triage ATHERENERG E08, would add this line
 - 🤖 Stock placed under ASM Stage I surveillance, signaling heightened exchange price-volatility scrutiny.
 - [ ] noise  `event:INE0LEZ01016:E08:ASM-stagei`
+
+## 2026-11-03 20:16 · event_triage SHADOWFAX E02, would add this line
+- 🤖 Q2 FY27 earnings call transcript filed (Oct 29); routine disclosure, no new details beyond that it occurred.
+- [ ] noise  `event:INE12UN01015:E02:106841839`
