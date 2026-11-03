@@ -1,38 +1,6 @@
 {
  "agent_counts": {},
- "digest": {
-  "2026-11-03": [
-   {
-    "alert_id": "01M6HGVZGRDVZ735V40GEZAQ1B",
-    "asof": "2026-11-03",
-    "code": "E02",
-    "direction": "info",
-    "extra": {
-     "desc": "Analysts/Institutional Investor Meet/Con. Call Updates",
-     "filed": "2026-11-03",
-     "filing_url": "https://nsearchives.nseindia.com/corporate/9900590024_03112026154012_Transcript_of_the_Earnings_call.pdf",
-     "max_severity": "Medium",
-     "refresh": true,
-     "rule": "E02",
-     "text": "Shadowfax Technologies Limited has informed the Exchange about Transcript of Earnings Conference call for Q2 FY27 held on October 29, 2026"
-    },
-    "group": "106841839",
-    "headline": "Concall transcript filed: Shadowfax Technologies Limited has informed the Exchange about Transcript of Earnings Con…",
-    "isin": "INE12UN01015",
-    "kind": "event",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": 42.53853026866836,
-    "severity": "Medium",
-    "source": "events",
-    "symbol": "SHADOWFAX",
-    "top_decile": false,
-    "valence": "neutral",
-    "weight_pct": 22.36217493627565
-   }
-  ]
- },
+ "digest": {},
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
