@@ -103,3 +103,8 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-03 20:18 · evening digest (1 items), would be sent
 - 🟡 SHADOWFAX 🟢 OWNED wt 22.4% P&L +42.5% E02 Concall transcript filed: Shadowfax Technologies Limited has informed the Exchange about Transcript of Earnings Con…  Open ▸
 - [ ] noise  `01M6HGVZGRDVZ735V40GEZAQ1B`
+
+## 2026-11-04 20:34 · evening digest (2 items), would be sent
+- 🟡 INDIGO 🟢 OWNED wt 17.2% P&L +16.0% E02 Concall transcript filed: InterGlobe Aviation Limited has informed the Exchange about Transcript  Open ▸
+- 🟡 M&M 🟢 OWNED wt 16.6% P&L −5.9% E07 Credit rating action: Mahindra & Mahindra Limited has informed the Exchange about Credit Rating  Open ▸
+- [ ] noise  `01M6M44G7TDJADAKBKBYTRKX74` `01M6M44G7VP2PT5A3ND5FB2QD2`

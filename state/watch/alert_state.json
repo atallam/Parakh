@@ -1,67 +1,6 @@
 {
  "agent_counts": {},
- "digest": {
-  "2026-11-04": [
-   {
-    "alert_id": "01M6M44G7TDJADAKBKBYTRKX74",
-    "asof": "2026-11-04",
-    "code": "E02",
-    "direction": "info",
-    "extra": {
-     "desc": "Analysts/Institutional Investor Meet/Con. Call Updates",
-     "filed": "2026-11-04",
-     "filing_url": "https://nsearchives.nseindia.com/corporate/Indigo1_04112026174231_Transcript_Q2_FY27.pdf",
-     "max_severity": "Medium",
-     "refresh": true,
-     "rule": "E02",
-     "text": "InterGlobe Aviation Limited has informed the Exchange about Transcript"
-    },
-    "group": "106844936",
-    "headline": "Concall transcript filed: InterGlobe Aviation Limited has informed the Exchange about Transcript",
-    "isin": "INE646L01027",
-    "kind": "event",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": 16.020441147043883,
-    "severity": "Medium",
-    "source": "events",
-    "symbol": "INDIGO",
-    "top_decile": false,
-    "valence": "neutral",
-    "weight_pct": 17.170447224987146
-   },
-   {
-    "alert_id": "01M6M44G7VP2PT5A3ND5FB2QD2",
-    "asof": "2026-11-04",
-    "code": "E07",
-    "direction": "info",
-    "extra": {
-     "desc": "Credit Rating",
-     "filed": "2026-11-04",
-     "filing_url": "https://nsearchives.nseindia.com/corporate/ferozebaria_04112026194248_CARE04112026.pdf",
-     "max_severity": "High",
-     "refresh": false,
-     "rule": "E07",
-     "text": "Mahindra & Mahindra Limited has informed the Exchange about Credit Rating"
-    },
-    "group": "106845615",
-    "headline": "Credit rating action: Mahindra & Mahindra Limited has informed the Exchange about Credit Rating",
-    "isin": "INE101A01026",
-    "kind": "event",
-    "link": null,
-    "note": null,
-    "owned": true,
-    "pnl_pct": -5.887531068765539,
-    "severity": "Medium",
-    "source": "events",
-    "symbol": "M&M",
-    "top_decile": false,
-    "valence": "neutral",
-    "weight_pct": 16.561081436239675
-   }
-  ]
- },
+ "digest": {},
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
