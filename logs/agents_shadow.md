@@ -109,3 +109,11 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-03 20:16 · event_triage SHADOWFAX E02, would add this line
 - 🤖 Q2 FY27 earnings call transcript filed (Oct 29); routine disclosure, no new details beyond that it occurred.
 - [ ] noise  `event:INE12UN01015:E02:106841839`
+
+## 2026-11-04 20:31 · event_triage INDIGO E02, would add this line
+- 🤖 Exchange notice of Q2 FY27 concall transcript filing; no content beyond filing notice itself.
+- [ ] noise  `event:INE646L01027:E02:106844936`
+
+## 2026-11-04 20:31 · event_triage M&M E07, would add this line
+- 🤖 Credit rating update filed by CARE; filing text has no detail on direction or rationale.
+- [ ] noise  `event:INE101A01026:E07:106845615`

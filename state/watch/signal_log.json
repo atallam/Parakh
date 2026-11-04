@@ -296,6 +296,24 @@
    "key": "event:INE12UN01015:E02:106841839",
    "kind": "event",
    "symbol": "SHADOWFAX"
+  },
+  {
+   "code": "E02",
+   "date": "2026-11-04",
+   "headline": "Concall transcript filed: InterGlobe Aviation Limited has informed the Exchange about Transcript",
+   "isin": "INE646L01027",
+   "key": "event:INE646L01027:E02:106844936",
+   "kind": "event",
+   "symbol": "INDIGO"
+  },
+  {
+   "code": "E07",
+   "date": "2026-11-04",
+   "headline": "Credit rating action: Mahindra & Mahindra Limited has informed the Exchange about Credit Rating",
+   "isin": "INE101A01026",
+   "key": "event:INE101A01026:E07:106845615",
+   "kind": "event",
+   "symbol": "M&M"
   }
  ]
 }
