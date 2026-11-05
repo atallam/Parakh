@@ -108,3 +108,8 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 - 🟡 INDIGO 🟢 OWNED wt 17.2% P&L +16.0% E02 Concall transcript filed: InterGlobe Aviation Limited has informed the Exchange about Transcript  Open ▸
 - 🟡 M&M 🟢 OWNED wt 16.6% P&L −5.9% E07 Credit rating action: Mahindra & Mahindra Limited has informed the Exchange about Credit Rating  Open ▸
 - [ ] noise  `01M6M44G7TDJADAKBKBYTRKX74` `01M6M44G7VP2PT5A3ND5FB2QD2`
+
+## 2026-11-05 20:50 · evening digest (2 items), would be sent
+- 🟡 M&M 🟢 OWNED wt 16.7% P&L −4.1% E01 Results filed: Mahindra & Mahindra Limited has submitted to the Exchange, the Unaudited Standalone and C…  Open ▸
+- 🟡 M&M 🟢 OWNED wt 16.7% P&L −4.1% E13 Director or key management change (role not in the filing line): Mahindra & Mahindra Limited has informed the Exchange about change in Management  Open ▸
+- [ ] noise  `01M6PQFRFJYH1W6D89ZF8NT2XV` `01M6PQFRFJYH1W6D89ZF8NT2XW`
