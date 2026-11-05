@@ -117,3 +117,11 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-04 20:31 · event_triage M&M E07, would add this line
 - 🤖 Credit rating update filed by CARE; filing text has no detail on direction or rationale.
 - [ ] noise  `event:INE101A01026:E07:106845615`
+
+## 2026-11-05 20:47 · event_triage M&M E13, would add this line
+- 🤖 Filing reports a change in M&M's management; details not specified in exchange text.
+- [ ] noise  `event:INE101A01026:E13:106846758`
+
+## 2026-11-05 20:47 · event_triage M&M E01, would add this line
+- 🤖 Routine Q2 FY27 results filing submitted to exchange; no unusual content in the disclosure text.
+- [ ] noise  `event:INE101A01026:E01:106846728`

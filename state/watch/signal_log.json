@@ -314,6 +314,24 @@
    "key": "event:INE101A01026:E07:106845615",
    "kind": "event",
    "symbol": "M&M"
+  },
+  {
+   "code": "E13",
+   "date": "2026-11-05",
+   "headline": "Director or key management change (role not in the filing line): Mahindra & Mahindra Limited has informed the Exchange about change in Management",
+   "isin": "INE101A01026",
+   "key": "event:INE101A01026:E13:106846758",
+   "kind": "event",
+   "symbol": "M&M"
+  },
+  {
+   "code": "E01",
+   "date": "2026-11-05",
+   "headline": "Results filed: Mahindra & Mahindra Limited has submitted to the Exchange, the Unaudited Standalone and C…",
+   "isin": "INE101A01026",
+   "key": "event:INE101A01026:E01:106846728",
+   "kind": "event",
+   "symbol": "M&M"
   }
  ]
 }

@@ -59,11 +59,23 @@
   "rule": "E11",
   "text": "Lock-in expiry expected 05 Nov 2026: promoters' minimum contribution (check the prospectus)"
  },
+ "event:INE101A01026:E01:106846728": {
+  "filed": "2026-11-05",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/Pooja_05112026125638_Outcome5Nov.pdf",
+  "rule": "E01",
+  "text": "Mahindra & Mahindra Limited has submitted to the Exchange, the Unaudited Standalone and Consolidated financial results for the Second Quarter and Half Year ended September 30, 2026."
+ },
  "event:INE101A01026:E07:106845615": {
   "filed": "2026-11-04",
   "filing_url": "https://nsearchives.nseindia.com/corporate/ferozebaria_04112026194248_CARE04112026.pdf",
   "rule": "E07",
   "text": "Mahindra & Mahindra Limited has informed the Exchange about Credit Rating"
+ },
+ "event:INE101A01026:E13:106846758": {
+  "filed": "2026-11-05",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/Pooja_05112026130348_Outcome5Nov.pdf",
+  "rule": "E13",
+  "text": "Mahindra & Mahindra Limited has informed the Exchange about change in Management"
  },
  "event:INE12UN01015:E01:september302026": {
   "filed": "2026-10-29",
