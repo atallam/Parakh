@@ -113,3 +113,10 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 - 🟡 M&M 🟢 OWNED wt 16.7% P&L −4.1% E01 Results filed: Mahindra & Mahindra Limited has submitted to the Exchange, the Unaudited Standalone and C…  Open ▸
 - 🟡 M&M 🟢 OWNED wt 16.7% P&L −4.1% E13 Director or key management change (role not in the filing line): Mahindra & Mahindra Limited has informed the Exchange about change in Management  Open ▸
 - [ ] noise  `01M6PQFRFJYH1W6D89ZF8NT2XV` `01M6PQFRFJYH1W6D89ZF8NT2XW`
+
+## 2026-11-06 20:06 · evening digest (4 items), would be sent
+- 🟡 HDFCBANK 🟢 OWNED wt 16.5% P&L −5.8% E13 Director or key management change (role not in the filing line): HDFC Bank Limited has informed the Exchange about change in Management  Open ▸
+- ⚪ GROWW 🟢 OWNED wt 4.9% P&L +15.0% E10 Bulk or block deal: Buy 35518249 @ 215.01 (GOLDMAN SACHS BANK EUROPE SE - ODI)  Open ▸
+- ⚪ GROWW 🟢 OWNED wt 4.9% P&L +15.0% E10 Bulk or block deal: Sell 60213215 @ 215.2 (PEAK XV PARTNERS INVESTMENTS VI-1)  Open ▸
+- ⚪ GROWW 🟢 OWNED wt 4.9% P&L +15.0% E10 Bulk or block deal: Sell 4380 @ 212.11 (GOLDMAN SACHS BANK EUROPE SE - ODI)  Open ▸
+- [ ] noise  `01M6S7AT8HA43G33MBBWV95AT7` `01M6S7AT8HA43G33MBBWV95AT8` `01M6S7AT8HA43G33MBBWV95AT9` `01M6S7AT8HA43G33MBBWV95ATA`
