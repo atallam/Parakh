@@ -125,3 +125,19 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-05 20:47 · event_triage M&M E01, would add this line
 - 🤖 Routine Q2 FY27 results filing submitted to exchange; no unusual content in the disclosure text.
 - [ ] noise  `event:INE101A01026:E01:106846728`
+
+## 2026-11-06 20:03 · event_triage HDFCBANK E13, would add this line
+- 🤖 Filing notes a change in HDFC Bank's management; no verdict/thesis data available to assess further impact.
+- [ ] noise  `event:INE040A01034:E13:106850382`
+
+## 2026-11-06 20:03 · event_triage GROWW E10, would add this line
+- 🤖 Bulk/block buy by Goldman Sachs Bank Europe SE (ODI) in GROWW shares; institutional interest signal.
+- [ ] noise  `event:INE0HOQ01053:E10:06nov2026goldmansachsbankeuropeseodibuy35518249`
+
+## 2026-11-06 20:03 · event_triage GROWW E10, would add this line
+- 🤖 Early investor Peak XV sold a large block via bulk/block deal; a pre-IPO backer is reducing stake.
+- [ ] noise  `event:INE0HOQ01053:E10:06nov2026peakxvpartnersinvestmentsvi1sell60213215`
+
+## 2026-11-06 20:03 · event_triage GROWW E10, would add this line
+- 🤖 Bulk/block deal: Goldman Sachs Bank Europe (ODI) sold shares via block deal.
+- [ ] noise  `event:INE0HOQ01053:E10:06nov2026goldmansachsbankeuropeseodisell4380`

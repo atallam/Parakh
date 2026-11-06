@@ -29,11 +29,35 @@
   "rule": "E13",
   "text": "HDFC Bank Limited has informed the Exchange about change in Management"
  },
+ "event:INE040A01034:E13:106850382": {
+  "filed": "2026-11-06",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK3_06112026152141_SE_Intimation-Srivatsan.pdf",
+  "rule": "E13",
+  "text": "HDFC Bank Limited has informed the Exchange about change in Management"
+ },
  "event:INE0HOQ01053:E02:106820304": {
   "filed": "2026-10-16",
   "filing_url": "https://nsearchives.nseindia.com/corporate/BILLIONBRAINS_16102026165927_EC_Trans_SD.pdf",
   "rule": "E02",
   "text": "Billionbrains Garage Ventures Limited has informed the Exchange about Transcript"
+ },
+ "event:INE0HOQ01053:E10:06nov2026goldmansachsbankeuropeseodibuy35518249": {
+  "filed": "2026-11-06",
+  "filing_url": null,
+  "rule": "E10",
+  "text": "Bulk or block deal: Buy 35518249 @ 215.01 (GOLDMAN SACHS BANK EUROPE SE - ODI)"
+ },
+ "event:INE0HOQ01053:E10:06nov2026goldmansachsbankeuropeseodisell4380": {
+  "filed": "2026-11-06",
+  "filing_url": null,
+  "rule": "E10",
+  "text": "Bulk or block deal: Sell 4380 @ 212.11 (GOLDMAN SACHS BANK EUROPE SE - ODI)"
+ },
+ "event:INE0HOQ01053:E10:06nov2026peakxvpartnersinvestmentsvi1sell60213215": {
+  "filed": "2026-11-06",
+  "filing_url": null,
+  "rule": "E10",
+  "text": "Bulk or block deal: Sell 60213215 @ 215.2 (PEAK XV PARTNERS INVESTMENTS VI-1)"
  },
  "event:INE0LEZ01016:E01:september302026": {
   "filed": "2026-10-26",
