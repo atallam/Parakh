@@ -1,0 +1,78 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M71827STQMAKX6943C5W4VYF",
+  "mode": "watch",
+  "env": "prod",
+  "asof": "2026-11-09",
+  "trigger": "cron",
+  "triggered_by": "scheduler:daily-watch",
+  "status": "SUCCESS",
+  "started_at": "2026-11-09T22:50:04.476356Z",
+  "finished_at": "2026-11-09T22:50:14.382547Z",
+  "code_version": "e2669b6d99af",
+  "config_hash": "sha256:5641a9b86deae733a827c3b9db2e8b387ecad9925c018f55ab66c27fa9f34fe9",
+  "framework_version": "0.1.0",
+  "lens_versions": {},
+  "policy_version": null,
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M71827STQMAKX6943C5W4VYF.positions.01",
+      "name": "positions",
+      "seq": 1,
+      "status": "ok",
+      "started_at": "2026-11-09T22:50:05.886957Z",
+      "ended_at": "2026-11-09T22:50:07.738028Z",
+      "duration_ms": 1851.1,
+      "inputs": {},
+      "outputs": {
+        "owned": 7
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M71827STQMAKX6943C5W4VYF.scan.02",
+      "name": "scan",
+      "seq": 2,
+      "status": "ok",
+      "started_at": "2026-11-09T22:50:07.738230Z",
+      "ended_at": "2026-11-09T22:50:13.520585Z",
+      "duration_ms": 5782.4,
+      "inputs": {
+        "stocks": 7
+      },
+      "outputs": {
+        "scanned": 7,
+        "alerts": 0,
+        "errors": 0,
+        "seeded": false
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M71827STQMAKX6943C5W4VYF.notify.03",
+      "name": "notify",
+      "seq": 3,
+      "status": "ok",
+      "started_at": "2026-11-09T22:50:13.520778Z",
+      "ended_at": "2026-11-09T22:50:13.521385Z",
+      "duration_ms": 0.6,
+      "inputs": {},
+      "outputs": {
+        "sent": 0,
+        "shadowed": 0,
+        "suppressed": 0
+      },
+      "error": null
+    }
+  ],
+  "audit_events": 2,
+  "audit_pending": 0,
+  "audit_chain_head": "sha256:1ee916d7b915789a111a1cc1e31d02e379de5c0126ccc43dd3ca45f2de42c274",
+  "audit_sink": "supabase",
+  "llm_tokens": 0,
+  "alerts_sent": 0,
+  "alerts_suppressed": 0,
+  "agent_runs": 0,
+  "failed_steps": 0
+}
