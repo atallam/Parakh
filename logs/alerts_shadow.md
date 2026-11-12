@@ -120,3 +120,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 - ⚪ GROWW 🟢 OWNED wt 4.9% P&L +15.0% E10 Bulk or block deal: Sell 60213215 @ 215.2 (PEAK XV PARTNERS INVESTMENTS VI-1)  Open ▸
 - ⚪ GROWW 🟢 OWNED wt 4.9% P&L +15.0% E10 Bulk or block deal: Sell 4380 @ 212.11 (GOLDMAN SACHS BANK EUROPE SE - ODI)  Open ▸
 - [ ] noise  `01M6S7AT8HA43G33MBBWV95AT7` `01M6S7AT8HA43G33MBBWV95AT8` `01M6S7AT8HA43G33MBBWV95AT9` `01M6S7AT8HA43G33MBBWV95ATA`
+
+## 2026-11-12 21:08 · evening digest (1 items), would be sent
+- 🟡 M&M 🟢 OWNED wt 18.1% P&L +12.1% E02 Concall transcript filed: Mahindra & Mahindra Limited has informed the Exchange about Transcript of M&M Analyst Mee…  Open ▸
+- [ ] noise  `01M78S2J03ZQJ4W098K2SBAXVF`
