@@ -1,6 +1,38 @@
 {
  "agent_counts": {},
- "digest": {},
+ "digest": {
+  "2026-11-12": [
+   {
+    "alert_id": "01M78S2J03ZQJ4W098K2SBAXVF",
+    "asof": "2026-11-12",
+    "code": "E02",
+    "direction": "info",
+    "extra": {
+     "desc": "Analysts/Institutional Investor Meet/Con. Call Updates",
+     "filed": "2026-11-11",
+     "filing_url": "https://nsearchives.nseindia.com/corporate/AmitDodani_11112026185839_Intimation_Transcript_Q2F27_Earningscall_05112026.pdf",
+     "max_severity": "Medium",
+     "refresh": true,
+     "rule": "E02",
+     "text": "Mahindra & Mahindra Limited has informed the Exchange about Transcript of M&M Analyst Meet Q2F27"
+    },
+    "group": "106855618",
+    "headline": "Concall transcript filed: Mahindra & Mahindra Limited has informed the Exchange about Transcript of M&M Analyst Mee…",
+    "isin": "INE101A01026",
+    "kind": "event",
+    "link": null,
+    "note": null,
+    "owned": true,
+    "pnl_pct": 12.138825600662795,
+    "severity": "Medium",
+    "source": "events",
+    "symbol": "M&M",
+    "top_decile": false,
+    "valence": "neutral",
+    "weight_pct": 18.093541392282265
+   }
+  ]
+ },
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
@@ -17,6 +49,7 @@
   "event:INE0LEZ01016:E08:ASM-stagei": "2026-11-02",
   "event:INE0LEZ01016:E11:548d": "2026-10-14",
   "event:INE101A01026:E01:106846728": "2026-11-05",
+  "event:INE101A01026:E02:106855618": "2026-11-12",
   "event:INE101A01026:E07:106845615": "2026-11-04",
   "event:INE101A01026:E13:106846758": "2026-11-05",
   "event:INE12UN01015:E01:september302026": "2026-10-29",
@@ -65,6 +98,7 @@
   "event:INE0LEZ01016:E08": "2026-11-02",
   "event:INE0LEZ01016:E11": "2026-10-14",
   "event:INE101A01026:E01": "2026-11-05",
+  "event:INE101A01026:E02": "2026-11-12",
   "event:INE101A01026:E07": "2026-11-04",
   "event:INE101A01026:E13": "2026-11-05",
   "event:INE12UN01015:E01": "2026-10-29",

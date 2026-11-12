@@ -141,3 +141,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-06 20:03 · event_triage GROWW E10, would add this line
 - 🤖 Bulk/block deal: Goldman Sachs Bank Europe (ODI) sold shares via block deal.
 - [ ] noise  `event:INE0HOQ01053:E10:06nov2026goldmansachsbankeuropeseodisell4380`
+
+## 2026-11-12 21:02 · event_triage M&M E02, would add this line
+- 🤖 Routine filing: M&M posted its Q2F27 analyst-call transcript; no new information in the intimation itself.
+- [ ] noise  `event:INE101A01026:E02:106855618`

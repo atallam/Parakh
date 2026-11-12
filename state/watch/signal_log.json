@@ -368,6 +368,15 @@
    "key": "event:INE0HOQ01053:E10:06nov2026goldmansachsbankeuropeseodisell4380",
    "kind": "event",
    "symbol": "GROWW"
+  },
+  {
+   "code": "E02",
+   "date": "2026-11-12",
+   "headline": "Concall transcript filed: Mahindra & Mahindra Limited has informed the Exchange about Transcript of M&M Analyst Mee…",
+   "isin": "INE101A01026",
+   "key": "event:INE101A01026:E02:106855618",
+   "kind": "event",
+   "symbol": "M&M"
   }
  ]
 }

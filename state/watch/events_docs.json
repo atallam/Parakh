@@ -89,6 +89,12 @@
   "rule": "E01",
   "text": "Mahindra & Mahindra Limited has submitted to the Exchange, the Unaudited Standalone and Consolidated financial results for the Second Quarter and Half Year ended September 30, 2026."
  },
+ "event:INE101A01026:E02:106855618": {
+  "filed": "2026-11-11",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/AmitDodani_11112026185839_Intimation_Transcript_Q2F27_Earningscall_05112026.pdf",
+  "rule": "E02",
+  "text": "Mahindra & Mahindra Limited has informed the Exchange about Transcript of M&M Analyst Meet Q2F27"
+ },
  "event:INE101A01026:E07:106845615": {
   "filed": "2026-11-04",
   "filing_url": "https://nsearchives.nseindia.com/corporate/ferozebaria_04112026194248_CARE04112026.pdf",
