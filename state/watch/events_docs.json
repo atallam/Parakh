@@ -35,6 +35,12 @@
   "rule": "E13",
   "text": "HDFC Bank Limited has informed the Exchange about change in Management"
  },
+ "event:INE040A01034:E13:106858944": {
+  "filed": "2026-11-13",
+  "filing_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK3_13112026163422_SE_Intimation-_VSR.pdf",
+  "rule": "E13",
+  "text": "HDFC Bank Limited has informed the Exchange regarding Change in Director(s) of the company."
+ },
  "event:INE0HOQ01053:E02:106820304": {
   "filed": "2026-10-16",
   "filing_url": "https://nsearchives.nseindia.com/corporate/BILLIONBRAINS_16102026165927_EC_Trans_SD.pdf",

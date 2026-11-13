@@ -145,3 +145,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-12 21:02 · event_triage M&M E02, would add this line
 - 🤖 Routine filing: M&M posted its Q2F27 analyst-call transcript; no new information in the intimation itself.
 - [ ] noise  `event:INE101A01026:E02:106855618`
+
+## 2026-11-13 20:38 · event_triage HDFCBANK E13, would add this line
+- 🤖 Routine filing: change in director(s) at HDFC Bank; no details on role or reason given.
+- [ ] noise  `event:INE040A01034:E13:106858944`

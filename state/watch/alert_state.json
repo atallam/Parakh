@@ -1,6 +1,38 @@
 {
  "agent_counts": {},
- "digest": {},
+ "digest": {
+  "2026-11-13": [
+   {
+    "alert_id": "01M7BA3CWVVYC3P6YZTH0SMVAS",
+    "asof": "2026-11-13",
+    "code": "E13",
+    "direction": "info",
+    "extra": {
+     "desc": "Change in Director(s)",
+     "filed": "2026-11-13",
+     "filing_url": "https://nsearchives.nseindia.com/corporate/HDFCBANK3_13112026163422_SE_Intimation-_VSR.pdf",
+     "max_severity": "High",
+     "refresh": false,
+     "rule": "E13",
+     "text": "HDFC Bank Limited has informed the Exchange regarding Change in Director(s) of the company."
+    },
+    "group": "106858944",
+    "headline": "Director or key management change (role not in the filing line): HDFC Bank Limited has informed the Exchange regarding Change in Director(s) of the compan…",
+    "isin": "INE040A01034",
+    "kind": "event",
+    "link": null,
+    "note": null,
+    "owned": true,
+    "pnl_pct": 0.6921875595585991,
+    "severity": "Medium",
+    "source": "events",
+    "symbol": "HDFCBANK",
+    "top_decile": false,
+    "valence": "neutral",
+    "weight_pct": 16.89445991170358
+   }
+  ]
+ },
  "last_dedupe": {
   "event:INE027H01010:E07:106812258": "2026-10-12",
   "event:INE027H01010:E07:106813203": "2026-10-12",
@@ -8,6 +40,7 @@
   "event:INE040A01034:E02:106827180": "2026-10-23",
   "event:INE040A01034:E13:106838688": "2026-11-02",
   "event:INE040A01034:E13:106850382": "2026-11-06",
+  "event:INE040A01034:E13:106858944": "2026-11-13",
   "event:INE0HOQ01053:E02:106820304": "2026-10-16",
   "event:INE0HOQ01053:E10:06nov2026goldmansachsbankeuropeseodibuy35518249": "2026-11-06",
   "event:INE0HOQ01053:E10:06nov2026goldmansachsbankeuropeseodisell4380": "2026-11-06",
@@ -58,7 +91,7 @@
   "event:INE027H01010:E07": "2026-10-12",
   "event:INE040A01034:E01": "2026-10-19",
   "event:INE040A01034:E02": "2026-10-23",
-  "event:INE040A01034:E13": "2026-11-06",
+  "event:INE040A01034:E13": "2026-11-13",
   "event:INE0HOQ01053:E02": "2026-10-16",
   "event:INE0HOQ01053:E10": "2026-11-06",
   "event:INE0LEZ01016:E01": "2026-10-26",

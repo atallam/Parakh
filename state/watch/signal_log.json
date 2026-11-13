@@ -377,6 +377,15 @@
    "key": "event:INE101A01026:E02:106855618",
    "kind": "event",
    "symbol": "M&M"
+  },
+  {
+   "code": "E13",
+   "date": "2026-11-13",
+   "headline": "Director or key management change (role not in the filing line): HDFC Bank Limited has informed the Exchange regarding Change in Director(s) of the compan…",
+   "isin": "INE040A01034",
+   "key": "event:INE040A01034:E13:106858944",
+   "kind": "event",
+   "symbol": "HDFCBANK"
   }
  ]
 }
