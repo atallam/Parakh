@@ -124,3 +124,7 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-12 21:08 · evening digest (1 items), would be sent
 - 🟡 M&M 🟢 OWNED wt 18.1% P&L +12.1% E02 Concall transcript filed: Mahindra & Mahindra Limited has informed the Exchange about Transcript of M&M Analyst Mee…  Open ▸
 - [ ] noise  `01M78S2J03ZQJ4W098K2SBAXVF`
+
+## 2026-11-13 20:40 · evening digest (1 items), would be sent
+- 🟡 HDFCBANK 🟢 OWNED wt 16.9% P&L +0.7% E13 Director or key management change (role not in the filing line): HDFC Bank Limited has informed the Exchange regarding Change in Director(s) of the compan…  Open ▸
+- [ ] noise  `01M7BA3CWVVYC3P6YZTH0SMVAS`
