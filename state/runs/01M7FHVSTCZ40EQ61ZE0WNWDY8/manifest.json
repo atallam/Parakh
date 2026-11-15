@@ -1,0 +1,58 @@
+{
+  "manifest_version": 1,
+  "run_id": "01M7FHVSTCZ40EQ61ZE0WNWDY8",
+  "mode": "heartbeat",
+  "env": "prod",
+  "asof": "2026-11-15",
+  "trigger": "cron",
+  "triggered_by": "scheduler:heartbeat",
+  "status": "SUCCESS_AUDIT_PENDING",
+  "started_at": "2026-11-15T12:10:41.357179Z",
+  "finished_at": "2026-11-15T12:10:42.358668Z",
+  "code_version": "e2669b6d99af",
+  "config_hash": "sha256:5641a9b86deae733a827c3b9db2e8b387ecad9925c018f55ab66c27fa9f34fe9",
+  "framework_version": "0.1.0",
+  "lens_versions": {},
+  "policy_version": null,
+  "prompt_versions": {},
+  "steps": [
+    {
+      "step_id": "01M7FHVSTCZ40EQ61ZE0WNWDY8.collect.01",
+      "name": "collect",
+      "seq": 1,
+      "status": "ok",
+      "started_at": "2026-11-15T12:10:41.357886Z",
+      "ended_at": "2026-11-15T12:10:41.401859Z",
+      "duration_ms": 44.0,
+      "inputs": {},
+      "outputs": {
+        "runs": 13,
+        "ok": 10
+      },
+      "error": null
+    },
+    {
+      "step_id": "01M7FHVSTCZ40EQ61ZE0WNWDY8.send.02",
+      "name": "send",
+      "seq": 2,
+      "status": "ok",
+      "started_at": "2026-11-15T12:10:41.402001Z",
+      "ended_at": "2026-11-15T12:10:42.233405Z",
+      "duration_ms": 831.4,
+      "inputs": {},
+      "outputs": {
+        "delivered": true
+      },
+      "error": null
+    }
+  ],
+  "audit_events": 3,
+  "audit_pending": 3,
+  "audit_chain_head": "sha256:74f0027d09699aca1adc251ad130bf317fc434484ced5b16158fa3abb8c3f91a",
+  "audit_sink": "none (Supabase flush arrives in Phase 1)",
+  "llm_tokens": 0,
+  "alerts_sent": 1,
+  "alerts_suppressed": 0,
+  "agent_runs": 0,
+  "failed_steps": 0
+}
