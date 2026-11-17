@@ -128,3 +128,14 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-13 20:40 · evening digest (1 items), would be sent
 - 🟡 HDFCBANK 🟢 OWNED wt 16.9% P&L +0.7% E13 Director or key management change (role not in the filing line): HDFC Bank Limited has informed the Exchange regarding Change in Director(s) of the compan…  Open ▸
 - [ ] noise  `01M7BA3CWVVYC3P6YZTH0SMVAS`
+
+## 2026-11-17 21:55 · evening digest (38 items), would be sent
+- ⚪ GROWW 🟢 OWNED wt 4.7% P&L +15.5% E10 Bulk or block deal: Sell 38413112 @ 219 (RIBBIT CAYMAN GW HOLDINGS V LTD.)  Open ▸
+- ⚪ GROWW 🟢 OWNED wt 4.7% P&L +15.5% E10 Bulk or block deal: Sell 48586888 @ 219 (RIBBIT CAPITAL V L.P.)  Open ▸
+- ⚪ GROWW 🟢 OWNED wt 4.7% P&L +15.5% E10 Bulk or block deal: Buy 1935800 @ 219 (FIDELITY CONTRAFUND: FIDELITY SERIE…)  Open ▸
+- ⚪ GROWW 🟢 OWNED wt 4.7% P&L +15.5% E10 Bulk or block deal: Buy 299600 @ 219 (FIDELITY GLOBAL GROWTH AND VALUE IN…)  Open ▸
+- ⚪ GROWW 🟢 OWNED wt 4.7% P&L +15.5% E10 Bulk or block deal: Buy 2053600 @ 219 (FIDELITY INSIGHTS INVESTMENT TRUST)  Open ▸
+- ⚪ GROWW 🟢 OWNED wt 4.7% P&L +15.5% E10 Bulk or block deal: Buy 2900000 @ 219 (GHISALLO MASTER FUND LP)  Open ▸
+- ⚪ GROWW 🟢 OWNED wt 4.7% P&L +15.5% E10 Bulk or block deal: Buy 2600000 @ 219 (HDFC STANDARD LIFE INSURANCE CO LTD)  Open ▸
+- … +31 more in the shadow log or reports
+- [ ] noise  `01M7NR09ECNG5JVCX3P4Z17JSH` `01M7NR09ECNG5JVCX3P4Z17JSJ` `01M7NR09ECNG5JVCX3P4Z17JSK` `01M7NR09ECNG5JVCX3P4Z17JSM` `01M7NR09ECNG5JVCX3P4Z17JSN` `01M7NR09ECNG5JVCX3P4Z17JSP` `01M7NR09EDP15Y8K3PY1GBB7AA`
