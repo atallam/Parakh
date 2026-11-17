@@ -149,3 +149,35 @@ Tick `noise` on anything you would not want to receive; the review reads these b
 ## 2026-11-13 20:38 · event_triage HDFCBANK E13, would add this line
 - 🤖 Routine filing: change in director(s) at HDFC Bank; no details on role or reason given.
 - [ ] noise  `event:INE040A01034:E13:106858944`
+
+## 2026-11-17 21:53 · event_triage GROWW E10, would add this line
+- 🤖 Early investor Ribbit offloaded a large block of GROWW shares; watch for further stake sales.
+- [ ] noise  `event:INE0HOQ01053:E10:17nov2026ribbitcaymangwholdingsvltdsell38413112`
+
+## 2026-11-17 21:53 · event_triage GROWW E10, would add this line
+- 🤖 Early investor Ribbit Capital sold a large block of shares via bulk/block deal.
+- [ ] noise  `event:INE0HOQ01053:E10:17nov2026ribbitcapitalvlpsell48586888`
+
+## 2026-11-17 21:53 · event_triage GROWW E10, would add this line
+- 🤖 Bulk/block deal: Fidelity Contrafund bought a stake via block trade; routine institutional activity.
+- [ ] noise  `event:INE0HOQ01053:E10:17nov2026fidelitycontrafundfidelityseriesopportunisticinsigh`
+
+## 2026-11-17 21:53 · event_triage GROWW E10, would add this line
+- 🤖 Bulk deal: Fidelity Global Growth and Value Trust bought GROWW shares on exchange.
+- [ ] noise  `event:INE0HOQ01053:E10:17nov2026fidelityglobalgrowthandvalueinvestmenttrustbuy29960`
+
+## 2026-11-17 21:53 · event_triage GROWW E10, would add this line
+- 🤖 Bulk deal: Fidelity Insights Investment Trust bought GROWW shares on exchange; informational, no fresh company disclosure.
+- [ ] noise  `event:INE0HOQ01053:E10:17nov2026fidelityinsightsinvestmenttrustbuy2053600`
+
+## 2026-11-17 21:53 · event_triage GROWW E10, would add this line
+- 🤖 Bulk deal: institutional investor Ghisallo Master Fund bought shares on exchange.
+- [ ] noise  `event:INE0HOQ01053:E10:17nov2026ghisallomasterfundlpbuy2900000`
+
+## 2026-11-17 21:53 · event_triage GROWW E10, would add this line
+- 🤖 Bulk/block deal: HDFC Life bought ~26L GROWW shares; notable institutional buying interest.
+- [ ] noise  `event:INE0HOQ01053:E10:17nov2026hdfcstandardlifeinsurancecoltdbuy2600000`
+
+## 2026-11-17 21:53 · event_triage GROWW E10, would add this line
+- 🤖 Bulk deal: Kotak Mahindra MF bought shares in block trade; routine institutional disclosure.
+- [ ] noise  `event:INE0HOQ01053:E10:17nov2026kotakmahindramutualfundbuy1281250`
